@@ -1,22 +1,22 @@
 <?php
-namespace App\Covoiturage\Controleur;
+namespace App\GenerateurAvis\Controleur;
 
-use App\Covoiturage\Modele\DataObject\Utilisateur;
-use App\Covoiturage\Modele\Repository\UtilisateurRepository;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use TypeError;
 
 class ControleurUtilisateur
 {
     public static function afficherListe(): void
     {
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs(); //appel au modèle pour gérer la BD
+        $utilisateurs = EtudiantRepository::recupererUtilisateurs(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
     {
         try {
-            $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+            $utilisateur = EtudiantRepository::recupererUtilisateurParLogin($_GET['login']);
             if ($utilisateur == NULL) {
                 self::afficherErreur("L'utilisateur de login {$_GET['login']} n'existe pas");
             } else {
@@ -35,8 +35,8 @@ class ControleurUtilisateur
     public static function creerDepuisFormulaire(): void
     {
         $user = new Utilisateur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
-        UtilisateurRepository::ajouter($user);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        EtudiantRepository::ajouter($user);
+        $utilisateurs = EtudiantRepository::recupererUtilisateurs();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurCree.php"]);
     }
 
@@ -48,22 +48,22 @@ class ControleurUtilisateur
     public static function supprimer() : void
     {
         $login = $_GET["login"];
-        UtilisateurRepository::supprimerParLogin($login);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        EtudiantRepository::supprimerParLogin($login);
+        $utilisateurs = EtudiantRepository::recupererUtilisateurs();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
     }
 
     public static function afficherFormulaireMiseAJour() : void
     {
-        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+        $utilisateur = EtudiantRepository::recupererUtilisateurParLogin($_GET['login']);
         self::afficherVue('vueGenerale.php', ["utilisateur" => $utilisateur, "titre" => "Formulaire de mise à jour d'utilisateur", "cheminCorpsVue" => "utilisateur/formulaireMiseAJour.php"]);
     }
 
     public static function mettreAJour() : void
     {
         $user = new Utilisateur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
-        UtilisateurRepository::mettreAJour($user);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        EtudiantRepository::mettreAJour($user);
+        $utilisateurs = EtudiantRepository::recupererUtilisateurs();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $user->getLogin(), "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurMisAJour.php"]);
     }
 

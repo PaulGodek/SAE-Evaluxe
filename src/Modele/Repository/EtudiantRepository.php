@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Covoiturage\Modele\Repository;
+namespace App\GenerateurAvis\Modele\Repository;
 
-use App\Covoiturage\Modele\DataObject\Utilisateur;
-use PDO;
-use PDOException;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
-class UtilisateurRepository
+class EtudiantRepository
 {
+    private static string $tableEtudiant = "EtudiantTest";
+
     public static function recupererUtilisateurs() : array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM utilisateur");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEtudiant);
 
         $tableauUtilisateurs = [];
         foreach ($pdoStatement as $utilisateurFormatTableau) {
@@ -20,7 +20,7 @@ class UtilisateurRepository
     }
 
     public static function recupererUtilisateurParLogin(string $login) : ?Utilisateur {
-        $sql = "SELECT * from utilisateur WHERE login = :loginTag";
+        $sql = "SELECT * from ".self::$tableEtudiant." WHERE login = :loginTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -41,7 +41,7 @@ class UtilisateurRepository
     }
 
     public static function ajouter(Utilisateur $user) : bool {
-        $sql = 'INSERT INTO utilisateur (login, nom, prenom) VALUES (:loginTag, :nomTag, :prenomTag);';
+        $sql = "INSERT INTO ".self::$tableEtudiant." (login, nom, prenom) VALUES (:loginTag, :nomTag, :prenomTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
@@ -60,34 +60,8 @@ class UtilisateurRepository
             $utilisateurFormatTableau['prenom']);
     }
 
-    /**
-     * @return Trajet[]
-     */
-    public static function recupererTrajetsCommePassager(Utilisateur $user) : array {
-        $sql = 'SELECT p.trajetId
-                FROM passager p
-                WHERE p.passagerLogin = :loginTag;';
-
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo() -> prepare($sql);
-
-        $values = array(
-            'loginTag' => $user->getLogin()
-        );
-
-        $pdoStatement -> execute($values);
-
-        $listeTrajet = $pdoStatement -> fetchAll(PDO::FETCH_ASSOC);
-
-        $Trajets = array();
-        foreach($listeTrajet as $trajetFormatted) {
-            $Trajets[] = Trajet::recupererTrajetParId($trajetFormatted['trajetId']);
-        }
-
-        return $Trajets;
-    }
-
     public static function supprimerParLogin(string $login) : bool {
-        $sql = "DELETE FROM utilisateur WHERE login = :loginTag;";
+        $sql = "DELETE FROM ".self::$tableEtudiant." WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
@@ -98,7 +72,7 @@ class UtilisateurRepository
     }
 
     public static function mettreAJour(Utilisateur $utilisateur) : void {
-        $sql = "UPDATE utilisateur SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag;";
+        $sql = "UPDATE ".self::$tableEtudiant." SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(

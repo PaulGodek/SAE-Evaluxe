@@ -1,7 +1,7 @@
 <?php
-namespace App\Covoiturage\Modele\Repository;
+namespace App\GenerateurAvis\Modele\Repository;
 
-use App\Covoiturage\Configuration\ConfigurationBaseDeDonnees;
+use App\GenerateurAvis\Configuration\ConfigurationBaseDeDonnees;
 use PDO;
 
 class ConnexionBaseDeDonnees {

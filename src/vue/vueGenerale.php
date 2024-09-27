@@ -13,8 +13,6 @@
                 <ul>
                     <li>
                         <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur">Gestion des utilisateurs</a>
-                    </li><li>
-                        <a href="controleurFrontal.php?action=afficherListe&controleur=trajet">Gestion des trajets</a>
                     </li>
                 </ul>
             </nav>
@@ -29,7 +27,7 @@
         </main>
         <footer>
             <p>
-                Super site de covoiturage de Paul Godek, le goat originel
+                Futur site de généréation d'avis de l'IUT, réalisé par GlobalEduTech
             </p>
         </footer>
     </body>

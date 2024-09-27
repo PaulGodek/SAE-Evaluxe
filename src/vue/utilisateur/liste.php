@@ -1,7 +1,7 @@
 <?php
 /** @var Utilisateur[] $utilisateurs */
 
-use App\Covoiturage\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
 echo "<h2>Liste des utilisateurs</h2><ul>";
 foreach ($utilisateurs as $utilisateur) {

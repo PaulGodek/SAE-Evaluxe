@@ -1,36 +1,17 @@
 <?php
-namespace App\Covoiturage\Modele\DataObject;
-
-use App\Covoiturage\Modele\Repository\UtilisateurRepository;
+namespace App\GenerateurAvis\Modele\DataObject;
 class Utilisateur
 {
 
     private string $login;
     private string $nom;
     private string $prenom;
-    /**
-     * @var Trajet[]|null
-     */
-    private ?array $trajetsCommePassager;
 
     public function __construct(string $login, string $nom, string $prenom)
     {
         $this->login = substr($login, 0, 64);
         $this->nom = $nom;
         $this->prenom = $prenom;
-        $this->trajetsCommePassager = null;
-    }
-
-    public function getTrajetsCommePassager(): ?array
-    {
-        if (is_null($this->trajetsCommePassager))
-            $this->trajetsCommePassager = UtilisateurRepository::recupererTrajetsCommePassager($this);
-        return $this->trajetsCommePassager;
-    }
-
-    public function setTrajetsCommePassager(?array $trajetsCommePassager): void
-    {
-        $this->trajetsCommePassager = $trajetsCommePassager;
     }
 
     public function getNom() : string

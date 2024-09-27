@@ -1,5 +1,5 @@
 <?php
-use App\Covoiturage\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 /** @var Utilisateur $utilisateur */
 ?>
 <form method="get" action="controleurFrontal.php">
