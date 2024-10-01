@@ -21,5 +21,5 @@ echo "<h2>Liste des écoles</h2><ul>";
     foreach ($ecoles as $ecole) {
     $nomHTML = htmlspecialchars($ecole->getNom());
     $nomURL = rawurlencode($ecole->getNom());
-    echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetail&login=' . $nomURL . '">' . $nomHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJour&login=' . $nomURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimer&login=' . $nomURL . '">Supprimer ?</a>)</p></li>';
+    echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetailEcole&nom=' . $nomURL . '">' . $nomHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJourEcole&nom=' . $nomURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimerEcole&nom=' . $nomURL . '">Supprimer ?</a>)</p></li>';
     }

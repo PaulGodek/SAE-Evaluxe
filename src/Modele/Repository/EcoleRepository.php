@@ -19,13 +19,13 @@ class EcoleRepository
         return $tableauEcole;
     }
 
-    public static function recupererEcoleParLogin(string $login) : ?Utilisateur {
-        $sql = "SELECT * from ".self::$tableEcole." WHERE login = :loginTag";
+    public static function recupererEcoleParNom(string $nom) : ?Ecole {
+        $sql = "SELECT * from ".self::$tableEcole." WHERE nom = :nomTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
-            "loginTag" => $login,
+            "nomTag" => $nom,
             //nomdutag => valeur, ...
         );
         // On donne les valeurs et on exécute la requête

@@ -10,64 +10,64 @@ class ControleurEcole
     public static function afficherListeEcole(): void
     {
         $ecoles = EcoleRepository::recupererEcoles(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherDetail(): void
+    public static function afficherDetailEcole(): void
     {
         try {
-            $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            $ecole = EcoleRepository::recupererEcoleParNom($_GET['nom']);
             if ($ecole == NULL) {
-                self::afficherErreur("L'école de login {$_GET['login']} n'existe pas");
+                self::afficherErreurEcole("L'école  {$_GET['nom']} n'existe pas");
             } else {
-                self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detail.php"]);
+                self::afficherVueEcole('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
             }
         } catch (TypeError $e) {
-            self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            self::afficherErreurEcole("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
         }
     }
 
-    public static function afficherFormulaireCreation(): void
+    public static function afficherFormulaireCreationEcole(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreation.php"]);
+        self::afficherVueEcole('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
     }
 
-    public static function creerDepuisFormulaire(): void
+    public static function creerDepuisFormulaireEcole(): void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
         EcoleRepository::ajouter($ecole);
         $ecoles = EcoleRepository::recupererEcoles();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
-    public static function afficherErreur(string $messageErreur = "") : void
+    public static function afficherErreurEcole(string $messageErreur = "") : void
     {
-        self::afficherVue('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "ecole/erreur.php"]);
+        self::afficherVueEcole('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "ecole/erreurEcole.php"]);
     }
 
-    public static function supprimer() : void
+    public static function supprimerEcole() : void
     {
         $login = $_GET["login"];
         EcoleRepository::supprimerParLogin($login);
         $ecoles = EcoleRepository::recupererEcoles();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
     }
 
-    public static function afficherFormulaireMiseAJour() : void
+    public static function afficherFormulaireMiseAJourEcole() : void
     {
-        $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
-        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJour.php"]);
+        $ecole = EcoleRepository::recupererEcoleParNom($_GET['login']);
+        self::afficherVueEcole('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
-    public static function mettreAJour() : void
+    public static function mettreAJourEcole() : void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
         EtudiantRepository::mettreAJour($ecole);
         $ecoles = EcoleRepository::recupererEcoles();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
     }
 
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
+    private static function afficherVueEcole(string $cheminVue, array $parametres = []): void
     {
         extract($parametres); // Crée des variables à partir du tableau $parametres
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue

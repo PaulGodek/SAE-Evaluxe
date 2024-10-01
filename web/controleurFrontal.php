@@ -21,7 +21,9 @@ if (isset($_GET["action"])) {
     }
     else {
         $listeFonction = get_class_methods(ControleurEcole::class);
+        
         if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
+
             $action = $_GET["action"];
             // Appel de la méthode statique $action de ControleurUtilisateur
             ControleurEcole::$action();
