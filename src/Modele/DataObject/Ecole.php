@@ -33,12 +33,12 @@ class Ecole
         $this->login = substr($login, 0, 64);
     }
 
-    public function getadresse(): string
+    public function getAdresse(): string
     {
         return $this->adresse;
     }
 
-    public function setadresse(string $adresse): void
+    public function setAdresse(string $adresse): void
     {
         $this->adresse = $adresse;
     }
