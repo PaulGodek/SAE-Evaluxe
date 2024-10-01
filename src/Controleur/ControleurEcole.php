@@ -1,15 +1,15 @@
 <?php
 namespace App\GenerateurAvis\Controleur;
 
-use App\GenerateurAvis\Modele\DataObject\Utilisateur;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
+use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use TypeError;
 
 class ControleurEcole
 {
-    public static function afficherListe(): void
+    public static function afficherListeEcole(): void
     {
-        $ecoles = EcoleRepository::recupererEcole(); //appel au modèle pour gérer la BD
+        $ecoles = EcoleRepository::recupererEcoles(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 

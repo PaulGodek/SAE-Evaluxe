@@ -1,5 +1,6 @@
 <?php
 
+use App\GenerateurAvis\Controleur\ControleurEcole;
 use App\GenerateurAvis\Controleur\ControleurUtilisateur;
 
 require_once __DIR__ . '/../src/Lib/Psr4AutoloaderClass.php';

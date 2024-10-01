@@ -57,7 +57,7 @@ class EcoleRepository
     {
         return new Ecole($ecoleFormatTableau['login'],
             $ecoleFormatTableau['nom'],
-            $ecoleFormatTableau['prenom']);
+            $ecoleFormatTableau['adresse']);
     }
 
     public static function supprimerEcoleParLogin(string $login) : bool {
