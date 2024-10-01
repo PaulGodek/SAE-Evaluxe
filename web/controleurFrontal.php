@@ -19,7 +19,15 @@ if (isset($_GET["action"])) {
         ControleurUtilisateur::$action();
     }
     else {
-        ControleurUtilisateur::afficherErreur("Cette action n'existe pas");
+        $listeFonction = get_class_methods(ControleurEcole::class);
+        if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
+            $action = $_GET["action"];
+            // Appel de la méthode statique $action de ControleurUtilisateur
+            ControleurEcole::$action();
+        }
+        else {
+            ControleurUtilisateur::afficherErreur("Cette action n'existe pas");
+        }
     }
 } else {
     ControleurUtilisateur::afficherListe();
