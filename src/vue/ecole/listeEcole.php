@@ -17,7 +17,7 @@
 /** @var Ecole[] $ecoles */
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 
-echo "<h2>Liste des utilisateurs</h2><ul>";
+echo "<h2>Liste des écoles</h2><ul>";
     foreach ($ecoles as $ecole) {
     $nomHTML = htmlspecialchars($ecole->getNom());
     $nomURL = rawurlencode($ecole->getNom());

@@ -8,7 +8,7 @@ class EcoleRepository
 {
     private static string $tableEcole= "EcoleTest";
 
-    public static function recupererEcole() : array
+    public static function recupererEcoles() : array
     {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEcole);
 
