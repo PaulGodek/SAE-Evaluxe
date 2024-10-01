@@ -13,6 +13,18 @@ class ControleurEcole
         self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
+    public static function afficherListeEcoleOrdonneParNom(): void
+    {
+        $ecoles = EcoleRepository::recupererEcolesOrdonneParNom(); //appel au modèle pour gérer la BD
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+    }
+
+    public static function afficherListeEcoleOrdonneParAdresse(): void
+    {
+        $ecoles = EcoleRepository::recupererEcolesOrdonneParAdresse(); //appel au modèle pour gérer la BD
+        self::afficherVueEcole('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+    }
+
     public static function afficherDetailEcole(): void
     {
         try {

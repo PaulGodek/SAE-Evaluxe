@@ -19,6 +19,34 @@ class EcoleRepository
         return $tableauEcole;
     }
 
+    public static function recupererEcolesOrdonneParNom() : array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEcole." ORDER BY nom");
+
+        $tableauEcole = [];
+        foreach ($pdoStatement as $EcoleFormatTableau) {
+            $tableauEcole[] = self::construireEcoleDepuisTableauSQL($EcoleFormatTableau);
+        }
+        return $tableauEcole;
+    }
+
+
+
+
+    public static function recupererEcolesOrdonneParAdresse() : array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEcole." ORDER BY adresse");
+
+        $tableauEcole = [];
+        foreach ($pdoStatement as $EcoleFormatTableau) {
+            $tableauEcole[] = self::construireEcoleDepuisTableauSQL($EcoleFormatTableau);
+        }
+        return $tableauEcole;
+    }
+
+
+
+
     public static function recupererEcoleParNom(string $nom) : ?Ecole {
         $sql = "SELECT * from ".self::$tableEcole." WHERE nom = :nomTag";
         // Préparation de la requête
