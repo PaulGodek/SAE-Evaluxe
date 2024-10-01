@@ -14,7 +14,7 @@ class EcoleRepository
 
         $tableauEcole = [];
         foreach ($pdoStatement as $EcoleFormatTableau) {
-            $tableauEcole[] = self::construireDepuisTableauSQL($EcoleFormatTableau);
+            $tableauEcole[] = self::construireEcoleDepuisTableauSQL($EcoleFormatTableau);
         }
         return $tableauEcole;
     }
@@ -37,10 +37,10 @@ class EcoleRepository
         if (!$ecoleFormatTableau)
             return null;
 
-        return self::construireDepuisTableauSQL($ecoleFormatTableau);
+        return self::construireEcoleDepuisTableauSQL($ecoleFormatTableau);
     }
 
-    public static function ajouter(Ecole $ecole) : bool {
+    public static function ajouterEcole(Ecole $ecole) : bool {
         $sql = "INSERT INTO ".self::$tableEcole." (login, nom, adresse) VALUES (:loginTag, :nomTag, :adresseTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
@@ -53,14 +53,14 @@ class EcoleRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function construireDepuisTableauSQL( array $ecoleFormatTableau) : Ecole
+    public static function construireEcoleDepuisTableauSQL( array $ecoleFormatTableau) : Ecole
     {
         return new Ecole($ecoleFormatTableau['login'],
             $ecoleFormatTableau['nom'],
             $ecoleFormatTableau['prenom']);
     }
 
-    public static function supprimerParLogin(string $login) : bool {
+    public static function supprimerEcoleParLogin(string $login) : bool {
         $sql = "DELETE FROM ".self::$tableEcole." WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -71,7 +71,7 @@ class EcoleRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJour(Ecole $ecole) : void {
+    public static function mettreAJourEcole(Ecole $ecole) : void {
         $sql = "UPDATE ".self::$tableEcole." SET nom = :nomTag, adresse = :adresseTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
