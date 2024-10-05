@@ -7,12 +7,8 @@
             <input class="InputAddOn-field" type="text" placeholder="Ex : leblancj" name="login" id="login_id" required>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="nom_id">Nom&#42;</label>
-            <input class="InputAddOn-field" type="text" placeholder="Ex : Leblanc" name="nom" id="nom_id" required>
-        </p>
-        <p class="InputAddOn">
-            <label class="InputAddOn-item" for="prenom_id">Prénom&#42;</label>
-            <input class="InputAddOn-field" type="text" placeholder="Ex : Jveux" name="prenom" id="prenom_id" required>
+            <label class="InputAddOn-item" for="type_id">Type&#42;</label>
+            <input class="InputAddOn-field" type="text"  name="type" id="type_id" required>
         </p>
         <p class="InputAddOn">
             <input class="InputAddOn-field" type="submit" value="Envoyer" />

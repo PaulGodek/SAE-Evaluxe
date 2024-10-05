@@ -3,4 +3,4 @@
 
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
-echo "Le login de l'utilisateur " . htmlspecialchars($utilisateur->getPrenom()) . " " . htmlspecialchars($utilisateur->getNom()) . " est " . htmlspecialchars($utilisateur->getLogin()) . ".";
+echo "L'utilisateur " . htmlspecialchars($utilisateur->getLogin()) . " est de type " . htmlspecialchars($utilisateur->getType()) . ".";

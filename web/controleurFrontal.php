@@ -1,6 +1,7 @@
 <?php
 
 use App\GenerateurAvis\Controleur\ControleurEcole;
+use App\GenerateurAvis\Controleur\ControleurEtudiant;
 use App\GenerateurAvis\Controleur\ControleurUtilisateur;
 
 require_once __DIR__ . '/../src/Lib/Psr4AutoloaderClass.php';
@@ -29,6 +30,14 @@ if (isset($_GET["action"])) {
             ControleurEcole::$action();
         }
         else {
+            $listeFonction = get_class_methods(ControleurEtudiant::class);
+
+            if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
+
+                $action = $_GET["action"];
+                // Appel de la méthode statique $action de ControleurUtilisateur
+                ControleurEtudiant::$action();
+            }
             ControleurUtilisateur::afficherErreur("Cette action n'existe pas");
         }
     }
