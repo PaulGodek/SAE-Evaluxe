@@ -41,18 +41,41 @@ class ControleurUtilisateur
         }
     }
 
-    public static function afficherFormulaireCreation(): void
+    public static function afficherFormulaireCreationEcole(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'utilisateur", "cheminCorpsVue" => "utilisateur/formulaireCreation.php"]);
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'ecole", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
     }
 
-    public static function creerDepuisFormulaire(): void
+    public static function creerEcoleDepuisFormulaire(): void
     {
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"]);
+
         UtilisateurRepository::ajouter($utilisateur);
+        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+    }
+
+
+
+
+
+    public static function afficherFormulaireCreationEtudiant(): void
+    {
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'utilisateur", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
+    }
+
+    public static function creerEtudiantDepuisFormulaire(): void
+    {
+        $utilisateur = new Utilisateur($_GET["login"], $_GET["type"]);
+
+        UtilisateurRepository::ajouter($utilisateur);
+
+        $etudiant= new Etudiant($_GET["login"],$_GET["nom"],$_GET["prenom"],$_GET["moyenne"]);
+        EtudiantRepository::ajouter($etudiant);
         $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurCree.php"]);
     }
+
 
     public static function afficherErreur(string $messageErreur = "") : void
     {

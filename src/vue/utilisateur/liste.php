@@ -9,4 +9,4 @@ foreach ($utilisateurs as $utilisateur) {
     $loginURL = rawurlencode($utilisateur->getLogin());
     echo '<li><p> Utilisateur de login <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $loginHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?</a>)</p></li>';
 }
-echo '</ul><p><a href="controleurFrontal.php?action=afficherFormulaireCreation">Créer un utilisateur</a></p>';
+echo '</ul><p><a href="controleurFrontal.php?action=afficherFormulaireCreationEtudiant">Créer un etudiant</a>&emsp;<a href="controleurFrontal.php?action=afficherFormulaireCreationEcole">Créer une école</a> </p>';

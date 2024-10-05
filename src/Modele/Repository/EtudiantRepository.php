@@ -69,7 +69,7 @@ class EtudiantRepository
     }
 
     public static function ajouter(Etudiant $Etudiant) : bool {
-        $sql = "INSERT INTO ".self::$tableEtudiant." (login, nom,prenom, moyenne) VALUES (:loginTag, :nomTag, :moyenneTag);";
+        $sql = "INSERT INTO ".self::$tableEtudiant." (login, nom,prenom, moyenne) VALUES (:loginTag, :nomTag, :prenomTag, :moyenneTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
@@ -109,7 +109,7 @@ class EtudiantRepository
             "loginTag" => $Etudiant->getLogin(),
             "nomTag" => $Etudiant->getNom(),
             "prenomTag" => $Etudiant->getPrenom(),
-            "moyenneTag" => $Etudiant->getAddresse()
+            "moyenneTag" => $Etudiant->getMoyenne()
         );
 
         $pdoStatement->execute($values);

@@ -34,7 +34,7 @@ if(class_exists($nomDeClasseControleur)) {
 
             $nomDeClasseControleur::$action();
         } else {
-            $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible");
+            $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible".$nomDeClasseControleur);
         }
     } else {
         $nomDeClasseControleur::afficherListe();
