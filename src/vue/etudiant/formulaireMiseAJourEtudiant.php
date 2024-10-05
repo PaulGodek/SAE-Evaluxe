@@ -3,7 +3,7 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
 /** @var Etudiant $etudiant */
 ?>
 <form method="get" action="controleurFrontal.php">
-    <input type="hidden" name="action" value="mettreAJourEtudiant"/>
+    <input type="hidden" name="action" value="mettreAJour"/>
     <fieldset>
         <legend>Formulaire de mise à jour </legend>
         <p class="InputAddOn">

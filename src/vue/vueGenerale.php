@@ -14,6 +14,13 @@
                     <li>
                         <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur">Gestion des utilisateurs</a>
                     </li>
+                    <li>
+                        <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant">Gestion des étudiants</a>
+                    </li>
+                    <li>
+                        <a href="controleurFrontal.php?action=afficherListe&controleur=ecole">Gestion des écoles</a>
+
+                    </li>
                 </ul>
             </nav>
 

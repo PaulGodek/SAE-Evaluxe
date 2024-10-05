@@ -1,5 +1,5 @@
 <form method="get" action="controleurFrontal.php">
-    <input type="hidden" name="action" value="afficherDetailEtudiant"/>
+    <input type="hidden" name="action" value="afficherDetail"/>
     <fieldset>
         <legend>Mon formulaire :</legend>
         <p class="InputAddOn">
@@ -23,9 +23,9 @@ echo "<h2>Liste des étudiants</h2>
     
 <ul>";
     foreach ($etudiants as $etudiant) {
-    $nomHTML = htmlspecialchars($etudiant->getNom());
-    $nomURL = rawurlencode($etudiant->getNom());
-    echo '<li><p> L\'étudiant <a href="controleurFrontal.php?action=afficherDetailEtudiant&nom=' . $nomURL . '">' . $nomHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJourEtudiant&nom=' . $nomURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimerEtudiant&nom=' . $nomURL . '">Supprimer ?</a>)</p></li>';
+    $loginHTML = htmlspecialchars($etudiant->getLogin());
+    $loginURL = rawurlencode($etudiant->getLogin());
+    echo '<li><p> L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $loginHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJourEtudiant&nom=' . $loginURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimerEtudiant&nom=' . $loginURL . '">Supprimer ?</a>)</p></li>';
     }
 
 

@@ -68,7 +68,7 @@ class EtudiantRepository
         return self::construireEtudiantDepuisTableauSQL($EtudiantFormatTableau);
     }
 
-    public static function ajouterEtudiant(Etudiant $Etudiant) : bool {
+    public static function ajouter(Etudiant $Etudiant) : bool {
         $sql = "INSERT INTO ".self::$tableEtudiant." (login, nom,prenom, moyenne) VALUES (:loginTag, :nomTag, :moyenneTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
@@ -101,7 +101,7 @@ class EtudiantRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJourEtudiant(Etudiant $Etudiant) : void {
+    public static function mettreAJour(Etudiant $Etudiant) : void {
         $sql = "UPDATE ".self::$tableEtudiant." SET nom = :nomTag, prenom= :prenomTag, moyenne = :moyenneTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 

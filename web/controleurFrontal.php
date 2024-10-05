@@ -13,34 +13,34 @@ $chargeurDeClasse->register();
 $chargeurDeClasse->addNamespace('App\GenerateurAvis', __DIR__ . '/../src');
 
 // On récupère l'action passée dans l'URL
-if (isset($_GET["action"])) {
-    $listeFonction = get_class_methods(ControleurUtilisateur::class); // Ou alors 'App\Covoiturage\Controleur\ControleurUtilisateur'
-    if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
-        $action = $_GET["action"];
-        // Appel de la méthode statique $action de ControleurUtilisateur
-        ControleurUtilisateur::$action();
-    }
-    else {
-        $listeFonction = get_class_methods(ControleurEcole::class);
-        
-        if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
 
-            $action = $_GET["action"];
-            // Appel de la méthode statique $action de ControleurUtilisateur
-            ControleurEcole::$action();
+if(isset($_GET["controleur"])){
+    $controleur = $_GET["controleur"];
+}
+else{
+    $controleur="utilisateur";
+}
+
+
+$nomDeClasseControleur ="App\GenerateurAvis\Controleur\Controleur".ucfirst($controleur);
+
+
+// On récupère l'action passée dans l'URL
+if(class_exists($nomDeClasseControleur)) {
+    if (isset($_GET["action"])) {
+        $action = $_GET['action'];
+
+        if (in_array($action, get_class_methods($nomDeClasseControleur))) {
+
+            $nomDeClasseControleur::$action();
+        } else {
+            $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible");
         }
-        else {
-            $listeFonction = get_class_methods(ControleurEtudiant::class);
-
-            if ($listeFonction != null && in_array($_GET["action"], $listeFonction)) {
-
-                $action = $_GET["action"];
-                // Appel de la méthode statique $action de ControleurUtilisateur
-                ControleurEtudiant::$action();
-            }
-            ControleurUtilisateur::afficherErreur("Cette action n'existe pas");
-        }
+    } else {
+        $nomDeClasseControleur::afficherListe();
     }
-} else {
-    ControleurUtilisateur::afficherListe();
+}
+else {
+    ControleurUtilisateur::afficherErreur(" Ce controleur n'existe pas ");
+
 }

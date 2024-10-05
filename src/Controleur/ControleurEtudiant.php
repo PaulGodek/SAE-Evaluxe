@@ -7,79 +7,79 @@ use TypeError;
 
 class ControleurEtudiant
 {
-    public static function afficherListeEtudiant(): void
+    public static function afficherListe(): void
     {
         $etudiants = EtudiantRepository::recupererEtudiants(); //appel au modèle pour gérer la BD
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParAdresse(): void
     {
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParMoyenne(); //appel au modèle pour gérer la BD
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeetudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeetudiant.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherDetailEtudiant(): void
+    public static function afficherDetail(): void
     {
         try {
-            $etudiant = EtudiantRepository::recupererEtudiantParNom($_GET['nom']);
+            $etudiant = EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
             if ($etudiant == NULL) {
-                self::afficherErreurEtudiant("L'étudiant  {$_GET['nom']} n'existe pas");
+                self::afficherErreur("L'étudiant  {$_GET['login']} n'existe pas");
             } else {
-                self::afficherVueEtudiant('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
-            self::afficherErreurEtudiant("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
         }
     }
 
-    public static function afficherFormulaireCreationEtudiant(): void
+    public static function afficherFormulaireCreation(): void
     {
-        self::afficherVueEtudiant('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
     }
 
-    public static function creerDepuisFormulaireEtudiant(): void
+    public static function creerDepuisFormulaire(): void
     {
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"],$_GET["prenom"], $_GET["moyenne"]);
-        EtudiantRepository::ajouterEtudiant($etudiant);
+        EtudiantRepository::ajouter($etudiant);
         $etudiants = EtudiantRepository::recupererEtudiants();
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte école", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte école", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
     }
 
-    public static function afficherErreurEtudiant(string $messageErreur = "") : void
+    public static function afficherErreur(string $messageErreur = "") : void
     {
-        self::afficherVueEtudiant('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "etudiant/erreurEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "etudiant/erreurEtudiant.php"]);
     }
 
-    public static function supprimerEtudiant() : void
+    public static function supprimer() : void
     {
         $login = $_GET["login"];
         EtudiantRepository::supprimerEtudiantParLogin($login);
         $etudiants = EtudiantRepository::recupererEtudiants();
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
     }
 
-    public static function afficherFormulaireMiseAJourEtudiant() : void
+    public static function afficherFormulaireMiseAJour() : void
     {
-        $etudiant = EtudiantRepository::recupererEtudiantParNom($_GET['login']);
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+        $etudiant = EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
+        self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
     }
 
-    public static function mettreAJourEtudiant() : void
+    public static function mettreAJour() : void
     {
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"],$_GET["prenom"], $_GET["moyenne"]);
-        EtudiantRepository::mettreAJourEtudiant($etudiant);
+        EtudiantRepository::mettreAJour($etudiant);
         $etudiants = EtudiantRepository::recupererEtudiants();
-        self::afficherVueEtudiant('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
     }
 
-    private static function afficherVueEtudiant(string $cheminVue, array $parametres = []): void
+    private static function afficherVue(string $cheminVue, array $parametres = []): void
     {
         extract($parametres); // Crée des variables à partir du tableau $parametres
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue

@@ -43,7 +43,7 @@ class ControleurUtilisateur
 
     public static function afficherFormulaireCreation(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'utilisateur", "cheminCorpsVue" => "utilisateur/formulaireCreationEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'utilisateur", "cheminCorpsVue" => "utilisateur/formulaireCreation.php"]);
     }
 
     public static function creerDepuisFormulaire(): void

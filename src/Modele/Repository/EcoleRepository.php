@@ -68,7 +68,7 @@ class EcoleRepository
         return self::construireEcoleDepuisTableauSQL($ecoleFormatTableau);
     }
 
-    public static function ajouterEcole(Ecole $ecole) : bool {
+    public static function ajouter(Ecole $ecole) : bool {
         $sql = "INSERT INTO ".self::$tableEcole." (login, nom, adresse) VALUES (:loginTag, :nomTag, :adresseTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
@@ -99,14 +99,14 @@ class EcoleRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJourEcole(Ecole $ecole) : void {
+    public static function mettreAJour(Ecole $ecole) : void {
         $sql = "UPDATE ".self::$tableEcole." SET nom = :nomTag, adresse = :adresseTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
             "loginTag" => $ecole->getLogin(),
             "nomTag" => $ecole->getNom(),
-            "adresseTag" => $ecole->getAddresse()
+            "adresseTag" => $ecole->getAdresse()
         );
 
         $pdoStatement->execute($values);
