@@ -4,13 +4,13 @@ namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
-class EtudiantRepository
+class UtilisateurRepository
 {
-    private static string $tableEtudiant = "EtudiantTest";
+    private static string $tableUtilisateur = "Utilisateur";
 
     public static function recupererUtilisateurs() : array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEtudiant);
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur);
 
         $tableauUtilisateurs = [];
         foreach ($pdoStatement as $utilisateurFormatTableau) {
@@ -20,7 +20,7 @@ class EtudiantRepository
     }
 
     public static function recupererUtilisateurParLogin(string $login) : ?Utilisateur {
-        $sql = "SELECT * from ".self::$tableEtudiant." WHERE login = :loginTag";
+        $sql = "SELECT * from ".self::$tableUtilisateur." WHERE login = :loginTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -41,7 +41,7 @@ class EtudiantRepository
     }
 
     public static function ajouter(Utilisateur $user) : bool {
-        $sql = "INSERT INTO ".self::$tableEtudiant." (login, nom, prenom) VALUES (:loginTag, :nomTag, :prenomTag);";
+        $sql = "INSERT INTO ".self::$tableUtilisateur." (login, nom, prenom) VALUES (:loginTag, :nomTag, :prenomTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
@@ -61,7 +61,7 @@ class EtudiantRepository
     }
 
     public static function supprimerParLogin(string $login) : bool {
-        $sql = "DELETE FROM ".self::$tableEtudiant." WHERE login = :loginTag;";
+        $sql = "DELETE FROM ".self::$tableUtilisateur." WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
@@ -72,7 +72,7 @@ class EtudiantRepository
     }
 
     public static function mettreAJour(Utilisateur $utilisateur) : void {
-        $sql = "UPDATE ".self::$tableEtudiant." SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag;";
+        $sql = "UPDATE ".self::$tableUtilisateur." SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
