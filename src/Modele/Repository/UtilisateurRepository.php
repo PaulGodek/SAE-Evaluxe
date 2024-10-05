@@ -41,13 +41,12 @@ class UtilisateurRepository
     }
 
     public static function ajouter(Utilisateur $user) : bool {
-        $sql = "INSERT INTO ".self::$tableUtilisateur." (login, nom, prenom) VALUES (:loginTag, :nomTag, :prenomTag);";
+        $sql = "INSERT INTO ".self::$tableUtilisateur." (login, type) VALUES (:loginTag, :typeTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
             "loginTag" => $user->getLogin(),
-            "nomTag" => $user->getNom(),
-            "prenomTag" => $user->getPrenom()
+            "typeTag" => $user->getType()
         );
 
         return $pdoStatement->execute($values);
@@ -56,8 +55,7 @@ class UtilisateurRepository
     public static function construireDepuisTableauSQL( array $utilisateurFormatTableau) : Utilisateur
     {
         return new Utilisateur($utilisateurFormatTableau['login'],
-            $utilisateurFormatTableau['nom'],
-            $utilisateurFormatTableau['prenom']);
+            $utilisateurFormatTableau['type']);
     }
 
     public static function supprimerParLogin(string $login) : bool {
@@ -72,13 +70,12 @@ class UtilisateurRepository
     }
 
     public static function mettreAJour(Utilisateur $utilisateur) : void {
-        $sql = "UPDATE ".self::$tableUtilisateur." SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag;";
+        $sql = "UPDATE ".self::$tableUtilisateur." SET type = :typeTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 
         $values = array(
             "loginTag" => $utilisateur->getLogin(),
-            "nomTag" => $utilisateur->getNom(),
-            "prenomTag" => $utilisateur->getPrenom()
+            "typeTage" => $utilisateur->getType()
         );
 
         $pdoStatement->execute($values);
