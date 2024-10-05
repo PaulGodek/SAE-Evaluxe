@@ -49,10 +49,13 @@ class ControleurUtilisateur
     public static function creerEcoleDepuisFormulaire(): void
     {
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"]);
-
         UtilisateurRepository::ajouter($utilisateur);
+
+        $ecole = new Ecole($_GET["login"], $_GET["nom"],$_GET["adresse"]);
+        EcoleRepository::ajouter($ecole);
         $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+        $ecoles=EcoleRepository::recupererEcoles();
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
 

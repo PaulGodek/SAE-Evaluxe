@@ -60,21 +60,21 @@ class ControleurEcole
     public static function supprimer() : void
     {
         $login = $_GET["login"];
-        EcoleRepository::supprimerParLogin($login);
+        EcoleRepository::supprimerEcoleParLogin($login);
         $ecoles = EcoleRepository::recupererEcoles();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
     }
 
     public static function afficherFormulaireMiseAJour() : void
     {
-        $ecole = EcoleRepository::recupererEcoleParNom($_GET['login']);
+        $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
     public static function mettreAJour() : void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
-        EtudiantRepository::mettreAJour($ecole);
+        EcoleRepository::mettreAJour($ecole);
         $ecoles = EcoleRepository::recupererEcoles();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
     }

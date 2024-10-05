@@ -14,7 +14,7 @@
 </form>
 <?php
 
-/** @var Ecole[] $ecoles */
+
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 
 echo "<h2>Liste des écoles</h2> 
@@ -22,6 +22,7 @@ echo "<h2>Liste des écoles</h2>
     <p><a href='controleurFrontal.php?action=afficherListeEcoleOrdonneParNom'>  Trier par nom  </a>&emsp;<a href='controleurFrontal.php?action=afficherListeEcoleOrdonneParAdresse'>  Trier par adresse  </a></p> 
     
 <ul>";
+/** @var Ecole[] $ecoles */
     foreach ($ecoles as $ecole) {
     $loginHTML = htmlspecialchars($ecole->getLogin());
     $loginURL = rawurlencode($ecole->getLogin());
