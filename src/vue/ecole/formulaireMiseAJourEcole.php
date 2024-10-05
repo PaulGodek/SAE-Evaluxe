@@ -15,7 +15,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
             <input class="InputAddOn-field" type="text"  name="nom" id="nom_id" value="<?= htmlspecialchars($ecole->getNom())?>" required>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="adresse_id">Prénom&#42;</label>
+            <label class="InputAddOn-item" for="adresse_id">Adresse&#42;</label>
             <input class="InputAddOn-field" type="text"  name="adresse" id="adresse_id" value="<?= htmlspecialchars($ecole->getAdresse())?>" required>
         </p>
         <p class="InputAddOn">
