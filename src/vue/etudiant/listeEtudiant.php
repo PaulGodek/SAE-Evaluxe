@@ -23,9 +23,9 @@ echo "<h2>Liste des étudiants</h2>
     
 <ul>";
     foreach ($etudiants as $etudiant) {
-    $loginHTML = htmlspecialchars($etudiant->getLogin());
+    $nomHTML = htmlspecialchars($etudiant->getNom());
     $loginURL = rawurlencode($etudiant->getLogin());
-    echo '<li><p> L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $loginHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJourEtudiant&nom=' . $loginURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimerEtudiant&nom=' . $loginURL . '">Supprimer ?</a>)</p></li>';
+    echo '<li><p> L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJourEtudiant&login=' . $loginURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimerEtudiant&login=' . $loginURL . '">Supprimer ?</a>)</p></li>';
     }
 
 
