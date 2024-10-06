@@ -99,7 +99,7 @@ class EcoleRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJour(Ecole $ecole) : void {
+    public static function mettreAJourEcole(Ecole $ecole) : void {
         $sql = "UPDATE ".self::$tableEcole." SET nom = :nomTag, adresse = :adresseTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 

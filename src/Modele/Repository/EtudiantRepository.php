@@ -101,7 +101,7 @@ class EtudiantRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJour(Etudiant $Etudiant) : void {
+    public static function mettreAJourEtudiant(Etudiant $Etudiant) : void {
         $sql = "UPDATE ".self::$tableEtudiant." SET nom = :nomTag, prenom= :prenomTag, moyenne = :moyenneTag WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
 

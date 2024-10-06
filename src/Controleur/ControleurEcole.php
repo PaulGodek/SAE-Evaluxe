@@ -74,7 +74,7 @@ class ControleurEcole
     public static function mettreAJour() : void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
-        EcoleRepository::mettreAJour($ecole);
+        EcoleRepository::mettreAJourEcole($ecole);
         $ecoles = EcoleRepository::recupererEcoles();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
     }

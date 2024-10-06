@@ -130,7 +130,16 @@ class ControleurUtilisateur
     public static function afficherFormulaireMiseAJour() : void
     {
         $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
-        self::afficherVue('vueGenerale.php', ["utilisateur" => $utilisateur, "titre" => "Formulaire de mise à jour d'utilisateur", "cheminCorpsVue" => "utilisateur/formulaireMiseAJour.php"]);
+        if($utilisateur->getType() == "etudiant"){
+            $etudiant=EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
+            self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+
+        }
+        else if($utilisateur->getType() == "ecole"){
+            $ecole=EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'ecole", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
+
+        }
     }
 
     public static function mettreAJour() : void
@@ -138,21 +147,13 @@ class ControleurUtilisateur
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"]);
 
 
-        if ($utilisateur->getType()=="etudiant") {
-            $etudiant = EtudiantRepository::recupererEtudiantParLogin($utilisateur->getLogin());
-            EtudiantRepository::mettreAJourEtudiant($etudiant);
-            self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "login" => $etudiant->getLogin(), "titre" => "Mise à jour  de l'étudiant", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
-
+        if ($_GET["type"]=="etudiant") {
+            ControleurEtudiant::mettreAJour();
         }
-        else if ($utilisateur->getType()=="ecole") {
-            $ecole=EcoleRepository::recupererEcoleParLogin($utilisateur->getLogin());
-            EcoleRepository::mettreAJourEcole($ecole);
-            self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "login" => $ecole->getLogin(), "titre" => "Mise à jour  de l'école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
-
+        else if ($_GET["type"]=="ecole") {
+            ControleurEcole::mettreAJour();
         }
 
-
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
     }
 
     private static function afficherVue(string $cheminVue, array $parametres = []): void

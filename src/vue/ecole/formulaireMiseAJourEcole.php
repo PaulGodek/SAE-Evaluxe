@@ -7,6 +7,10 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
     <fieldset>
         <legend>Formulaire de mise à jour </legend>
         <p class="InputAddOn">
+            <label class="InputAddOn-item" for="type_id">Type&#42;</label>
+            <input class="InputAddOn-field" type="text"  name="type" id="type_id" value="ecole" readonly>
+        </p>
+        <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
             <input class="InputAddOn-field" type="text"  name="login" id="login_id" value="<?= htmlspecialchars($ecole->getLogin())?>" readonly>
         </p>

@@ -74,7 +74,7 @@ class ControleurEtudiant
     public static function mettreAJour() : void
     {
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"],$_GET["prenom"], $_GET["moyenne"]);
-        EtudiantRepository::mettreAJour($etudiant);
+        EtudiantRepository::mettreAJourEtudiant($etudiant);
         $etudiants = EtudiantRepository::recupererEtudiants();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
     }
