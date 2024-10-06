@@ -1,0 +1,68 @@
+:root {
+    --rougeUM: #FF5660;
+    --bleuUM: #4BC2BC;
+
+    --background: #F0F0F0;
+    --white: #FFFFFF;
+    --lightGrey: #e5e5e5;
+    --grey0: #BDC3C7;
+    --activeGrey: #F7F7F7;
+
+    --header: #EDEDED;
+    --footer: #ececec;
+
+    --grey1: #95A5A6;
+    --grey2: #7F8C8D;
+    --grey3: #707B7C;
+    --darkSlateGrey : #2F4F4F;
+
+    --textColor: #576c88;
+    --textColor2: #373737;
+    --textColor3: #1d1d1f;
+
+    --darkBlue0: #485572;
+    --darkBlue1: #34495E;
+
+    --darkBlue2: #2C3E50;
+    --darkPruple2: #502C50;
+    --darkBrown2: #503E2C;
+    --darkGreen2: #2C502C;
+
+    --logoColor: #021422;
+
+    --black: #000000;
+
+    --darkYellow: #F39C12;
+    --yellow: #F1C40F;
+    --pastelYellow: #F7E495;
+    --lightpastelYellow: #F9F3D1;
+
+    --darkOrange: #D35400;
+    --orange: #E67E22;
+    --pastelOrange: #F8C9A0;
+    --lightpastelOrange: #f3dbc2;
+
+    --darkGreen: #16A085;
+    --emerald: #2ECC71;
+    --green: #27AE60;
+    --pastelGreen: #89C6A0;
+    --lightpastelGreen: #D1E9D1;
+
+    --darkBlue: #2980B9;
+    --lightBlue: #3498DB;
+    --blue: #2980B9;
+    --pastelBlue: #85A9D6;
+    --lightpastelBlue: #D1DCE6;
+
+    --darkPurple: #8E44AD;
+    --purple: #9B59B6;
+    --wisteria: #8E44AD;
+    --pastelPurple: #B08AB6;
+    --lightpastelPurple: #D1C6D6;
+
+    --darkRed: #E74C3C;
+    --red: #E74C3C;
+    --pomegranate: #C0392B;
+    --pastelRed: #F19282;
+    --lightpastelRed: #F9D1D1;
+}

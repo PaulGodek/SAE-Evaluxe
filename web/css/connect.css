@@ -1,3 +1,4 @@
+/*--- START Container Styles ---*/
 .container {
     padding: 20px;
     min-width: 330px;
@@ -10,6 +11,9 @@
     margin-top: 50px;
 }
 
+/*--- END Container Styles ---*/
+
+/*--- START Form Styles ---*/
 form {
     text-align: left;
     margin-top: 20px;
@@ -23,6 +27,7 @@ label {
     color: var(--darkBlue1);
 }
 
+/*--- END Form Styles ---*/
 
 input[type="text"], 
 input[type="password"] {
