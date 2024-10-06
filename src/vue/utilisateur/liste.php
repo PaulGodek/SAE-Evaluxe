@@ -1,10 +1,26 @@
+<form method="get" action="controleurFrontal.php">
+    <input type="hidden" name="action" value="afficherResultatRecherche"/>
+    <fieldset>
+        <legend>Recherche :</legend>
+        <p class="InputAddOn">
+            <label class="InputAddOn-item" for="login">Login de l'utilisateur</label>
+            <input class="InputAddOn-field" type="text" name ="login" placeholder="Ex : nomp "  id="login" required>
+        </p>
+
+        <p class="InputAddOn">
+            <input class="InputAddOn-field" type="submit" value="Rechercher" />
+        </p>
+    </fieldset>
+</form>
+
+
 <?php
 /** @var Utilisateur[] $utilisateurs */
 
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
 echo "<h2>Liste des utilisateurs</h2><ul>
-<p><a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParLogin'>  Trier par login  </a>&emsp;<a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParType'>  Trier par type  </a></p> 
+<p><a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParLogin'>Trier par login  </a>&emsp;<a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParType'>Trier par type  </a></p> 
     
 <ul>";
 foreach ($utilisateurs as $utilisateur) {

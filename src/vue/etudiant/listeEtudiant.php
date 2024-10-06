@@ -1,7 +1,7 @@
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheEtudiant"/>
     <fieldset>
-        <legend>Mon formulaire :</legend>
+        <legend>Recherche :</legend>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="nom">Nom de l'étudiant</label>
             <input class="InputAddOn-field" type="text" name ="nom" placeholder="Ex : Dupont "  id="nom" required>

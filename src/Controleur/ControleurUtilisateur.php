@@ -71,7 +71,18 @@ class ControleurUtilisateur
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles,"cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
+    public static function afficherResultatRecherche(){
 
+        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+        if($utilisateur->getType() == "etudiant"){
+            $etudiant=EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
+            self::afficherVue("vueGenerale.php", ["etudiant" => $etudiant,"cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+        }
+        else if($utilisateur->getType() == "ecole"){
+            $ecole=EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            self::afficherVue("vueGenerale.php", ["ecole" => $ecole,"cheminCorpsVue" => "ecole/detailEcole.php"]);
+        }
+    }
 
 
 
