@@ -1,7 +1,7 @@
 .button {
     display: block;
     text-decoration: none;
-    background-color: var(--darkBlue2);
+    background-color: var(--darkSlateGrey);
     color: var(--white);
     width: 100%;
     padding: 15px;
@@ -30,9 +30,9 @@
 }
 
 .secondary {
-    border: 2px solid var(--darkBlue2);
+    border: 2px solid var(--darkSlateGrey);
     background-color: var(--activeGrey);
-    color: var(--darkBlue2);
+    color: var(--darkSlateGrey);
 }
 
 .secondary::before {
