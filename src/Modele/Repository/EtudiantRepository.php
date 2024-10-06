@@ -114,4 +114,31 @@ class EtudiantRepository
 
         $pdoStatement->execute($values);
     }
+
+    public static function recupererUtilisateurParNom($nom){
+        $sql = "SELECT * from ".self::$tableEtudiant."  WHERE nom = :nomTag";
+        // Préparation de la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "nomTag" => $nom,
+
+        );
+        // On donne les valeurs et on exécute la requête
+        $pdoStatement->execute($values);
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $etudiantFormatTableau) {
+            $tableauEtudiant[] = self::construireEtudiantDepuisTableauSQL($etudiantFormatTableau);
+
+        }
+
+        // On récupère les résultats comme précédemment
+        // Note: fetch() renvoie false si pas d'utilisateur correspondant
+
+
+
+
+        return $tableauEtudiant;
+    }
 }

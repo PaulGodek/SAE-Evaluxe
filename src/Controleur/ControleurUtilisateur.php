@@ -35,7 +35,9 @@ class ControleurUtilisateur
     public static function afficherDetail(): void
     {
         try {
+
             $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+
             if ($utilisateur == NULL) {
                 self::afficherErreur("L'utilisateur de login {$_GET['login']} n'existe pas");
             } else {
@@ -55,6 +57,21 @@ class ControleurUtilisateur
             self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
         }
     }
+
+
+    public static function afficherResultatRechercheEtudiant(){
+
+            $etudiants = EtudiantRepository::recupererUtilisateurParNom($_GET['nom']);
+            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants,"cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+
+
+    }
+
+
+
+
+
+
 
     public static function afficherFormulaireCreationEcole(): void
     {
