@@ -19,6 +19,33 @@ class UtilisateurRepository
         return $tableauUtilisateurs;
     }
 
+
+    public static function recupererUtilisateurOrdonneParLogin() : array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur." ORDER BY login");
+
+        $tableauUtilisateur = [];
+        foreach ($pdoStatement as $UtilisateurFormatTableau) {
+            $tableauUtilisateur[] = self::construireDepuisTableauSQL($UtilisateurFormatTableau);
+        }
+        return $tableauUtilisateur;
+    }
+
+    public static function recupererUtilisateurOrdonneParType() : array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur." ORDER BY type");
+
+        $tableauUtilisateur = [];
+        foreach ($pdoStatement as $UtilisateurFormatTableau) {
+            $tableauUtilisateur[] = self::construireDepuisTableauSQL($UtilisateurFormatTableau);
+        }
+        return $tableauUtilisateur;
+    }
+
+
+
+
+
     public static function recupererUtilisateurParLogin(string $login) : ?Utilisateur {
         $sql = "SELECT * from ".self::$tableUtilisateur." WHERE login = :loginTag";
         // Préparation de la requête

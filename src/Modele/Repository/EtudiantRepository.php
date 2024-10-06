@@ -35,7 +35,7 @@ class EtudiantRepository
 
     public static function recupererEtudiantsOrdonneParMoyenne() : array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEtudiant." ORDER BY moyenne");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableEtudiant." ORDER BY moyenne DESC");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {

@@ -3,7 +3,10 @@
 
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
-echo "<h2>Liste des utilisateurs</h2><ul>";
+echo "<h2>Liste des utilisateurs</h2><ul>
+<p><a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParLogin'>  Trier par login  </a>&emsp;<a href='controleurFrontal.php?action=afficherListeUtilisateurOrdonneParType'>  Trier par type  </a></p> 
+    
+<ul>";
 foreach ($utilisateurs as $utilisateur) {
     $loginHTML = htmlspecialchars($utilisateur->getLogin());
     $loginURL = rawurlencode($utilisateur->getLogin());

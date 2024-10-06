@@ -19,10 +19,10 @@ class ControleurEtudiant
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherListeEtudiantOrdonneParAdresse(): void
+    public static function afficherListeEtudiantOrdonneParMoyenne(): void
     {
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParMoyenne(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeetudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
