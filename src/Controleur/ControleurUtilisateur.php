@@ -61,13 +61,15 @@ class ControleurUtilisateur
 
     public static function afficherResultatRechercheEtudiant(){
 
-            $etudiants = EtudiantRepository::recupererUtilisateurParNom($_GET['nom']);
+            $etudiants = EtudiantRepository::recupererEtudiantParNom($_GET['nom']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants,"cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
-
-
     }
 
+    public static function afficherResultatRechercheEcole(){
 
+        $ecoles = EcoleRepository::recupererEcoleParNom($_GET['nom']);
+        self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles,"cheminCorpsVue" => "ecole/listeEcole.php"]);
+    }
 
 
 

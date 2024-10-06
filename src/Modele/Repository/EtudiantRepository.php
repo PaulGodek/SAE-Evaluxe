@@ -115,7 +115,7 @@ class EtudiantRepository
         $pdoStatement->execute($values);
     }
 
-    public static function recupererUtilisateurParNom($nom){
+    public static function recupererEtudiantParNom($nom){
         $sql = "SELECT * from ".self::$tableEtudiant."  WHERE nom = :nomTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);

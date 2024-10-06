@@ -111,4 +111,35 @@ class EcoleRepository
 
         $pdoStatement->execute($values);
     }
+
+
+    public static function recupererEcoleParNom($nom){
+        $sql = "SELECT * from ".self::$tableEcole."  WHERE nom = :nomTag";
+        // Préparation de la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "nomTag" => $nom,
+
+        );
+        // On donne les valeurs et on exécute la requête
+        $pdoStatement->execute($values);
+
+        $tableauEcole = [];
+        foreach ($pdoStatement as $ecoleFormatTableau) {
+            $tableauEcole[] = self::construireEcoleDepuisTableauSQL($ecoleFormatTableau);
+
+        }
+
+        // On récupère les résultats comme précédemment
+        // Note: fetch() renvoie false si pas d'utilisateur correspondant
+
+
+
+
+        return $tableauEcole;
+    }
+
+
+
 }
