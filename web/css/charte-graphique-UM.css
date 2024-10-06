@@ -63,4 +63,28 @@
     --pomegranate: #C0392B;
     --pastelRed: #F19282;
     --lightpastelRed: #F9D1D1;
+
+    --darkPink: #C71585;
+    --lightPink: #FFB6C1;
+    --pastelPink: #FADADD;
+
+    --darkTeal: #008080;
+    --lightTeal: #40E0D0;
+    --pastelTeal: #AFEEEE;
+
+    --darkBrown: #8B4513;
+    --lightBrown: #D2B48C;
+    --pastelBrown: #D8BFD8;
+
+    --darkCyan: #00CED1;
+    --lightCyan: #E0FFFF;
+    --pastelCyan: #B2DFE5;
+
+    --darkLime: #32CD32;
+    --lightLime: #98FB98;
+    --pastelLime: #DFF5D1;
+
+    --darkIndigo: #4B0082;
+    --lightIndigo: #9370DB;
+    --pastelIndigo: #D1C6E1;
 }
