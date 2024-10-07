@@ -10,7 +10,7 @@
 </head>
 <body>
 <header>
-    <img id="logoToggle" class="logo" src="/web/images/logo" alt="Logo">   <!-- need to design a logo -->
+    <img id="logoToggle" class="logo" src="/ressources/images/logo" alt="Logo">   <!-- need to design a logo -->
 
     <div id="burgerParent">
         <div class="burger">

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="css/connect.css">
     <div class="container">
         <form method="get">
-            <h2>Connexion ecole</h2>
+            <h2>Connexion étudiant</h2>
             <p>
                 <label for="username">Identifiant</label>
                 <input type="text" name="username" id="username" required placeholder="Identifiant">
