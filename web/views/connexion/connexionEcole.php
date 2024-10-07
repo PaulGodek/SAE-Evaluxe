@@ -8,7 +8,7 @@
             <input type="hidden" name="type" value="ecole">
             <p>
                 <label for="username">Identifiant</label>
-                <input type="text" name="username" id="username" required placeholder="Identifiant">
+                <input type="text" name="login" id="login" required placeholder="Identifiant">
             <p>
                 <label for="password">Mot de passe</label>
             <div class="password-input">
@@ -16,7 +16,7 @@
             </div>
             <p>
                 <input type="hidden" name="action" value="connecter">
-                <input type="hidden" name="controller" value="Connexion">
+                <input type="hidden" name="controleur" value="Connexion">
                 <button type="submit" value="Connexion" id="connectButton" class="button">
                     <span>Connexion</span>
                 </button>
