@@ -7,6 +7,7 @@ class Etudiant
     private string $nom;
     private string $prenom;
     private float  $moyenne;
+    private string $passwordHash;
 
     public function __construct(string $login, string $nom, string $prenom, float $moyenne)
     {
@@ -54,6 +55,12 @@ class Etudiant
     {
         $this->moyenne = $moyenne;
     }
+
+    public function getPasswordHash(): string
+    {
+        return $this->passwordHash;
+    }
+
 
 
 

@@ -5,7 +5,7 @@
     <div class="container">
         <form method="get">
             <h2>Connexion ecole</h2>
-            <input type="hidden" name="controleur" value="ecole">
+            <input type="hidden" name="type" value="ecole">
             <p>
                 <label for="username">Identifiant</label>
                 <input type="text" name="username" id="username" required placeholder="Identifiant">

@@ -31,19 +31,19 @@ class ControleurConnexion
         include __DIR__ . '/../../web/views/connexion/connexionEcole.php';
     }
 
-    public function connecter()
+    public static function connecter()
     {
-        $role = $_GET['controleur'] ?? 'utilisateur';
+        $role = $_GET['type'] ?? 'utilisateur';
 
-        $username = $_GET['username'];
+        $login = $_GET['login'];
         $password = $_GET['password'];
 
-        $user = UtilisateurRepository::recupererUtilisateurParLogin($username);
-        if ($user && password_verify($password, $user->getPasswordHash())) {
-            if ($user->getType() === $role) {
+        $user = UtilisateurRepository::recupererUtilisateurParLogin($login);
+        if ($user && $password == $user->getPasswordHash()) {
+            if ($user->getType() == $role) {
                 session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['role'] = $role;
+                $_SESSION['login'] = $login;
+                $_SESSION['type'] = $role;
 
                 if ($role == 'etudiant') {
                     ControleurEtudiant::afficherDetail();

@@ -172,5 +172,6 @@ class ControleurUtilisateur
         extract($parametres); // Crée des variables à partir du tableau $parametres
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
+
 }
 

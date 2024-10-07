@@ -6,6 +6,7 @@ class Ecole
     private string $login;
     private string $nom;
     private string $adresse;
+    private string $passwordHash;
 
     public function __construct(string $login, string $nom, string $adresse)
     {
@@ -42,5 +43,11 @@ class Ecole
     {
         $this->adresse = $adresse;
     }
+
+    public function getPasswordHash(): string
+    {
+        return $this->passwordHash;
+    }
+
 
 }
