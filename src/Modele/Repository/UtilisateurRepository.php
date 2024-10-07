@@ -65,16 +65,16 @@ class UtilisateurRepository
         return self::construireDepuisTableauSQL($utilisateurFormatTableau);
     }
 
-    public static function ajouter(Utilisateur $user, string $password): bool
+    public static function ajouter(Utilisateur $user): bool
     {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO " . self::$tableUtilisateur . " (login, type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag);";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "loginTag" => $user->getLogin(),
             "typeTag" => $user->getType(),
-            "password_hashTag" => $hashedPassword
+            "password_hashTag" => $user->getPasswordHash()
         );
 
         return $pdoStatement->execute($values);
