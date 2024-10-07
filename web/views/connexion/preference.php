@@ -4,7 +4,7 @@
     <div class="container">
         <h2 id="remplaceBaliseLegend">Choisissez votre compte</h2>
         <div class="HBox">
-            <a id="adminChoice" class="button" href="/sae3a-base/web/controleurFrontal.php?action=afficherAdministrateur&controleur=Connexion">Compte Adminitrateur</a>
+            <a id="adminChoice" class="button" href="/sae3a-base/web/controleurFrontal.php?action=afficherAdministrateur&controleur=Connexion">Compte Administrateur</a>
             <a id="etudiantChoice" class="button" href="/sae3a-base/web/controleurFrontal.php?action=afficherEtudiant&controleur=Connexion">Compte Etudiant</a>
             <a id="ecoleChoice" class="button" href="/sae3a-base/web/controleurFrontal.php?action=afficherEcole&controleur=Connexion">Compte Ecole</a>
         </div>
