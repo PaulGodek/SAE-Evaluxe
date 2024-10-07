@@ -1,10 +1,10 @@
-<?php include 'header.php'; ?>
+<?php include __DIR__ . '/../header.php'; ?>
 
 <main>
     <link rel="stylesheet" href="css/connect.css">
     <div class="container">
         <form method="get">
-            <h2>Connexion ecole</h2>
+            <h2>Connexion etudiant</h2>
             <p>
                 <label for="username">Identifiant</label>
                 <input type="text" name="username" id="username" required placeholder="Identifiant">
@@ -24,4 +24,4 @@
     </div>
 </main>
 
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

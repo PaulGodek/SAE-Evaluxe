@@ -1,4 +1,4 @@
-<?php include 'header.php'; ?>
+<?php include __DIR__ . '/../header.php'; ?>
 <main>
 
     <div class="container">
@@ -11,4 +11,4 @@
         <br>
         <p>En vous connectant ou en vous inscrivant, vous confirmez avoir lu et accepté les <a href="CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a> de ce site web.</p>
     </div>
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>

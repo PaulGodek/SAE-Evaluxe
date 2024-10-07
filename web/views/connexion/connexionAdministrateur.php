@@ -1,4 +1,4 @@
-<?php include 'header.php'; ?>
+<?php include __DIR__ . '/../header.php'; ?>
 
     <main>
         <link rel="stylesheet" href="css/connect.css">
@@ -24,4 +24,4 @@
         </div>
     </main>
 
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/../footer.php'; ?>
