@@ -20,6 +20,6 @@
 
     <nav class="navbar">
         <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher" class="nav-item">Accueil</a>
-        <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficher" class="nav-item">Connexion</a>
+        <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference" class="nav-item">Connexion</a>
     </nav>
 </header>
