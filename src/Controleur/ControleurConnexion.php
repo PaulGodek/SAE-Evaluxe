@@ -45,13 +45,22 @@ class ControleurConnexion
                 $_SESSION['login'] = $login;
                 $_SESSION['type'] = $role;
 
-                if ($role == 'etudiant') {
-                    ControleurEtudiant::afficherDetail();
-                } else {
-                    ControleurEtudiant::afficherListe();
+                switch ($role) {
+                    case 'etudiant':
+                        ControleurEtudiant::afficherDetail();
+                        break;
+                    case 'administrateur':
+                        ControleurUtilisateur::afficherListe();
+                        break;
+                    case 'ecole':
+                        ControleurEcole::afficherListe();
+                        break;
+                    default:
+                        self::afficherErreur("Rôle non supporté");
+                        break;
                 }
             } else {
-                self::afficherErreur("Role incorrect");
+                self::afficherErreur("Rôle incorrect");
             }
 
         } else {
