@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
     <main>
-        <link rel="stylesheet" href="css/connect.css">
+        <link rel="stylesheet" href="../ressources/css/connect.css">
         <div class="container">
             <form method="get">
                 <h2>Connexion administrateur</h2>
