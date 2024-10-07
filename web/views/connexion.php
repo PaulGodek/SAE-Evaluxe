@@ -14,7 +14,7 @@
                     <input type="password" name="password" id="password" required placeholder="mot de passe">
                 </div>
                 <p>
-                    <input type="hidden" name="action" value="connecterLDAP">
+                    <input type="hidden" name="action" value="connecter">
                     <input type="hidden" name="controller" value="Connexion">
                     <button type="submit" value="Connexion" id="connectButton" class="button">
                         <span>Connexion</span>

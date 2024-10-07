@@ -9,5 +9,9 @@ class ControleurConnexion {
     public static function afficherErreur($message) {
         echo "Erreur: " . $message;
     }
+
+    public function connecter() {
+        // TO DO
+    }
 }
 

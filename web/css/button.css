@@ -20,30 +20,11 @@
 }
 
 .button:hover {
-    color: var(--lightpastelBlue);
+    color: black;
     opacity: 0.69;
 }
 
 .button:active {
     color: var(--white);
     opacity: 0.8;
-}
-
-.secondary {
-    border: 2px solid var(--darkSlateGrey);
-    background-color: var(--activeGrey);
-    color: var(--darkSlateGrey);
-}
-
-.secondary::before {
-    content: '\f060';
-    font-family: FontAwesome;
-    font-weight: 900;
-    margin-right: 10px;
-}
-
-.secondary:hover {
-    color: var(--pastelBlue);
-    opacity: 0.69;
-    border: 2px solid var(--pastelBlue);
 }
