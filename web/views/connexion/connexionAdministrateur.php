@@ -5,6 +5,7 @@
         <div class="container">
             <form method="get">
                 <h2>Connexion administrateur</h2>
+                <input type="hidden" name="controleur" value="administrateur">
                 <p>
                     <label for="username">Identifiant</label>
                     <input type="text" name="username" id="username" required placeholder="Identifiant">
