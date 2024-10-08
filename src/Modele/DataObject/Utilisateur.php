@@ -19,8 +19,6 @@ class Utilisateur
     {
         return $this->login;
     }
-    public function setLogin(string $login) : void
-
     public function setLogin(string $login): void
     {
         $this->login = substr($login, 0, 64);
