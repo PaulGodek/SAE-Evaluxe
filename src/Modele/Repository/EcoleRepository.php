@@ -113,7 +113,8 @@ class EcoleRepository
     }
 
 
-    public static function recupererEcoleParNom($nom){
+    public static function recupererEcoleParNom($nom): array
+    {
         $sql = "SELECT * from ".self::$tableEcole."  WHERE nom = :nomTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);

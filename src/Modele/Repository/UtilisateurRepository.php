@@ -8,9 +8,9 @@ class UtilisateurRepository
 {
     private static string $tableUtilisateur = "Utilisateur";
 
-    public static function recupererUtilisateurs() : array
+    public static function recupererUtilisateurs(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur);
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableUtilisateur);
 
         $tableauUtilisateurs = [];
         foreach ($pdoStatement as $utilisateurFormatTableau) {
@@ -20,9 +20,9 @@ class UtilisateurRepository
     }
 
 
-    public static function recupererUtilisateurOrdonneParLogin() : array
+    public static function recupererUtilisateurOrdonneParLogin(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur." ORDER BY login");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableUtilisateur . " ORDER BY login");
 
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $UtilisateurFormatTableau) {
@@ -31,9 +31,9 @@ class UtilisateurRepository
         return $tableauUtilisateur;
     }
 
-    public static function recupererUtilisateurOrdonneParType() : array
+    public static function recupererUtilisateurOrdonneParType(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".self::$tableUtilisateur." ORDER BY type");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableUtilisateur . " ORDER BY type");
 
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $UtilisateurFormatTableau) {
@@ -43,11 +43,9 @@ class UtilisateurRepository
     }
 
 
-
-
-
-    public static function recupererUtilisateurParLogin(string $login) : ?Utilisateur {
-        $sql = "SELECT * from ".self::$tableUtilisateur." WHERE login = :loginTag";
+    public static function recupererUtilisateurParLogin(string $login): ?Utilisateur
+    {
+        $sql = "SELECT * from " . self::$tableUtilisateur . " WHERE login = :loginTag";
         // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -67,26 +65,30 @@ class UtilisateurRepository
         return self::construireDepuisTableauSQL($utilisateurFormatTableau);
     }
 
-    public static function ajouter(Utilisateur $user) : bool {
-        $sql = "INSERT INTO ".self::$tableUtilisateur." (login, type) VALUES (:loginTag, :typeTag);";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
+    public static function ajouter(Utilisateur $user): bool
+    {
+        //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO " . self::$tableUtilisateur . " (login, type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag);";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "loginTag" => $user->getLogin(),
-            "typeTag" => $user->getType()
+            "typeTag" => $user->getType(),
+            "password_hashTag" => $user->getPasswordHash()
         );
 
         return $pdoStatement->execute($values);
     }
 
-    public static function construireDepuisTableauSQL( array $utilisateurFormatTableau) : Utilisateur
+    public static function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
     {
         return new Utilisateur($utilisateurFormatTableau['login'],
-            $utilisateurFormatTableau['type']);
+            $utilisateurFormatTableau['type'], $utilisateurFormatTableau['password_hash']);
     }
 
-    public static function supprimerParLogin(string $login) : bool {
-        $sql = "DELETE FROM ".self::$tableUtilisateur." WHERE login = :loginTag;";
+    public static function supprimerParLogin(string $login): bool
+    {
+        $sql = "DELETE FROM " . self::$tableUtilisateur . " WHERE login = :loginTag;";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
@@ -96,9 +98,10 @@ class UtilisateurRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJour(Utilisateur $utilisateur) : void {
-        $sql = "UPDATE ".self::$tableUtilisateur." SET type = :typeTag WHERE login = :loginTag;";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()-> prepare($sql);
+    public static function mettreAJour(Utilisateur $utilisateur): void
+    {
+        $sql = "UPDATE " . self::$tableUtilisateur . " SET type = :typeTag WHERE login = :loginTag;";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "loginTag" => $utilisateur->getLogin(),
