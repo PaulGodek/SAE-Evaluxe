@@ -26,19 +26,18 @@ $nomDeClasseControleur = "App\GenerateurAvis\Controleur\Controleur" . ucfirst($c
 
 // On récupère l'action passée dans l'URL
 if (class_exists($nomDeClasseControleur)) {
-    $controllerInstance = new $nomDeClasseControleur();
 
     if (isset($_GET["action"])) {
         $action = $_GET['action'];
 
         if (in_array($action, get_class_methods($nomDeClasseControleur))) {
 
-            $controllerInstance->$action();
+            $nomDeClasseControleur::$action();
         } else {
-            $controllerInstance::afficherErreur(" L'action n'est pas possible" . $nomDeClasseControleur);
+            $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible" . $nomDeClasseControleur);
         }
     } else {
-        $controllerInstance::afficherListe();
+        $nomDeClasseControleur::afficherListe();
     }
 } else {
     ControleurUtilisateur::afficherErreur(" Ce controleur n'existe pas ");
