@@ -141,6 +141,22 @@ class EcoleRepository
         return $tableauEcole;
     }
 
+    public static function mettreAJourFutursEtudiants(Ecole $ecole): bool {
+        $sql = "UPDATE ".self::$tableEcole." 
+            SET futursEtudiants = :futursEtudiants 
+            WHERE login = :loginTag;";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $futursEtudiantsStr = json_encode($ecole->getFutursEtudiants());
+
+        $values = [
+            "loginTag" => $ecole->getLogin(),
+            "futursEtudiants" => $futursEtudiantsStr
+        ];
+
+        return $pdoStatement->execute($values);
+    }
 
 
 

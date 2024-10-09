@@ -124,6 +124,9 @@ class EtudiantRepository
         $pdoStatement->execute($values);
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function recupererEtudiantParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableEtudiant . "  WHERE nom = :nomTag";
@@ -150,6 +153,9 @@ class EtudiantRepository
         return $tableauEtudiant;
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function recupererEtudiantParCodeUnique(string $codeUnique): ?Etudiant
     {
 

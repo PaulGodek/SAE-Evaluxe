@@ -1,29 +1,3 @@
-<?php
-
-namespace App\GenerateurAvis\vue\ecole;
-
-use App\GenerateurAvis\Modele\Repository\EcoleRepository;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
-
-$loginEcole = $_SESSION['loginEcole'] ?? null;
-$ecole = EcoleRepository::recupererEcoleParLogin($loginEcole);
-$etudiants = EtudiantRepository::recupererEtudiants();
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_POST['codeUnique'])) {
-    $codeUnique = $_GET['codeUnique'];
-
-    $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique);
-
-    if ($etudiant) {
-        $ecole->addFuturEtudiant($codeUnique);
-        $message = "Étudiant avec code unique '$codeUnique' ajouté avec succès.";
-    } else {
-        $message = "Étudiant avec code unique '$codeUnique' n'existe pas.";
-    }
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -31,15 +5,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_POST['codeUnique'])) {
     <title>Gestion des Écoles</title>
 </head>
 <body>
-<h1>Gestion de l'École: <?php echo $ecole->getNom(); ?></h1>
+<?php
 
-<?php include 'formulaireTrouverEtudiantAvecCodeUnique.php'; ?>
+use App\GenerateurAvis\Modele\DataObject\Ecole;
+
+/** @var Ecole $ecole */
+?>
+<h1>Gestion de l'École: <?php echo htmlspecialchars($ecole->getNom()); ?></h1>
+
+<h2>Ajouter un Étudiant</h2>
+<form method="GET" action="controleurFrontal.php">
+    <input type="hidden" name="action" value="ajouterEtudiant"/>
+    <input type="hidden" name="controleur" value="ecole"/>
+    <input type="hidden" name="login" value="<?php echo htmlspecialchars($ecole->getLogin()); ?>"/>
+    <label for="codeUnique">Code Unique de l'Étudiant:</label>
+    <input type="text" id="codeUnique" name="codeUnique" required>
+    <button type="submit">Ajouter Étudiant</button>
+</form>
 
 <h2>Étudiants Associés</h2>
 <ul>
     <?php foreach ($ecole->getFutursEtudiants() as $code): ?>
-        <li><?php echo $code; ?></li>
+        <li><?php echo htmlspecialchars($code); ?></li>
     <?php endforeach; ?>
 </ul>
+
+<?php if (isset($message)) echo "<p>$message</p>"; ?>
 </body>
 </html>

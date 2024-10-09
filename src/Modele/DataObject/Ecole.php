@@ -1,6 +1,8 @@
 <?php
 
 namespace App\GenerateurAvis\Modele\DataObject;
+use App\GenerateurAvis\Modele\Repository\EcoleRepository;
+
 class Ecole
 {
 
@@ -58,4 +60,8 @@ class Ecole
         return $this->futursEtudiants;
     }
 
+    public function saveFutursEtudiants(): bool
+    {
+        return EcoleRepository::mettreAJourFutursEtudiants($this);
+    }
 }

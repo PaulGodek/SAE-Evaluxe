@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Modele\DataObject\Ecole;
@@ -7,9 +8,22 @@ use TypeError;
 
 class ControleurEcole
 {
-    public static function afficherEcole(): void{
-        include __DIR__ . '/../vue/ecole/pageEcole.php';
+    public static function afficherEcole(): void
+    {
+        $loginEcole = $_SESSION['loginEcole'] ?? null;
+
+        if ($loginEcole) {
+            $ecole = EcoleRepository::recupererEcoleParLogin($loginEcole);
+            if (!$ecole) {
+                self::afficherErreur("L'école n'existe pas.");
+                return;
+            }
+            include __DIR__ . '/../vue/ecole/pageEcole.php';
+        } else {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+        }
     }
+
     public static function afficherListe(): void
     {
         $ecoles = EcoleRepository::recupererEcoles(); //appel au modèle pour gérer la BD
@@ -55,12 +69,12 @@ class ControleurEcole
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
-    public static function afficherErreur(string $messageErreur = "") : void
+    public static function afficherErreur(string $messageErreur = ""): void
     {
         self::afficherVue('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "ecole/erreurEcole.php"]);
     }
 
-    public static function supprimer() : void
+    public static function supprimer(): void
     {
         $login = $_GET["login"];
         EcoleRepository::supprimerEcoleParLogin($login);
@@ -68,13 +82,13 @@ class ControleurEcole
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
     }
 
-    public static function afficherFormulaireMiseAJour() : void
+    public static function afficherFormulaireMiseAJour(): void
     {
         $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
-    public static function mettreAJour() : void
+    public static function mettreAJour(): void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
         EcoleRepository::mettreAJourEcole($ecole);
@@ -87,5 +101,33 @@ class ControleurEcole
         extract($parametres); // Crée des variables à partir du tableau $parametres
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
+
+    public static function ajouterEtudiant(): void
+    {
+        $login = $_GET['login'];
+        $codeUnique = $_GET['codeUnique'];
+
+        $ecole = EcoleRepository::recupererEcoleParLogin($login);
+
+        if ($ecole === null) {
+            self::afficherErreur("L'école avec le login {$login} n'existe pas.");
+            return;
+        }
+
+        $ecole->addFuturEtudiant($codeUnique);
+
+        if ($ecole->saveFutursEtudiants()) {
+
+            self::afficherVue('vueGenerale.php', [
+                "titre" => "Ajout d'un étudiant",
+                "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
+                "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
+                "codeUnique" => $codeUnique
+            ]);
+        } else {
+            self::afficherErreur("Erreur lors de l'ajout de l'étudiant.");
+        }
+    }
+
 
 }
