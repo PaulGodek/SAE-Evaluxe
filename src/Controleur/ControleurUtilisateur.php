@@ -59,19 +59,22 @@ class ControleurUtilisateur
     }
 
 
-    public static function afficherResultatRechercheEtudiant(){
+    public static function afficherResultatRechercheEtudiant(): void
+    {
 
             $etudiants = EtudiantRepository::recupererEtudiantParNom($_GET['nom']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants,"cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
-    public static function afficherResultatRechercheEcole(){
+    public static function afficherResultatRechercheEcole(): void
+    {
 
         $ecoles = EcoleRepository::recupererEcoleParNom($_GET['nom']);
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles,"cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
-    public static function afficherResultatRecherche(){
+    public static function afficherResultatRecherche(): void
+    {
 
         $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
         if($utilisateur->getType() == "etudiant"){
