@@ -6,9 +6,9 @@ use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 
 class ControleurConnexion
 {
-    public static function afficherAdministrateur()
+    public static function afficherConnexionAdministrateur()
     {
-        include __DIR__ . '/../../vue/siteweb/connexion/connexionAdministrateur.php';
+        include __DIR__ . '/../vue/siteweb/connexion/connexionAdministrateur.php';
     }
 
     public static function afficherPreference()
