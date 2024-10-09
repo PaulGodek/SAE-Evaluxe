@@ -54,7 +54,8 @@ class ControleurConnexion
                         ControleurUtilisateur::afficherListe();
                         break;
                     case 'ecole':
-                        ControleurEtudiant::afficherListe();
+                        $_SESSION['loginEcole'] = $login;
+                        ControleurEcole::afficherEcole();
                         break;
                     default:
                         self::afficherErreur("Rôle non supporté");

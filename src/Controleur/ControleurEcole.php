@@ -7,6 +7,9 @@ use TypeError;
 
 class ControleurEcole
 {
+    public static function afficherEcole(): void{
+        include __DIR__ . '/../vue/ecole/pageEcole.php';
+    }
     public static function afficherListe(): void
     {
         $ecoles = EcoleRepository::recupererEcoles(); //appel au modèle pour gérer la BD

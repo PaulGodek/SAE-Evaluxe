@@ -44,6 +44,9 @@ class EtudiantRepository
     }
 
 
+    /**
+     * @throws RandomException
+     */
     public static function recupererEtudiantParLogin(string $login): ?Etudiant
     {
         $sql = "SELECT * from " . self::$tableEtudiant . " WHERE login = :loginTag";
