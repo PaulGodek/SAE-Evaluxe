@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
@@ -46,18 +47,18 @@ class ControleurEtudiant
 
     public static function creerDepuisFormulaire(): void
     {
-        $etudiant = new Etudiant($_GET["login"], $_GET["nom"],$_GET["prenom"], $_GET["moyenne"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         EtudiantRepository::ajouter($etudiant);
         $etudiants = EtudiantRepository::recupererEtudiants();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte école", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
     }
 
-    public static function afficherErreur(string $messageErreur = "") : void
+    public static function afficherErreur(string $messageErreur = ""): void
     {
         self::afficherVue('vueGenerale.php', ["messageErreur" => $messageErreur, "titre" => "Erreur", "cheminCorpsVue" => "etudiant/erreurEtudiant.php"]);
     }
 
-    public static function supprimer() : void
+    public static function supprimer(): void
     {
         $login = $_GET["login"];
         EtudiantRepository::supprimerEtudiantParLogin($login);
@@ -65,15 +66,15 @@ class ControleurEtudiant
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
     }
 
-    public static function afficherFormulaireMiseAJour() : void
+    public static function afficherFormulaireMiseAJour(): void
     {
         $etudiant = EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
         self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
     }
 
-    public static function mettreAJour() : void
+    public static function mettreAJour(): void
     {
-        $etudiant = new Etudiant($_GET["login"], $_GET["nom"],$_GET["prenom"], $_GET["moyenne"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         EtudiantRepository::mettreAJourEtudiant($etudiant);
         $etudiants = EtudiantRepository::recupererEtudiants();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
@@ -83,6 +84,20 @@ class ControleurEtudiant
     {
         extract($parametres); // Crée des variables à partir du tableau $parametres
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
+    }
+
+    public static function afficherDetailEtudiantParCodeUnique(): void
+    {
+        try {
+            $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
+            if ($etudiant == NULL) {
+                self::afficherErreur("L'étudiant  {$_GET['codeUnique']} n'existe pas");
+            } else {
+                self::afficherVue('vueEcole.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+            }
+        } catch (TypeError $e) {
+            self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
+        }
     }
 
 }

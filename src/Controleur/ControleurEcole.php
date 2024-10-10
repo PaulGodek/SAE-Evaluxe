@@ -18,11 +18,16 @@ class ControleurEcole
                 self::afficherErreur("L'école n'existe pas.");
                 return;
             }
-            include __DIR__ . '/../vue/ecole/pageEcole.php';
+            self::afficherVue('vueEcole.php', [
+                "ecole" => $ecole,
+                "titre" => "Gestion de l'École: {$ecole->getNom()}",
+                "cheminCorpsVue" => "ecole/pageEcole.php"
+            ]);
         } else {
             self::afficherErreur("Veuillez vous connecter d'abord.");
         }
     }
+
 
     public static function afficherListe(): void
     {

@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestion des Écoles</title>
-</head>
-<body>
 <?php
 
 use App\GenerateurAvis\Modele\DataObject\Ecole;
@@ -26,10 +19,12 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 <h2>Étudiants Associés</h2>
 <ul>
     <?php foreach ($ecole->getFutursEtudiants() as $code): ?>
-        <li><?php echo htmlspecialchars($code); ?></li>
+        <li>
+            <a href='controleurFrontal.php?controleur=etudiant&action=afficherDetailEtudiantParCodeUnique&codeUnique=<?php echo urlencode($code); ?>'>
+                <?php echo htmlspecialchars($code); ?>
+            </a>
+        </li>
     <?php endforeach; ?>
 </ul>
 
 <?php if (isset($message)) echo "<p>$message</p>"; ?>
-</body>
-</html>
