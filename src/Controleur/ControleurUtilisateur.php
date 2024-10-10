@@ -72,6 +72,9 @@ class ControleurUtilisateur
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function afficherResultatRecherche(): void
     {
 

@@ -18,7 +18,7 @@ class ControleurEcole
                 self::afficherErreur("L'école n'existe pas.");
                 return;
             }
-            self::afficherVue('vueEcole.php', [
+            self::afficherVue('vueGeneraleEtudiantEtEcole.php', [
                 "ecole" => $ecole,
                 "titre" => "Gestion de l'École: {$ecole->getNom()}",
                 "cheminCorpsVue" => "ecole/pageEcole.php"

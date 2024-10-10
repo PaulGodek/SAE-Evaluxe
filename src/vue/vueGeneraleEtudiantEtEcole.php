@@ -9,7 +9,14 @@
 </head>
 <body>
 <header>
+    <nav>
+        <form action="controleurFrontal.php" method="get">
+            <input type="hidden" name="controleur" value="Connexion">
+            <input type="hidden" name="action" value="deconnecter">
+            <button type="submit">Déconnexion</button>
+        </form>
 
+    </nav>
 </header>
 <main>
     <?php

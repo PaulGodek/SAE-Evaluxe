@@ -69,6 +69,14 @@ class ControleurConnexion
             self::afficherErreur("Login ou mot de passe incorrect");
         }
     }
+    public function deconnecter() {
+        //session_start();
+        session_unset();
+        session_destroy();
+
+        header("Location: /sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher");
+        exit();
+    }
 
 
 }
