@@ -87,10 +87,13 @@ class EcoleRepository
             $ecoleFormatTableau['adresse']
         );
 
-        $futursEtudiants = json_decode($ecoleFormatTableau['futursEtudiants'], true);
-        if (is_array($futursEtudiants)) {
-            foreach ($futursEtudiants as $code) {
-                $ecole->addFuturEtudiant($code);
+        if (!empty($ecoleFormatTableau['futursEtudiants'])) {
+            $futursEtudiants = json_decode($ecoleFormatTableau['futursEtudiants'], true);
+
+            if (is_array($futursEtudiants)) {
+                foreach ($futursEtudiants as $code) {
+                    $ecole->addFuturEtudiant($code);
+                }
             }
         }
 
