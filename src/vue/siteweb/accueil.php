@@ -1,10 +1,12 @@
 <?php include 'header.php'; ?>
 
 <main>
-    <section>
-        <h2>Bienvenue sur ...</h2>
-        <p>Contenu de la section...</p>
-    </section>
+    <div class="container">
+        <div class="HBox">
+            <h1 class="remplaceBaliseLegend">Bienvenue sur Evaluxe !</h1>
+                <img src="logo">
+    </div>
+    </div>
 </main>
 
 <?php include 'footer.php'; ?>

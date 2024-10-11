@@ -33,7 +33,7 @@ class ControleurEtudiant
             if ($etudiant == NULL) {
                 self::afficherErreur("L'étudiant  {$_GET['login']} n'existe pas");
             } else {
-                self::afficherVue('vueGeneraleEtudiantEtEcole.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
@@ -93,7 +93,7 @@ class ControleurEtudiant
             if ($etudiant == NULL) {
                 self::afficherErreur("L'étudiant  {$_GET['codeUnique']} n'existe pas");
             } else {
-                self::afficherVue('vueEcole.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
