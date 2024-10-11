@@ -8,29 +8,28 @@ class ControleurConnexion
 {
     public static function afficherConnexionAdministrateur(): void
     {
-        include __DIR__ . '/../vue/siteweb/connexion/connexionAdministrateur.php';
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionAdministrateur.php', "titre" => "Connexion Administrateur"]);
     }
 
     public static function afficherPreference(): void
     {
-        include __DIR__ . '/../vue/siteweb/connexion/preference.php';
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/preference.php', "titre" => "Préférences"]);
     }
 
-    public static function afficherErreur($message): void
+    public static function afficherErreur(string $message): void
     {
-        echo "Erreur: " . $message;
+        self::afficherVue('vueGenerale.php', ["messageErreur" => $message, "titre" => "Erreur"]);
     }
 
     public static function afficherConnexionEtudiant(): void
     {
-        include __DIR__ . '/../vue/siteweb/connexion/connexionEtudiant.php';
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionEtudiant.php', "titre" => "Connexion Étudiant"]);
     }
 
     public static function afficherConnexionEcole(): void
     {
-        include __DIR__ . '/../vue/siteweb/connexion/connexionEcole.php';
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionEcole.php', "titre" => "Connexion École"]);
     }
-
 
     public static function connecter(): void
     {
@@ -64,13 +63,13 @@ class ControleurConnexion
             } else {
                 self::afficherErreur("Rôle incorrect");
             }
-
         } else {
             self::afficherErreur("Login ou mot de passe incorrect");
         }
     }
-    public function deconnecter() {
-        //session_start();
+
+    public static function deconnecter(): void
+    {
         session_unset();
         session_destroy();
 
@@ -78,6 +77,9 @@ class ControleurConnexion
         exit();
     }
 
-
+    private static function afficherVue(string $cheminVue, array $parametres = []): void
+    {
+        extract($parametres); // Crée des variables à partir du tableau $parametres
+        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
+    }
 }
-

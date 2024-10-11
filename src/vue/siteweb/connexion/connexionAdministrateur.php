@@ -1,4 +1,3 @@
-<?php include __DIR__ . '/../header.php'; ?>
 
     <main>
         <link rel="stylesheet" href="../ressources/css/connect.css">
@@ -25,4 +24,3 @@
         </div>
     </main>
 
-<?php include __DIR__ . '/../footer.php'; ?>
