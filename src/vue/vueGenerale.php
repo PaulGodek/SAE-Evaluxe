@@ -19,7 +19,7 @@
     </div>
 
     <nav class="navbar">
-        <?php if (!isset($_SESSION['type'])): ?>
+        <?php if (!isset($_SESSION['type'])) : ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher" class="nav-item">Accueil</a>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference" class="nav-item">Connexion</a>
         <?php else: ?>
