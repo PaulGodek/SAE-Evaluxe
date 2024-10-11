@@ -20,7 +20,7 @@ label {
     margin-bottom: 10px;
     margin-top: 10px;
     font-weight: bold;
-    color: var(--darkBlue2);
+    color: black;
 }
 
 input[type="text"], 
