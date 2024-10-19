@@ -1,6 +1,7 @@
 <?php
 
 use App\GenerateurAvis\Modele\DataObject\Ecole;
+use \App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 /** @var Ecole $ecole */
 ?>
@@ -19,9 +20,10 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 <h2>Étudiants Associés</h2>
 <ul>
     <?php foreach ($ecole->getFutursEtudiants() as $code): ?>
+        <?php $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($code); ?>
         <li>
             <a href='controleurFrontal.php?controleur=etudiant&action=afficherDetailEtudiantParCodeUnique&codeUnique=<?php echo urlencode($code); ?>'>
-                <?php echo htmlspecialchars($code); ?>
+                <?php echo htmlspecialchars($etudiant->getNom()) . " " . htmlspecialchars($etudiant->getPrenom()) ?>
             </a>
         </li>
     <?php endforeach; ?>
