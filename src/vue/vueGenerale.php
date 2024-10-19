@@ -20,24 +20,28 @@
 
     <nav class="navbar">
         <?php
+
         use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+
         if (!ConnexionUtilisateur::estConnecte()) : ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher" class="nav-item">Accueil</a>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference" class="nav-item">Connexion</a>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
+               class="nav-item">Accueil</a>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference"
+               class="nav-item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"class="nav-item">Utilisateurs</a>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant"class="nav-item">Étudiants</a>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=ecole"class="nav-item">Écoles</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="nav-item">Utilisateurs</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
             <?php endif; ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher" class="nav-item">Déconnexion</a>
-<!--            <nav>-->
-<!--                <form action="controleurFrontal.php" method="get">-->
-<!--                    <input type="hidden" name="controleur" value="Connexion">-->
-<!--                    <input type="hidden" name="action" value="deconnecter">-->
-<!--                    <button type="submit">Déconnexion</button>-->
-<!--                </form>-->
-<!--            </nav>-->
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
+            <!--            <nav>-->
+            <!--                <form action="controleurFrontal.php" method="get">-->
+            <!--                    <input type="hidden" name="controleur" value="Connexion">-->
+            <!--                    <input type="hidden" name="action" value="deconnecter">-->
+            <!--                    <button type="submit">Déconnexion</button>-->
+            <!--                </form>-->
+            <!--            </nav>-->
         <?php endif; ?>
     </nav>
 </header>
