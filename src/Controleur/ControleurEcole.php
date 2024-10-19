@@ -11,7 +11,7 @@ class ControleurEcole extends ControleurGenerique
 {
     public static function afficherEcole(): void
     {
-        $loginEcole = $_SESSION['loginEcole'] ?? null;
+        $loginEcole = ConnexionUtilisateur::getLoginUtilisateurConnecte();
 
         if (!ConnexionUtilisateur::estEcole($loginEcole)) {
             self::afficherErreur("Veuillez vous connecter d'abord.");
