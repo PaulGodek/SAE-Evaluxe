@@ -13,7 +13,7 @@ class ControleurEcole
         $loginEcole = $_SESSION['loginEcole'] ?? null;
 
         if ($loginEcole) {
-            $ecole = EcoleRepository::recupererEcoleParLogin($loginEcole);
+            $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
             if (!$ecole) {
                 self::afficherErreur("L'école n'existe pas.");
                 return;
@@ -31,7 +31,7 @@ class ControleurEcole
 
     public static function afficherListe(): void
     {
-        $ecoles = EcoleRepository::recupererEcoles(); //appel au modèle pour gérer la BD
+        $ecoles = (new EcoleRepository)->recuperer(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
@@ -50,7 +50,7 @@ class ControleurEcole
     public static function afficherDetail(): void
     {
         try {
-            $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             if ($ecole == NULL) {
                 self::afficherErreur("L'école  {$_GET['login']} n'existe pas");
             } else {
@@ -69,8 +69,8 @@ class ControleurEcole
     public static function creerDepuisFormulaire(): void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
-        EcoleRepository::ajouter($ecole);
-        $ecoles = EcoleRepository::recupererEcoles();
+        (new EcoleRepository)->ajouter($ecole);
+        $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
@@ -82,22 +82,22 @@ class ControleurEcole
     public static function supprimer(): void
     {
         $login = $_GET["login"];
-        EcoleRepository::supprimerEcoleParLogin($login);
-        $ecoles = EcoleRepository::recupererEcoles();
+        (new EcoleRepository)->supprimer($login);
+        $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
+        $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
     public static function mettreAJour(): void
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
-        EcoleRepository::mettreAJourEcole($ecole);
-        $ecoles = EcoleRepository::recupererEcoles();
+        (new EcoleRepository)->mettreAJour($ecole);
+        $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
     }
 
@@ -112,7 +112,7 @@ class ControleurEcole
         $login = $_GET['login'];
         $codeUnique = $_GET['codeUnique'];
 
-        $ecole = EcoleRepository::recupererEcoleParLogin($login);
+        $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
 
         if ($ecole === null) {
             self::afficherErreur("L'école avec le login {$login} n'existe pas.");

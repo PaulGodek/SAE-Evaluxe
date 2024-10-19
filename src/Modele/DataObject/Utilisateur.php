@@ -1,7 +1,7 @@
 <?php
 
 namespace App\GenerateurAvis\Modele\DataObject;
-class Utilisateur
+class Utilisateur extends AbstractDataObject
 {
 
     private string $login;

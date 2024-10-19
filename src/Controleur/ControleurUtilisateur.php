@@ -15,7 +15,7 @@ class ControleurUtilisateur
 {
     public static function afficherListe(): void
     {
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs(); //appel au modèle pour gérer la BD
+        $utilisateurs = (new UtilisateurRepository)->recuperer(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
     }
 
@@ -37,16 +37,16 @@ class ControleurUtilisateur
     {
         try {
 
-            $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+            $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
 
             if ($utilisateur == NULL) {
                 self::afficherErreur("L'utilisateur de login {$_GET['login']} n'existe pas");
             } else {
                 if ($utilisateur->getType() == "etudiant") {
-                    $etudiant = EtudiantRepository::recupererEtudiantParLogin($utilisateur->getLogin());
+                    $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de l'étudiant {$etudiant->getPrenom()} {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 } else if ($utilisateur->getType() == "ecole") {
-                    $ecole = EcoleRepository::recupererEcoleParLogin($utilisateur->getLogin());
+                    $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
                 } else {
                     self::afficherVue('vueGenerale.php', ['utilisateur' => $utilisateur, "cheminCorpsVue" => "utilisateur/detail.php"]);
@@ -58,6 +58,9 @@ class ControleurUtilisateur
     }
 
 
+    /**
+     * @throws RandomException
+     */
     public static function afficherResultatRechercheEtudiant(): void
     {
 
@@ -78,12 +81,12 @@ class ControleurUtilisateur
     public static function afficherResultatRecherche(): void
     {
 
-        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+        $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
         if ($utilisateur->getType() == "etudiant") {
-            $etudiant = EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
+            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["etudiant" => $etudiant, "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
         } else if ($utilisateur->getType() == "ecole") {
-            $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["ecole" => $ecole, "cheminCorpsVue" => "ecole/detailEcole.php"]);
         }
     }
@@ -98,12 +101,12 @@ class ControleurUtilisateur
     {
         $passqord_hash = '123';
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $passqord_hash);
-        UtilisateurRepository::ajouter($utilisateur);
+        (new UtilisateurRepository)->ajouter($utilisateur);
 
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
-        EcoleRepository::ajouter($ecole);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
-        $ecoles = EcoleRepository::recupererEcoles();
+        (new EcoleRepository)->ajouter($ecole);
+        $utilisateurs = (new UtilisateurRepository)->recuperer();
+        $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
@@ -121,11 +124,11 @@ class ControleurUtilisateur
         $passqord_hash = '123';
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $passqord_hash);
 
-        UtilisateurRepository::ajouter($utilisateur);
+        (new UtilisateurRepository)->ajouter($utilisateur);
 
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
-        EtudiantRepository::ajouter($etudiant);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        (new EtudiantRepository)->ajouter($etudiant);
+        $utilisateurs = (new UtilisateurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurCree.php"]);
     }
 
@@ -138,25 +141,28 @@ class ControleurUtilisateur
     public static function supprimer(): void
     {
         $login = $_GET["login"];
-        UtilisateurRepository::supprimerParLogin($login);
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+        (new UtilisateurRepository)->supprimer($login);
+        $utilisateurs = (new UtilisateurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($_GET['login']);
+        $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
         if ($utilisateur->getType() == "etudiant") {
-            $etudiant = EtudiantRepository::recupererEtudiantParLogin($_GET['login']);
+            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
 
         } else if ($utilisateur->getType() == "ecole") {
-            $ecole = EcoleRepository::recupererEcoleParLogin($_GET['login']);
+            $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'ecole", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
 
         }
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function mettreAJour(): void
     {
         $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $_GET["password_hash"]);

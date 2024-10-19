@@ -48,6 +48,6 @@ class ConnexionUtilisateur
         }
         $login = self::getLoginUtilisateurConnecte();
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        return $utilisateur !== null && $utilisateur->getEstAdmin();;
+        return $utilisateur !== null && ($utilisateur->getType()==='administrateur');
     }
 }

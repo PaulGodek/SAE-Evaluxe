@@ -2,23 +2,12 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
-class UtilisateurRepository
+class UtilisateurRepository extends AbstractRepository
 {
     private static string $tableUtilisateur = "Utilisateur";
-
-    public static function recupererUtilisateurs(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableUtilisateur);
-
-        $tableauUtilisateurs = [];
-        foreach ($pdoStatement as $utilisateurFormatTableau) {
-            $tableauUtilisateurs[] = self::construireDepuisTableauSQL($utilisateurFormatTableau);
-        }
-        return $tableauUtilisateurs;
-    }
-
 
     public static function recupererUtilisateurOrdonneParLogin(): array
     {
@@ -26,7 +15,7 @@ class UtilisateurRepository
 
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $UtilisateurFormatTableau) {
-            $tableauUtilisateur[] = self::construireDepuisTableauSQL($UtilisateurFormatTableau);
+            $tableauUtilisateur[] = (new UtilisateurRepository)->construireDepuisTableauSQL($UtilisateurFormatTableau);
         }
         return $tableauUtilisateur;
     }
@@ -37,79 +26,38 @@ class UtilisateurRepository
 
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $UtilisateurFormatTableau) {
-            $tableauUtilisateur[] = self::construireDepuisTableauSQL($UtilisateurFormatTableau);
+            $tableauUtilisateur[] = (new UtilisateurRepository)->construireDepuisTableauSQL($UtilisateurFormatTableau);
         }
         return $tableauUtilisateur;
     }
 
-
-    public static function recupererUtilisateurParLogin(string $login): ?Utilisateur
-    {
-        $sql = "SELECT * from " . self::$tableUtilisateur . " WHERE login = :loginTag";
-        // Préparation de la requête
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $login,
-            //nomdutag => valeur, ...
-        );
-        // On donne les valeurs et on exécute la requête
-        $pdoStatement->execute($values);
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-        $utilisateurFormatTableau = $pdoStatement->fetch();
-        if (!$utilisateurFormatTableau)
-            return null;
-
-        return self::construireDepuisTableauSQL($utilisateurFormatTableau);
-    }
-
-    public static function ajouter(Utilisateur $user): bool
-    {
-        //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO " . self::$tableUtilisateur . " (login, type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag);";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $user->getLogin(),
-            "typeTag" => $user->getType(),
-            "password_hashTag" => $user->getPasswordHash()
-        );
-
-        return $pdoStatement->execute($values);
-    }
-
-    public static function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
+    protected function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
     {
         return new Utilisateur($utilisateurFormatTableau['login'],
             $utilisateurFormatTableau['type'], $utilisateurFormatTableau['password_hash']);
     }
 
-    public static function supprimerParLogin(string $login): bool
+    protected function getNomTable(): string
     {
-        $sql = "DELETE FROM " . self::$tableUtilisateur . " WHERE login = :loginTag;";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $login
-        );
-
-        return $pdoStatement->execute($values);
+        return "Utilisateur";
     }
 
-    public static function mettreAJour(Utilisateur $utilisateur): void
+    protected function getNomClePrimaire(): string
     {
-        $sql = "UPDATE " . self::$tableUtilisateur . " SET type = :typeTag WHERE login = :loginTag;";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        return "login";
+    }
 
-        $values = array(
+    protected function getNomsColonnes(): array
+    {
+        return ["login", "type", "password_hash"];
+    }
+
+    protected function formatTableauSQL(AbstractDataObject $utilisateur): array
+    {
+        return array(
             "loginTag" => $utilisateur->getLogin(),
-            "typeTage" => $utilisateur->getType()
+            "typeTag" => $utilisateur->getType(),
+            "password_hashTag" => $utilisateur->getPasswordHash()
         );
-
-        $pdoStatement->execute($values);
     }
-
-
 }

@@ -6,7 +6,7 @@
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 
 $login = $_GET["login"] ?? "";
-$password = UtilisateurRepository::recupererUtilisateurParLogin($login)->getPasswordHash();
+$password = (new UtilisateurRepository)->recupererParClePrimaire($login)->getPasswordHash();
 
 echo "<h1>$titre</h1>";
 echo "<p>Le futur étudiant avec le code unique <strong>" . htmlspecialchars($codeUnique) . "</strong> a bien été ajouté à l'école.</p>";

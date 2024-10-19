@@ -2,31 +2,24 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use Random\RandomException;
 
-class EtudiantRepository
+class EtudiantRepository extends AbstractRepository
 {
     private static string $tableEtudiant = "EtudiantTest";
 
-    public static function recupererEtudiants(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant);
-
-        $tableauEtudiant = [];
-        foreach ($pdoStatement as $EtudiantFormatTableau) {
-            $tableauEtudiant[] = self::construireEtudiantDepuisTableauSQL($EtudiantFormatTableau);
-        }
-        return $tableauEtudiant;
-    }
-
+    /**
+     * @throws RandomException
+     */
     public static function recupererEtudiantsOrdonneParNom(): array
     {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY nom");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
-            $tableauEtudiant[] = self::construireEtudiantDepuisTableauSQL($EtudiantFormatTableau);
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
         }
         return $tableauEtudiant;
     }
@@ -38,90 +31,20 @@ class EtudiantRepository
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
-            $tableauEtudiant[] = self::construireEtudiantDepuisTableauSQL($EtudiantFormatTableau);
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
         }
         return $tableauEtudiant;
     }
 
-
     /**
      * @throws RandomException
      */
-    public static function recupererEtudiantParLogin(string $login): ?Etudiant
-    {
-        $sql = "SELECT * from " . self::$tableEtudiant . " WHERE login = :loginTag";
-        // Préparation de la requête
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $login,
-            //nomdutag => valeur, ...
-        );
-        // On donne les valeurs et on exécute la requête
-        $pdoStatement->execute($values);
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-        $EtudiantFormatTableau = $pdoStatement->fetch();
-        if (!$EtudiantFormatTableau)
-            return null;
-
-        return self::construireEtudiantDepuisTableauSQL($EtudiantFormatTableau);
-    }
-
-    public static function ajouter(Etudiant $Etudiant): bool
-    {
-        $sql = "INSERT INTO " . self::$tableEtudiant . " (login, nom,prenom, moyenne, codeUnique) VALUES (:loginTag, :nomTag, :prenomTag, :moyenneTag, :codeUniqueTag);";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $Etudiant->getLogin(),
-            "nomTag" => $Etudiant->getNom(),
-            "prenomTag" => $Etudiant->getPrenom(),
-            "moyenneTag" => $Etudiant->getMoyenne(),
-            "codeUniqueTag" => $Etudiant->getCodeUnique()
-        );
-
-        return $pdoStatement->execute($values);
-    }
-
-
-    /**
-     * @throws RandomException
-     */
-    public static function construireEtudiantDepuisTableauSQL(array $EtudiantFormatTableau): Etudiant
+    protected function construireDepuisTableauSQL(array $EtudiantFormatTableau): Etudiant
     {
         return new Etudiant($EtudiantFormatTableau['login'],
             $EtudiantFormatTableau['nom'],
             $EtudiantFormatTableau['prenom'],
             $EtudiantFormatTableau['moyenne']);
-    }
-
-    public static function supprimerEtudiantParLogin(string $login): bool
-    {
-        $sql = "DELETE FROM " . self::$tableEtudiant . " WHERE login = :loginTag;";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $login
-        );
-
-        return $pdoStatement->execute($values);
-    }
-
-    public static function mettreAJourEtudiant(Etudiant $Etudiant): void
-    {
-        $sql = "UPDATE " . self::$tableEtudiant . " SET nom = :nomTag, prenom= :prenomTag, moyenne = :moyenneTag WHERE login = :loginTag;";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $Etudiant->getLogin(),
-            "nomTag" => $Etudiant->getNom(),
-            "prenomTag" => $Etudiant->getPrenom(),
-            "moyenneTag" => $Etudiant->getMoyenne()
-        );
-
-        $pdoStatement->execute($values);
     }
 
     /**
@@ -142,7 +65,7 @@ class EtudiantRepository
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $etudiantFormatTableau) {
-            $tableauEtudiant[] = self::construireEtudiantDepuisTableauSQL($etudiantFormatTableau);
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
 
         }
 
@@ -173,7 +96,32 @@ class EtudiantRepository
             return null;
         }
 
-        return self::construireEtudiantDepuisTableauSQL($etudiantFormatTableau);
+        return (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
     }
 
+    protected function getNomTable(): string
+    {
+        return "EtudiantTest";
+    }
+
+    protected function getNomClePrimaire(): string
+    {
+        return "login";
+    }
+
+    protected function getNomsColonnes(): array
+    {
+        return ["login", "nom", "prenom", "moyenne", "codeUnique"];
+    }
+
+    protected function formatTableauSQL(AbstractDataObject $etudiant): array
+    {
+        return array(
+            "loginTag" => $etudiant->getLogin(),
+            "nomTag" => $etudiant->getNom(),
+            "prenomTag" => $etudiant->getPrenom(),
+            "moyenneTag" => $etudiant->getMoyenne(),
+            "codeUniqueTag" => $etudiant->getCodeUnique()
+        );
+    }
 }

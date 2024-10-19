@@ -3,7 +3,7 @@
 namespace App\GenerateurAvis\Modele\DataObject;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 
-class Ecole
+class Ecole extends AbstractDataObject
 {
 
     private string $login;

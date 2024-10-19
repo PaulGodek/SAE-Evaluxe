@@ -5,7 +5,7 @@ namespace App\GenerateurAvis\Modele\DataObject;
 use Random\RandomException;
 use function Sodium\add;
 
-class Etudiant
+class Etudiant extends AbstractDataObject
 {
 
     private string $login;

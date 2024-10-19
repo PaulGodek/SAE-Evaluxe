@@ -38,7 +38,7 @@ class ControleurConnexion
         $login = $_GET['login'];
         $password = $_GET['password'];
 
-        $user = UtilisateurRepository::recupererUtilisateurParLogin($login);
+        $user = (new UtilisateurRepository)->recupererParClePrimaire($login);
         if ($user && $password == $user->getPasswordHash()) {
             if ($user->getType() == $role) {
                 session_start();
