@@ -7,7 +7,7 @@ use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use Random\RandomException;
 use TypeError;
 
-class ControleurEtudiant
+class ControleurEtudiant extends ControleurGenerique
 {
     public static function afficherListe(): void
     {
@@ -88,12 +88,6 @@ class ControleurEtudiant
         (new EtudiantRepository)->mettreAJour($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
-    {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
     public static function afficherDetailEtudiantParCodeUnique(): void

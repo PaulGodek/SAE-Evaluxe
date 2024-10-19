@@ -11,7 +11,7 @@ use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Random\RandomException;
 use TypeError;
 
-class ControleurUtilisateur
+class ControleurUtilisateur extends ControleurGenerique
 {
     public static function afficherListe(): void
     {
@@ -165,21 +165,13 @@ class ControleurUtilisateur
      */
     public static function mettreAJour(): void
     {
-        $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $_GET["password_hash"]);
-
-
+        //$utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $_GET["password_hash"]);
         if ($_GET["type"] == "etudiant") {
             ControleurEtudiant::mettreAJour();
         } else if ($_GET["type"] == "ecole") {
             ControleurEcole::mettreAJour();
         }
 
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
-    {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
 }

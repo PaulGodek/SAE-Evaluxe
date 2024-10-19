@@ -19,11 +19,13 @@
     </div>
 
     <nav class="navbar">
-        <?php if (!isset($_SESSION['type'])) : ?>
+        <?php
+        use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+        if (!ConnexionUtilisateur::estConnecte()) : ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher" class="nav-item">Accueil</a>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference" class="nav-item">Connexion</a>
         <?php else: ?>
-            <?php if (isset($_SESSION['type']) && $_SESSION['type'] === 'administrateur'): ?>
+            <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"class="nav-item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant"class="nav-item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole"class="nav-item">Écoles</a>

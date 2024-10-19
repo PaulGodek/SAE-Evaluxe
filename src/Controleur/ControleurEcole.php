@@ -6,7 +6,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use TypeError;
 
-class ControleurEcole
+class ControleurEcole extends ControleurGenerique
 {
     public static function afficherEcole(): void
     {
@@ -99,12 +99,6 @@ class ControleurEcole
         (new EcoleRepository)->mettreAJour($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
-    {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
     public static function ajouterEtudiant(): void
