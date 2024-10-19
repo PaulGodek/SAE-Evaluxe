@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Controleur;
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use TypeError;
@@ -12,20 +13,17 @@ class ControleurEcole extends ControleurGenerique
     {
         $loginEcole = $_SESSION['loginEcole'] ?? null;
 
-        if ($loginEcole) {
-            $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
-            if (!$ecole) {
-                self::afficherErreur("L'école n'existe pas.");
-                return;
-            }
-            self::afficherVue('vueGenerale.php', [
-                "ecole" => $ecole,
-                "titre" => "Gestion de l'École: {$ecole->getNom()}",
-                "cheminCorpsVue" => "ecole/pageEcole.php"
-            ]);
-        } else {
+        if (!ConnexionUtilisateur::estEcole($loginEcole)) {
             self::afficherErreur("Veuillez vous connecter d'abord.");
+            return;
         }
+
+        $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
+        self::afficherVue('vueGenerale.php', [
+            "ecole" => $ecole,
+            "titre" => "Gestion de l'École: {$ecole->getNom()}",
+            "cheminCorpsVue" => "ecole/pageEcole.php"
+        ]);
     }
 
 

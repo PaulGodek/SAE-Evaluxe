@@ -2,6 +2,8 @@
 
 namespace App\GenerateurAvis\Controleur;
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
@@ -99,8 +101,15 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function creerEcoleDepuisFormulaire(): void
     {
-        $passqord_hash = '123';
-        $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $passqord_hash);
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            ControleurUtilisateur::afficherErreur("Mots de passe distincts");
+            return;
+        }
+
+        $utilisateur = self::construireDepuisFormulaire($_GET);
         (new UtilisateurRepository)->ajouter($utilisateur);
 
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
@@ -121,10 +130,16 @@ class ControleurUtilisateur extends ControleurGenerique
      */
     public static function creerEtudiantDepuisFormulaire(): void
     {
-        $passqord_hash = '123';
-        $utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $passqord_hash);
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
 
+        if ($mdp !== $mdp2) {
+            ControleurUtilisateur::afficherErreur("Mots de passe distincts");
+            return;
+        }
+        $utilisateur = self::construireDepuisFormulaire($_GET);
         (new UtilisateurRepository)->ajouter($utilisateur);
+
 
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         (new EtudiantRepository)->ajouter($etudiant);
@@ -172,6 +187,78 @@ class ControleurUtilisateur extends ControleurGenerique
             ControleurEcole::mettreAJour();
         }
 
+    }
+
+    public static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur
+    {
+        $mdpHache = MotDePasse::hacher($tableauDonneesFormulaire['mdp']);
+        $utilisateur = new Utilisateur(
+            $tableauDonneesFormulaire['login'],
+            $tableauDonneesFormulaire['type'],
+            $mdpHache
+        );
+        return $utilisateur;
+    }
+
+    public static function connecter()
+    {
+        $login = $_GET["login"];
+        $mdpL = $_GET["password"];
+
+        if (empty($login) || empty($mdpL)) {
+            ControleurUtilisateur::afficherErreur("Login et/ou mot de passe manquant");
+            return;
+        }
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+
+        if (empty($utilisateur)) {
+            ControleurUtilisateur::afficherErreur("Login incorrect");
+            return;
+        }
+
+        if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
+            ControleurUtilisateur::afficherErreur("Mot de passe incorrect");
+            return;
+        }
+        ConnexionUtilisateur::connecter($utilisateur->getLogin());
+        if ($utilisateur->getType() == "etudiant") {
+            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Etudiant connecté",
+                "etudiant" => $etudiant,
+                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+            ]);
+        } else if ($utilisateur->getType() == "ecole") {
+            $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Ecole connecté",
+                "ecole" => $ecole,
+                "cheminCorpsVue" => "ecole/ecoleConnecte.php"
+            ]);
+        } else {
+            $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Administrateur connecté",
+                "administrateur" => $administrateur,
+                "cheminCorpsVue" => "administrateur/administrateurConnecte.php"
+            ]);
+        }
+
+    }
+
+    public static function deconnecter(): void
+    {
+        ConnexionUtilisateur::deconnecter();
+        $utilisateurs = (new UtilisateurRepository())->recuperer();
+
+        ControleurUtilisateur::afficherVue('vueGenerale.php', [
+            "utilisateurs" => $utilisateurs,
+            "titre" => "Utilisateur déconnecté",
+            "cheminCorpsVue" => "utilisateur/utilisateurDeconnecte.php"
+        ]);
     }
 
 }

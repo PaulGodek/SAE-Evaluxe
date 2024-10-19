@@ -48,6 +48,16 @@ class ConnexionUtilisateur
         }
         $login = self::getLoginUtilisateurConnecte();
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        return $utilisateur !== null && ($utilisateur->getType()==='administrateur');
+        return $utilisateur !== null && ($utilisateur->getType() === 'administrateur');
+    }
+
+    public static function estEcole($login): bool
+    {
+        if (!self::estConnecte()) {
+            return false;
+        }
+        $login = self::getLoginUtilisateurConnecte();
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+        return $utilisateur !== null && ($utilisateur->getType() === 'ecole');
     }
 }

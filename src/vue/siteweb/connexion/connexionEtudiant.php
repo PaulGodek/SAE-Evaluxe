@@ -1,26 +1,24 @@
-
-
 <main>
     <link rel="stylesheet" href="../ressources/css/connect.css">
     <div class="container">
-        <form method="get">
+        <form method="get" action="controleurFrontal.php">
+            <input type="hidden" name="action" value="connecter">
+            <input type="hidden" name="controleur" value="utilisateur">
             <h2>Connexion étudiant</h2>
-            <p>
-                <label for="username">Identifiant</label>
-                <input type="text" name="login" id="username" required placeholder="Identifiant">
-            <p>
-                <label for="password">Mot de passe</label>
-            <div class="password-input">
-                <input type="password" name="password" id="password" required placeholder="mot de passe">
-            </div>
-            <p>
-                <input type="hidden" name="action" value="connecter">
-                <input type="hidden" name="controleur" value="Connexion">
-                <input type="hidden" name="type" value="etudiant">
-                <button type="submit" value="Connexion" id="connectButton" class="button">
-                    <span>Connexion</span>
-                </button>
-            </p>
+            <fieldset>
+                <p class="InputAddOn">
+                    <label class="InputAddOn-item" for="username">Identifiant&#42;</label>
+                    <input class="InputAddOn-field" type="text" name="login" id="username" placeholder="Identifiant"
+                           required>
+                <p class="InputAddOn">
+                    <label class="InputAddOn-item" for="password">Mot de passe &#42;</label>
+                    <input class="InputAddOn-field" type="password" name="password" id="password"
+                           placeholder="•••••••••" required>
+                <p class="InputAddOn">
+                    <input class="InputAddOn-field" type="submit" id="connectButton" value="Connexion"/>
+                </p>
+            </fieldset>
+
         </form>
     </div>
 </main>
