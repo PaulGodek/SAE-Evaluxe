@@ -14,7 +14,7 @@ use \App\GenerateurAvis\Modele\Repository\EtudiantRepository;
     <input type="hidden" name="login" value="<?php echo htmlspecialchars($ecole->getLogin()); ?>"/>
     <label for="codeUnique">Code Unique de l'Étudiant:</label>
     <input type="text" id="codeUnique" name="codeUnique" required>
-    <button type="submit">Ajouter Étudiant</button>
+    <button class = "button-submit" type="submit">Ajouter Étudiant</button>
 </form>
 
 <h2>Étudiants Associés</h2>

@@ -9,5 +9,5 @@
             <a id="ecoleChoice" class="button" href="/sae3a-base/web/controleurFrontal.php?action=afficherConnexionEcole&controleur=Connexion">Compte École</a>
         </div>
         <br>
-        <p>En vous connectant ou en vous inscrivant, vous confirmez avoir lu et accepté les <a href="CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a> de ce site web.</p>
+        <p>En vous connectant ou en vous inscrivant, vous confirmez avoir lu et accepté les <a href="../ressources/CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a> de ce site web.</p>
     </div>
