@@ -19,10 +19,9 @@ class ControleurEcole extends ControleurGenerique
         }
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
-        self::afficherVue('vueGenerale.php', [
+        self::afficherVue('ecole/pageEcole.php', [
             "ecole" => $ecole,
-            "titre" => "Gestion de l'École: {$ecole->getNom()}",
-            "cheminCorpsVue" => "ecole/pageEcole.php"
+            "titre" => "Gestion de l'École: {$ecole->getNom()}"
         ]);
     }
 

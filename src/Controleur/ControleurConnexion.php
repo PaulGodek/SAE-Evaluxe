@@ -31,52 +31,6 @@ class ControleurConnexion
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionEcole.php', "titre" => "Connexion École"]);
     }
 
-    public static function connecter(): void
-    {
-        $role = $_GET['type'] ?? 'utilisateur';
-
-        $login = $_GET['login'];
-        $password = $_GET['password'];
-
-        $user = (new UtilisateurRepository)->recupererParClePrimaire($login);
-        if ($user && $password == $user->getPasswordHash()) {
-            if ($user->getType() == $role) {
-
-                $_SESSION['login'] = $login;
-                $_SESSION['type'] = $role;
-
-                switch ($role) {
-                    case 'etudiant':
-                        ControleurEtudiant::afficherDetail();
-                        break;
-                    case 'administrateur':
-                        ControleurUtilisateur::afficherListe();
-                        break;
-                    case 'ecole':
-                        $_SESSION['loginEcole'] = $login;
-                        ControleurEcole::afficherEcole();
-                        break;
-                    default:
-                        self::afficherErreur("Rôle non supporté");
-                        break;
-                }
-            } else {
-                self::afficherErreur("Rôle incorrect");
-            }
-        } else {
-            self::afficherErreur("Login ou mot de passe incorrect");
-        }
-    }
-
-    public static function deconnecter(): void
-    {
-        session_unset();
-        session_destroy();
-
-        header("Location: /sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher");
-        exit();
-    }
-
     private static function afficherVue(string $cheminVue, array $parametres = []): void
     {
         extract($parametres); // Crée des variables à partir du tableau $parametres
