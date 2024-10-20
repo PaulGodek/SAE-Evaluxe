@@ -65,7 +65,7 @@
             </div>
         </div>
         <br>
-        <a href="/sae3a-base/web/CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a>
+        <a href="../ressources/CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a>
         <p>Copyright 2024 - Tous droits réservés</p>
     </div>
 </footer>
