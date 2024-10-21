@@ -1,7 +1,7 @@
 .button {
     display: block;
     text-decoration: none;
-    background-color: var(--darkBlue2);
+    background-color: var(--rougeUM);
     color: var(--white);
     width: 100%;
     padding: 15px;

@@ -6,11 +6,11 @@
     <title>Accueil</title>
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
-    <!-- <link rel="stylesheet" href="../ressources/css/button.css"> -->
+    <link rel="stylesheet" href="../ressources/css/button.css">
 </head>
 <body>
 <header>
-    <img id="logoToggle" class="logo" src="../ressources/images/logo.webp" alt="Logo"> <!-- need to design a logo -->
+    <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo"> <!-- need to design a logo -->
 
     <div id="burgerParent">
         <div class="burger">
@@ -59,12 +59,9 @@
             <div class="VBox">
                 <p>Contactez-nous !</p>
             </div>
-            <div class="VBox" id="footer-team">
-                <p>Notre équipe</p>
-                <a class="link" href="https://www.linkedin.com/in/daniele-dainiute/">Daniele DAINIUTE</a>
-                <a class="link" href="https://www.linkedin.com/in/paul-godek-2597712aa/">Paul GODEK</a>
-                <a class="link" href="https://www.linkedin.com/in/nghonghoa/">Hong Hoa NGUYEN</a>
-                <a class="link" href="https://www.linkedin.com/in/kilyan-somb%C3%A9-b651842ab/">Kilyan SOMBÉ</a>
+            <div class="HBox" id="footer-team">
+                <img id="logoIUT"  src="../ressources/images/Logo_IUT.png" alt="Logo">
+                <img id="logoUM"  src="../ressources/images/logo_um.png" alt="Logo">
             </div>
             <div class="VBox">
                 <p>Site de SAE 2024/2025 Semestre 3</p>
