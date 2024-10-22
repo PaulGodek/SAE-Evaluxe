@@ -38,11 +38,11 @@ class ControleurEcole extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherListeEcoleOrdonneParAdresse(): void
+    /*public static function afficherListeEcoleOrdonneParVille(): void
     {
-        $ecoles = EcoleRepository::recupererEcolesOrdonneParAdresse(); //appel au modèle pour gérer la BD
+        $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
-    }
+    }*/
 
     public static function afficherDetail(): void
     {

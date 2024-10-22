@@ -21,16 +21,16 @@ class EcoleRepository extends AbstractRepository
     }
 
 
-    public static function recupererEcolesOrdonneParAdresse(): array
+    /*public static function recupererEcolesOrdonneParVille(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEcole . " ORDER BY adresse");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEcole . " ORDER BY ville");
 
         $tableauEcole = [];
         foreach ($pdoStatement as $EcoleFormatTableau) {
             $tableauEcole[] = (new EcoleRepository)->construireDepuisTableauSQL($EcoleFormatTableau);
         }
         return $tableauEcole;
-    }
+    }*/
 
     protected function construireDepuisTableauSQL(array $ecoleFormatTableau): Ecole
     {
