@@ -78,6 +78,22 @@ abstract class AbstractRepository
 
     {
         $objets = [];
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable());
+
+
+        foreach ($pdoStatement as $objetFormatTableau) {
+            $objet = $this->construireDepuisTableauSQL($objetFormatTableau);
+            $objets[] = $objet;
+        }
+        return $objets;
+
+    }
+
+
+    public function recupererOrdonneParType(): array
+
+    {
+        $objets = [];
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable()." ORDER BY type,login");
 
 
