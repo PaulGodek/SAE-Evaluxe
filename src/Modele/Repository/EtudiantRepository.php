@@ -25,16 +25,27 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-    /*public static function recupererEtudiantsOrdonneParMoyenne(): array
+    public static function recupererEtudiantsOrdonneParPrenom(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY moyenne DESC");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY prenom ");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
             $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
         }
         return $tableauEtudiant;
-    }*/
+    }
+
+    /*public static function recupererEtudiantsOrdonneParParcours(): array{
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY parcours ");
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $EtudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
+        }
+        return $tableauEtudiant;
+    }
+     */
 
     /**
      * @throws RandomException
