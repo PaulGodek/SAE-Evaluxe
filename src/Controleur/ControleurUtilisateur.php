@@ -28,11 +28,7 @@ class ControleurUtilisateur extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherListeUtilisateurOrdonneParType(): void
-    {
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurOrdonneParType(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
-    }
+
 
 
     public static function afficherDetail(): void
