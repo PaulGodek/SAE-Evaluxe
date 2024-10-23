@@ -27,16 +27,16 @@ echo "<h2>Liste des utilisateurs</h2><ul>
 $type='10';
 foreach ($utilisateurs as $utilisateur) {
 
-    if($utilisateur->getType() != "0"){
+    if($utilisateur->getType() != "administrateur"){
 
         $loginHTML = htmlspecialchars($utilisateur->getLogin());
         $loginURL = rawurlencode($utilisateur->getLogin());
         if($type!=$utilisateur->getType()){
-            if($utilisateur->getType()=="1"){
+            if($utilisateur->getType()=="etudiant"){
                 echo '<h3>Etudiants :</h3>';
-            }else if($utilisateur->getType()=="2"){
+            }else if($utilisateur->getType()=="universite"){
                 echo '<h3>Ecoles :</h3>';
-            }else if($utilisateur->getType()=="3"){
+            }else if($utilisateur->getType()=="professeur"){
                 echo '<h3>Enseignants :</h3>';
             }
 
