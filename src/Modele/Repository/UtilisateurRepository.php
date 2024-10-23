@@ -20,16 +20,7 @@ class UtilisateurRepository extends AbstractRepository
         return $tableauUtilisateur;
     }
 
-    public static function recupererUtilisateurOrdonneParType(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableUtilisateur . " ORDER BY type");
 
-        $tableauUtilisateur = [];
-        foreach ($pdoStatement as $UtilisateurFormatTableau) {
-            $tableauUtilisateur[] = (new UtilisateurRepository)->construireDepuisTableauSQL($UtilisateurFormatTableau);
-        }
-        return $tableauUtilisateur;
-    }
 
     protected function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
     {

@@ -78,7 +78,7 @@ abstract class AbstractRepository
 
     {
         $objets = [];
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable());
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable()." ORDER BY type,login");
 
 
         foreach ($pdoStatement as $objetFormatTableau) {
