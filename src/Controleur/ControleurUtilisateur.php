@@ -66,7 +66,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherResultatRechercheEtudiant(): void
     {
 
-        $etudiants = EtudiantRepository::recupererEtudiantParNom($_GET['nom']);
+        $etudiants = EtudiantRepository::rechercherEtudiant($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 

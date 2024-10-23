@@ -24,11 +24,17 @@ class ControleurEtudiant extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherListeEtudiantOrdonneParMoyenne(): void
+    public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParMoyenne(); //appel au modèle pour gérer la BD
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
+
+    /*public static function afficherListeEtudiantOrdonneParParcours(): void
+    {
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+    }*/
 
     public static function afficherDetail(): void
     {
@@ -103,5 +109,7 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
         }
     }
+
+
 
 }

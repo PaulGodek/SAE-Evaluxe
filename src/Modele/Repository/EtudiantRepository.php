@@ -25,9 +25,9 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-    public static function recupererEtudiantsOrdonneParMoyenne(): array
+    public static function recupererEtudiantsOrdonneParPrenom(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY moyenne DESC");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY prenom ");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -35,6 +35,17 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
     }
+
+    /*public static function recupererEtudiantsOrdonneParParcours(): array{
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY parcours ");
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $EtudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
+        }
+        return $tableauEtudiant;
+    }
+     */
 
     /**
      * @throws RandomException
@@ -123,5 +134,24 @@ class EtudiantRepository extends AbstractRepository
             "moyenneTag" => $etudiant->getMoyenne(),
             "codeUniqueTag" => $etudiant->getCodeUnique()
         );
+    }
+
+
+
+    public static function rechercherEtudiant(string $recherche){
+
+        $sql="SELECT * FROM " . self::$tableEtudiant .
+        " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%'
+            OR prenom LIKE '%".$recherche."' OR prenom LIKE '%".$recherche."%' OR prenom LIKE '".$recherche."%'
+            OR prenom='".$recherche."' OR nom='".$recherche."'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $EtudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
+        }
+        return $tableauEtudiant;
+
     }
 }
