@@ -25,7 +25,7 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-    public static function recupererEtudiantsOrdonneParMoyenne(): array
+    /*public static function recupererEtudiantsOrdonneParMoyenne(): array
     {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY moyenne DESC");
 
@@ -34,7 +34,7 @@ class EtudiantRepository extends AbstractRepository
             $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
         }
         return $tableauEtudiant;
-    }
+    }*/
 
     /**
      * @throws RandomException
@@ -123,5 +123,23 @@ class EtudiantRepository extends AbstractRepository
             "moyenneTag" => $etudiant->getMoyenne(),
             "codeUniqueTag" => $etudiant->getCodeUnique()
         );
+    }
+
+
+
+    public static function rechercherEtudiant(string $recherche){
+
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant .
+            " WHERE nom LIKE ''%".$recherche." OR nom LIKE ''%".$recherche."%'' OR nom LIKE ".$recherche."%''
+            OR prenom LIKE ''%".$recherche." OR prenom LIKE ''%".$recherche."%'' OR prenom LIKE ".$recherche."%''
+            OR prenom=".$recherche." OR nom=".$recherche);
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $EtudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
+        }
+        return $tableauEtudiant;
+
     }
 }
