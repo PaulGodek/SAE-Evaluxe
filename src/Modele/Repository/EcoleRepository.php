@@ -21,9 +21,9 @@ class EcoleRepository extends AbstractRepository
     }
 
 
-    public static function recupererEcolesOrdonneParAdresse(): array
+    public static function recupererEcolesOrdonneParVille(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEcole . " ORDER BY adresse");
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEcole . " ORDER BY ville");
 
         $tableauEcole = [];
         foreach ($pdoStatement as $EcoleFormatTableau) {
@@ -37,7 +37,8 @@ class EcoleRepository extends AbstractRepository
         $ecole = new Ecole(
             $ecoleFormatTableau['login'],
             $ecoleFormatTableau['nom'],
-            $ecoleFormatTableau['adresse']
+            $ecoleFormatTableau['adresse'],
+            $ecoleFormatTableau['ville']
         );
 
         if (!empty($ecoleFormatTableau['futursEtudiants'])) {
@@ -110,7 +111,7 @@ class EcoleRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "adresse", "futursEtudiants"];
+        return ["login", "nom", "adresse","ville", "futursEtudiants"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
@@ -119,6 +120,7 @@ class EcoleRepository extends AbstractRepository
             "loginTag" => $ecole->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
+            "villeTag"=>$ecole->getVille(),
             "futursEtudiantsTag"=> $ecole->getFutursEtudiants()
         );
     }
