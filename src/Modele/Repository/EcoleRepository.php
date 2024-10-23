@@ -111,7 +111,7 @@ class EcoleRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "adresse","cille", "futursEtudiants"];
+        return ["login", "nom", "adresse","ville", "futursEtudiants"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
