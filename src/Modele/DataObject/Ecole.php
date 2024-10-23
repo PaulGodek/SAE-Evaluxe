@@ -9,13 +9,15 @@ class Ecole extends AbstractDataObject
     private string $login;
     private string $nom;
     private string $adresse;
+    private string $ville;
     private array $futursEtudiants;
 
-    public function __construct(string $login, string $nom, string $adresse)
+    public function __construct(string $login, string $nom, string $adresse, string $ville)
     {
         $this->login = substr($login, 0, 64);
         $this->nom = $nom;
         $this->adresse = $adresse;
+        $this->ville = $ville;
         $this->futursEtudiants = [];
     }
 
@@ -48,6 +50,21 @@ class Ecole extends AbstractDataObject
     {
         $this->adresse = $adresse;
     }
+
+    public function getVille(): string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): void
+    {
+        $this->ville = $ville;
+    }
+
+
+
+
+
     public function addFuturEtudiant(string $code): void
     {
         if (!in_array($code, $this->futursEtudiants)) {
