@@ -129,11 +129,12 @@ class EtudiantRepository extends AbstractRepository
 
     public static function rechercherEtudiant(string $recherche){
 
-
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant .
-            " WHERE nom LIKE ''%".$recherche." OR nom LIKE ''%".$recherche."%'' OR nom LIKE ".$recherche."%''
-            OR prenom LIKE ''%".$recherche." OR prenom LIKE ''%".$recherche."%'' OR prenom LIKE ".$recherche."%''
-            OR prenom=".$recherche." OR nom=".$recherche);
+        $sql="SELECT * FROM " . self::$tableEtudiant .
+        " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%'
+            OR prenom LIKE '%".$recherche."' OR prenom LIKE '%".$recherche."%' OR prenom LIKE '".$recherche."%'
+            OR prenom='".$recherche."' OR nom='".$recherche."'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
