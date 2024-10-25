@@ -117,6 +117,14 @@ main {
     height: 5rem;
 }
 
+.logo {
+    transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+    animation: logo-react 1s infinite;
+    opacity: 0.5;
+}
 
 /*---START RESPONSIVE---*/
 @media (max-width: 41200px) {
@@ -214,7 +222,8 @@ footer {
     display: block;     
     margin-bottom: 5px; 
 }
-/*!*lấy từ TD*!*/
+
+/*!*= TD*!*/
 
 ul {
     list-style: none;

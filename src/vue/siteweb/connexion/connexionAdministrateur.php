@@ -4,7 +4,7 @@
         <form method="get" action="controleurFrontal.php">
             <input type="hidden" name="action" value="connecter">
             <input type="hidden" name="controleur" value="utilisateur">
-            <h2>Connexion étudiant</h2>
+            <h2>Connexion Administrateur</h2>
             <fieldset>
                 <p class="InputAddOn">
                     <label class="InputAddOn-item" for="username">Identifiant&#42;</label>

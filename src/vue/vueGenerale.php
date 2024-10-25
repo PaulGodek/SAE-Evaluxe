@@ -1,3 +1,8 @@
+<?php
+
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Lib\MessageFlash;
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,7 +15,9 @@
 </head>
 <body>
 <header>
-    <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo"> <!-- need to design a logo -->
+    <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher">
+        <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
+    </a>
 
     <div id="burgerParent">
         <div class="burger">
@@ -20,8 +27,6 @@
 
     <nav class="navbar">
         <?php
-
-        use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
         if (!ConnexionUtilisateur::estConnecte()) : ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
