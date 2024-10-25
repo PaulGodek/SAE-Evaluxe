@@ -96,8 +96,9 @@ h2 {
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 100%;
+    font-weight: bold;
 }
 
 #connectButton:hover {
-    background-color: var(--lightBlue);
+    opacity: 0.69;
 }
