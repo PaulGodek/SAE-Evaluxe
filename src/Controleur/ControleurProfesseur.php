@@ -17,7 +17,7 @@ class ControleurProfesseur extends ControleurGenerique
     /**
      * @throws RandomException
      */
-    public static function afficherListeprofesseurOrdonneParNom(): void
+    public static function afficherListeProfesseurOrdonneParNom(): void
     {
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Liste des professeurs", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);  //"redirige" vers la vue
@@ -26,17 +26,11 @@ class ControleurProfesseur extends ControleurGenerique
     /**
      * @throws RandomException
      */
-    public static function afficherListeprofesseurOrdonneParPrenom(): void
+    public static function afficherListeProfesseurOrdonneParPrenom(): void
     {
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParPrenom(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Liste des professeurs", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);  //"redirige" vers la vue
     }
-
-    /*public static function afficherListeprofesseurOrdonneParParcours(): void
-    {
-        $professeurs = professeurRepository::recupererprofesseursOrdonneParPrenom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Liste des professeurs", "cheminCorpsVue" => "professeur/listeprofesseur.php"]);  //"redirige" vers la vue
-    }*/
 
     public static function afficherDetail(): void
     {

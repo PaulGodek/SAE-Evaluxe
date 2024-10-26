@@ -9,6 +9,7 @@ use Random\RandomException;
 class ProfesseurRepository extends AbstractRepository
 {
     private static string $tableProfesseur = "ProfTest";
+
     protected function getNomTable(): string
     {
         return "ProfTest";
@@ -46,49 +47,43 @@ class ProfesseurRepository extends AbstractRepository
     public static function rechercherProfesseur(string $recherche): array
     {
 
-        $sql="SELECT * FROM " . self::$tableProfesseur .
-            " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%'
-            OR prenom LIKE '%".$recherche."' OR prenom LIKE '%".$recherche."%' OR prenom LIKE '".$recherche."%'
-            OR prenom='".$recherche."' OR nom='".$recherche."'";
+        $sql = "SELECT * FROM " . self::$tableProfesseur .
+            " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
+            OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
+            OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
         echo $sql;
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauProfesseurs = [];
         foreach ($pdoStatement as $ProfesseurFormatTableau) {
-            $tableauProfesseurs[] = (new EtudiantRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
         }
         return $tableauProfesseurs;
 
     }
 
-    /**
-     * @throws RandomException
-     */
     public static function recupererProfesseursOrdonneParNom(): array
     {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY nom");
 
         $tableauProfesseurs = [];
         foreach ($pdoStatement as $ProfesseurFormatTableau) {
-            $tableauProfesseurs[] = (new EtudiantRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
         }
         return $tableauProfesseurs;
     }
 
-
-    /**
-     * @throws RandomException
-     */
     public static function recupererProfesseursOrdonneParPrenom(): array
     {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY prenom ");
 
         $tableauProfesseurs = [];
         foreach ($pdoStatement as $ProfesseurFormatTableau) {
-            $tableauProfesseurs[] = (new EtudiantRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
         }
         return $tableauProfesseurs;
     }
+
     public static function recupererProfesseurParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableProfesseur . "  WHERE nom = :nomTag";
@@ -104,7 +99,7 @@ class ProfesseurRepository extends AbstractRepository
 
         $tableauProfesseur = [];
         foreach ($pdoStatement as $professeurFormatTableau) {
-            $tableauProfesseur[] = (new EcoleRepository)->construireDepuisTableauSQL($professeurFormatTableau);
+            $tableauProfesseur[] = (new ProfesseurRepository)->construireDepuisTableauSQL($professeurFormatTableau);
 
         }
 
