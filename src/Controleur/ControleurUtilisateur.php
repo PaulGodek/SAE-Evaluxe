@@ -6,9 +6,11 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Random\RandomException;
 use TypeError;
@@ -50,6 +52,9 @@ class ControleurUtilisateur extends ControleurGenerique
                 } else if ($utilisateur->getType() == "ecole") {
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
+                } else if ($utilisateur->getType() == "professeur") {
+                    $professeur = (new ProfesseurRepository)->recupererParClePrimaire($utilisateur->getLogin());
+                    self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Détail du professeur {$professeur->getNom()} ", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
                 } else {
                     self::afficherVue('vueGenerale.php', ['utilisateur' => $utilisateur, "cheminCorpsVue" => "utilisateur/detail.php"]);
                 }
@@ -59,10 +64,6 @@ class ControleurUtilisateur extends ControleurGenerique
         }
     }
 
-
-    /**
-     * @throws RandomException
-     */
     public static function afficherResultatRechercheEtudiant(): void
     {
 
@@ -77,12 +78,18 @@ class ControleurUtilisateur extends ControleurGenerique
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
+    public static function afficherResultatRechercheProfesseur(): void
+    {
+
+        $professeurs = ProfesseurRepository::recupererProfesseurParNom($_GET['nom']);
+        self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+    }
+
     /**
      * @throws RandomException
      */
     public static function afficherResultatRecherche(): void
     {
-
         $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
         if ($utilisateur->getType() == "etudiant") {
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
@@ -90,9 +97,11 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "ecole") {
             $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["ecole" => $ecole, "cheminCorpsVue" => "ecole/detailEcole.php"]);
+        } else if ($utilisateur->getType() == "professeur") {
+            $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
+            self::afficherVue("vueGenerale.php", ["professeur" => $professeur, "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
         }
     }
-
 
     public static function afficherFormulaireCreationEcole(): void
     {
@@ -112,9 +121,8 @@ class ControleurUtilisateur extends ControleurGenerique
         $utilisateur = self::construireDepuisFormulaire($_GET);
         (new UtilisateurRepository)->ajouter($utilisateur);
 
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"]);
+        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"]);
         (new EcoleRepository)->ajouter($ecole);
-        $utilisateurs = (new UtilisateurRepository)->recuperer();
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
@@ -143,10 +151,33 @@ class ControleurUtilisateur extends ControleurGenerique
 
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         (new EtudiantRepository)->ajouter($etudiant);
-        $utilisateurs = (new UtilisateurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Création d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurCree.php"]);
+        $etudiants = (new EtudiantRepository())->recuperer();
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création d'étudiant", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
     }
 
+    public static function afficherFormulaireCreationProfesseur(): void
+    {
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création du professeur", "cheminCorpsVue" => "professeur/formulaireCreationProfesseur.php"]);
+    }
+
+    public static function creerProfesseurDepuisFormulaire(): void
+    {
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            ControleurUtilisateur::afficherErreur("Mots de passe distincts");
+            return;
+        }
+        $utilisateur = self::construireDepuisFormulaire($_GET);
+        (new UtilisateurRepository)->ajouter($utilisateur);
+
+
+        $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
+        (new ProfesseurRepository)->ajouter($professeur);
+        $professeurs = (new ProfesseurRepository)->recuperer();
+        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
+    }
 
     public static function afficherErreur(string $messageErreur = ""): void
     {
@@ -171,6 +202,9 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "ecole") {
             $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'ecole", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
+        } else if ($utilisateur->getType() == "professeur") {
+            $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
+            self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Formulaire de mise à jour du professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
 
         }
     }
@@ -185,6 +219,8 @@ class ControleurUtilisateur extends ControleurGenerique
             ControleurEtudiant::mettreAJour();
         } else if ($_GET["type"] == "ecole") {
             ControleurEcole::mettreAJour();
+        } else if ($_GET["type"] == "professeur") {
+            ControleurProfesseur::mettreAJour();
         }
 
     }
@@ -200,7 +236,7 @@ class ControleurUtilisateur extends ControleurGenerique
         return $utilisateur;
     }
 
-    public static function connecter()
+    public static function connecter(): void
     {
         $login = $_GET["login"];
         $mdpL = $_GET["password"];
@@ -237,6 +273,14 @@ class ControleurUtilisateur extends ControleurGenerique
                 "ecole" => $ecole,
                 "cheminCorpsVue" => "ecole/ecoleConnecte.php"
             ]);
+        } else if ($utilisateur->getType() == "professeur") {
+            $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Professeur connecté",
+                "professeur" => $professeur,
+                "cheminCorpsVue" => "professeur/professeurConnecte.php"
+            ]);
         } else {
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -246,7 +290,9 @@ class ControleurUtilisateur extends ControleurGenerique
                 "cheminCorpsVue" => "administrateur/administrateurConnecte.php"
             ]);
         }
+
     }
+
 
     public static function deconnecter(): void
     {
