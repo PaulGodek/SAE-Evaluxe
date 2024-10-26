@@ -41,9 +41,6 @@ class ProfesseurRepository extends AbstractRepository
         );
     }
 
-    /**
-     * @throws RandomException
-     */
     public static function rechercherProfesseur(string $recherche): array
     {
 
@@ -61,29 +58,6 @@ class ProfesseurRepository extends AbstractRepository
         return $tableauProfesseurs;
 
     }
-
-    public static function recupererProfesseursOrdonneParNom(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY nom");
-
-        $tableauProfesseurs = [];
-        foreach ($pdoStatement as $ProfesseurFormatTableau) {
-            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
-        }
-        return $tableauProfesseurs;
-    }
-
-    public static function recupererProfesseursOrdonneParPrenom(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY prenom ");
-
-        $tableauProfesseurs = [];
-        foreach ($pdoStatement as $ProfesseurFormatTableau) {
-            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
-        }
-        return $tableauProfesseurs;
-    }
-
     public static function recupererProfesseurParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableProfesseur . "  WHERE nom = :nomTag";
@@ -108,5 +82,27 @@ class ProfesseurRepository extends AbstractRepository
 
 
         return $tableauProfesseur;
+    }
+
+    public static function recupererProfesseursOrdonneParNom(): array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY nom");
+
+        $tableauProfesseurs = [];
+        foreach ($pdoStatement as $ProfesseurFormatTableau) {
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+        }
+        return $tableauProfesseurs;
+    }
+
+    public static function recupererProfesseursOrdonneParPrenom(): array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableProfesseur . " ORDER BY prenom ");
+
+        $tableauProfesseurs = [];
+        foreach ($pdoStatement as $ProfesseurFormatTableau) {
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+        }
+        return $tableauProfesseurs;
     }
 }
