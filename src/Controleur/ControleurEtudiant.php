@@ -52,7 +52,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherFormulaireCreation(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
     }
 
     /**
@@ -63,7 +63,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         (new EtudiantRepository)->ajouter($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte école", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
     }
 
     public static function afficherErreur(string $messageErreur = ""): void
@@ -76,13 +76,13 @@ class ControleurEtudiant extends ControleurGenerique
         $login = $_GET["login"];
         (new EtudiantRepository)->supprimer($login);
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
     {
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
-        self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
     }
 
     /**
@@ -93,7 +93,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
         (new EtudiantRepository)->mettreAJour($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
     }
 
     public static function afficherDetailEtudiantParCodeUnique(): void
@@ -109,7 +109,4 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
         }
     }
-
-
-
 }

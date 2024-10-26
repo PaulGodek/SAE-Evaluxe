@@ -30,6 +30,10 @@ class ControleurConnexion
     {
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionEcole.php', "titre" => "Connexion École"]);
     }
+    public static function afficherConnexionProfesseur(): void
+    {
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionProfesseur.php', "titre" => "Connexion Professeur"]);
+    }
 
     private static function afficherVue(string $cheminVue, array $parametres = []): void
     {
