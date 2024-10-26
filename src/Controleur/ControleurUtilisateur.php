@@ -19,8 +19,8 @@ class ControleurUtilisateur extends ControleurGenerique
 {
     public static function afficherListe(): void
     {
-        $utilisateurs = (new UtilisateurRepository)->recuperer(); //appel au modèle pour gérer la BD
-        self::afficherVue('utilisateur/liste.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs"]);  //"redirige" vers la vue
+        $utilisateurs = (new UtilisateurRepository)->recupererOrdonneParType(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs","cheminCorpsVue"=>'utilisateur/liste.php']);  //"redirige" vers la vue
     }
 
 
@@ -30,11 +30,7 @@ class ControleurUtilisateur extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
     }
 
-    public static function afficherListeUtilisateurOrdonneParType(): void
-    {
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurOrdonneParType(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
-    }
+
 
 
     public static function afficherDetail(): void
@@ -49,7 +45,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de l'étudiant {$etudiant->getPrenom()} {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
-                } else if ($utilisateur->getType() == "ecole") {
+                } else if ($utilisateur->getType() == "universite") {
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
                 } else if ($utilisateur->getType() == "professeur") {
@@ -94,7 +90,7 @@ class ControleurUtilisateur extends ControleurGenerique
         if ($utilisateur->getType() == "etudiant") {
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["etudiant" => $etudiant, "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
-        } else if ($utilisateur->getType() == "ecole") {
+        } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["ecole" => $ecole, "cheminCorpsVue" => "ecole/detailEcole.php"]);
         } else if ($utilisateur->getType() == "professeur") {
@@ -199,7 +195,7 @@ class ControleurUtilisateur extends ControleurGenerique
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
 
-        } else if ($utilisateur->getType() == "ecole") {
+        } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'ecole", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
         } else if ($utilisateur->getType() == "professeur") {
@@ -217,7 +213,7 @@ class ControleurUtilisateur extends ControleurGenerique
         //$utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $_GET["password_hash"]);
         if ($_GET["type"] == "etudiant") {
             ControleurEtudiant::mettreAJour();
-        } else if ($_GET["type"] == "ecole") {
+        } else if ($_GET["type"] == "universite") {
             ControleurEcole::mettreAJour();
         } else if ($_GET["type"] == "professeur") {
             ControleurProfesseur::mettreAJour();
@@ -257,6 +253,8 @@ class ControleurUtilisateur extends ControleurGenerique
             return;
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
+
+
         if ($utilisateur->getType() == "etudiant") {
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -265,7 +263,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "etudiant" => $etudiant,
                 "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
             ]);
-        } else if ($utilisateur->getType() == "ecole") {
+        } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,

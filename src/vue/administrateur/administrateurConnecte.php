@@ -8,5 +8,5 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
 ConnexionUtilisateur::estConnecte();
 
-ControleurUtilisateur::afficherListe();
+"ControleurUtilisateur::afficherListe();"
 ?>
