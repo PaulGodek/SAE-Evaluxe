@@ -114,13 +114,7 @@ class ControleurUtilisateur extends ControleurGenerique
             return;
         }
 
-        $utilisateur = self::construireDepuisFormulaire($_GET);
-        (new UtilisateurRepository)->ajouter($utilisateur);
-
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"]);
-        (new EcoleRepository)->ajouter($ecole);
-        $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création d'ecole", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+       ControleurEcole::creerDepuisFormulaire();
     }
 
 
@@ -266,7 +260,6 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if($ecole->isEstValide()){
-                echo"Je suis la ";
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",

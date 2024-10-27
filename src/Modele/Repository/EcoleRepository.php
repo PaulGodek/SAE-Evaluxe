@@ -19,7 +19,20 @@ class EcoleRepository extends AbstractRepository
         }
         return $tableauEcole;
     }
+    public function recuperer(): array
 
+    {
+        $objets = [];
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable().' ORDER BY  valide,nom ');
+
+
+        foreach ($pdoStatement as $objetFormatTableau) {
+            $objet = $this->construireDepuisTableauSQL($objetFormatTableau);
+            $objets[] = $objet;
+        }
+        return $objets;
+
+    }
 
     public static function recupererEcolesOrdonneParVille(): array
     {
@@ -38,7 +51,9 @@ class EcoleRepository extends AbstractRepository
             $ecoleFormatTableau['login'],
             $ecoleFormatTableau['nom'],
             $ecoleFormatTableau['adresse'],
-            $ecoleFormatTableau['ville']
+            $ecoleFormatTableau['ville'],
+            $ecoleFormatTableau['valide'],
+
         );
 
         if (!empty($ecoleFormatTableau['futursEtudiants'])) {
@@ -50,6 +65,7 @@ class EcoleRepository extends AbstractRepository
                 }
             }
         }
+
 
         return $ecole;
     }
@@ -111,17 +127,41 @@ class EcoleRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "adresse","ville", "futursEtudiants"];
+        return ["login", "nom", "adresse","ville", "futursEtudiants","valide"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
     {
+
+        if($ecole->isEstValide()){
+            $valide=1;
+        }else{
+            $valide=0;
+        }
         return array(
             "loginTag" => $ecole->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
             "villeTag"=>$ecole->getVille(),
-            "futursEtudiantsTag"=> $ecole->getFutursEtudiants()
+            "futursEtudiantsTag"=> $ecole->getFutursEtudiants(),
+            "valideTag"=>$valide
+
         );
     }
+
+    public static function valider(Ecole $ecole): bool
+        {
+            $sql = "UPDATE " . self::$tableEcole . " 
+            SET valide = 1
+            WHERE login = :loginTag;";
+
+            $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+
+            $values = [
+                "loginTag" => $ecole->getLogin(),
+            ];
+
+            return $pdoStatement->execute($values);
+        }
 }

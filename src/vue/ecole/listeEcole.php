@@ -15,7 +15,10 @@
 <?php
 
 
+use App\GenerateurAvis\Controleur\ControleurUtilisateur;
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
+use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 
 echo "<h2>Liste des écoles</h2> 
         
@@ -23,10 +26,14 @@ echo "<h2>Liste des écoles</h2>
     
 <ul>";
 /** @var Ecole[] $ecoles */
-    foreach ($ecoles as $ecole) {
-    $nomHTML = htmlspecialchars($ecole->getNom());
-    $loginURL = rawurlencode($ecole->getLogin());
-    echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a></p></li>';
-    }
-
-
+    $utilisateur=(new UtilisateurRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+    $admin=$utilisateur->getType() == "administrateur";
+        foreach ($ecoles as $ecole) {
+            $nomHTML = htmlspecialchars($ecole->getNom());
+            $loginURL = rawurlencode($ecole->getLogin());
+            if (!$admin|| ($admin&&$ecole->isEstValide())) {
+                echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a> </p></li>';
+            } else {
+                echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a> &ensp; <a href="controleurFrontal.php?controleur=ecole&action=valider&login=' . $loginURL . '">Valider</a> </p></li>';
+            }
+        }

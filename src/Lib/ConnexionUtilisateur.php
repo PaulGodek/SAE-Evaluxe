@@ -58,6 +58,6 @@ class ConnexionUtilisateur
         }
         $login = self::getLoginUtilisateurConnecte();
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        return $utilisateur !== null && ($utilisateur->getType() === 'ecole');
+        return $utilisateur !== null && ($utilisateur->getType() === 'universite');
     }
 }

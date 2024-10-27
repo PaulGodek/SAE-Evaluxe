@@ -12,15 +12,16 @@ class Ecole extends AbstractDataObject
     private string $ville;
     private array $futursEtudiants;
 
-    private bool $estValide=false;
+    private bool $estValide;
 
-    public function __construct(string $login, string $nom, string $adresse, string $ville)
+    public function __construct(string $login, string $nom, string $adresse, string $ville,string $estValide)
     {
         $this->login = substr($login, 0, 64);
         $this->nom = $nom;
         $this->adresse = $adresse;
         $this->ville = $ville;
         $this->futursEtudiants = [];
+        $this->estValide = $estValide;
 
     }
 
