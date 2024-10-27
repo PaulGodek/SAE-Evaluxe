@@ -1,3 +1,3 @@
 <?php
-echo "<p>Le compte école a bien été créé !</p>";
-require __DIR__ . "/listeEcole.php";
+echo "<p>La demande de compte a été enregistré</p>
+        <p>Elle est en attente de validation par l'administrateur</p>";

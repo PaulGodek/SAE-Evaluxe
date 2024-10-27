@@ -12,6 +12,8 @@ class Ecole extends AbstractDataObject
     private string $ville;
     private array $futursEtudiants;
 
+    private bool $estValide=false;
+
     public function __construct(string $login, string $nom, string $adresse, string $ville)
     {
         $this->login = substr($login, 0, 64);
@@ -19,6 +21,7 @@ class Ecole extends AbstractDataObject
         $this->adresse = $adresse;
         $this->ville = $ville;
         $this->futursEtudiants = [];
+
     }
 
     public function getNom(): string
@@ -59,6 +62,16 @@ class Ecole extends AbstractDataObject
     public function setVille(string $ville): void
     {
         $this->ville = $ville;
+    }
+
+    public function isEstValide(): bool
+    {
+        return $this->estValide;
+    }
+
+    public function setEstValide(bool $estValide): void
+    {
+        $this->estValide = $estValide;
     }
 
 

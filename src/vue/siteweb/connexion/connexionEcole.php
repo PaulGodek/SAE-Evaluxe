@@ -17,6 +17,8 @@
                 <input class="InputAddOn-field" type="submit" id="connectButton" value="Connexion"/>
             </p>
         </fieldset>
+        <p> Votre école n'a pas de compte ?</p>
+        <p><a href='controleurFrontal.php?controleur=ecole&action=afficherFormulaireCreation'> Créer un compte école</a></p>
 
     </form>
 </div>
