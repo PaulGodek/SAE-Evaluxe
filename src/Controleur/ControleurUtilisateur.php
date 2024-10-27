@@ -265,12 +265,19 @@ class ControleurUtilisateur extends ControleurGenerique
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
-            ControleurUtilisateur::afficherVue('vueGenerale.php', [
-                "utilisateur" => $utilisateur,
-                "titre" => "Ecole connecté",
-                "ecole" => $ecole,
-                "cheminCorpsVue" => "ecole/ecoleConnecte.php"
-            ]);
+            if($ecole->isEstValide()){
+                echo"Je suis la ";
+                ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                    "utilisateur" => $utilisateur,
+                    "titre" => "Ecole connecté",
+                    "ecole" => $ecole,
+                    "cheminCorpsVue" => "ecole/ecoleConnecte.php"
+                ]);
+            }
+            else{
+                ConnexionUtilisateur::deconnecter();
+                ControleurUtilisateur::afficherErreur("Ce compte n'a pas été validé par l'administrateur ");
+            };
         } else if ($utilisateur->getType() == "professeur") {
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -279,7 +286,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "professeur" => $professeur,
                 "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
-        } else {
+        } else if($utilisateur->getType() == "administrateur") {
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
