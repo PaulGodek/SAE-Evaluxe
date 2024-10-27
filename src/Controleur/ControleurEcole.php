@@ -4,7 +4,9 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use TypeError;
 
 class ControleurEcole extends ControleurGenerique
@@ -29,6 +31,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherListe(): void
     {
         $ecoles = (new EcoleRepository)->recuperer(); //appel au modèle pour gérer la BD
+
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
@@ -43,6 +46,7 @@ class ControleurEcole extends ControleurGenerique
         $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
+
 
     public static function afficherDetail(): void
     {
@@ -65,7 +69,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function creerDepuisFormulaire(): void
     {
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"],$_GET["ville"]);
+        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"],$_GET["ville"],false);
         (new EcoleRepository)->ajouter($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
@@ -125,5 +129,17 @@ class ControleurEcole extends ControleurGenerique
         }
     }
 
+    public static function valider(){
+
+         $ecole = ( new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
+
+        $ecole->setEstValide(true);
+
+        (new EcoleRepository())->valider($ecole);
+        $ecoles = (new EcoleRepository())->recuperer();
+
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+
+    }
 
 }
