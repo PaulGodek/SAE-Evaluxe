@@ -19,8 +19,9 @@
 /** @var Utilisateur[] $utilisateurs */
 
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
-
-echo "<h2>Liste des utilisateurs</h2><ul>
+// https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
+// pour faire de joli tableaux de données
+echo "<h2>Liste des utilisateurs</h2>
  
     
 <ul>";

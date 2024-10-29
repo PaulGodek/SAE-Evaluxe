@@ -29,4 +29,4 @@ echo "<h2>Liste des étudiants</h2>
     echo '<li><p> L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;'.$prenomHTML .'</a></p></li>';
     }
 
-
+echo "</ul>";

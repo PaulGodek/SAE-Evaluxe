@@ -60,7 +60,7 @@ use App\GenerateurAvis\Lib\MessageFlash;
 </main>
 
 <footer>
-    <div class="VBox">
+    <div class="VBox" id="footer-main-vbox">
         <div class="HBox">
             <div class="VBox">
                 <p>Contactez-nous !</p>
@@ -73,9 +73,10 @@ use App\GenerateurAvis\Lib\MessageFlash;
                 <p>Site de SAE 2024/2025 Semestre 3</p>
             </div>
         </div>
-        <br>
-        <a href="../ressources/CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a>
-        <p>Copyright 2024 - Tous droits réservés</p>
+        <div class="VBox">
+            <a href="../ressources/CGU.pdf" target="_blank" class="link">Conditions Générales d'Utilisation</a>
+            <p>Copyright 2024 - Tous droits réservés</p>
+        </div>
     </div>
 </footer>
 </body>

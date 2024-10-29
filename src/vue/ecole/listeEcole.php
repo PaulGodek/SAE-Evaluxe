@@ -37,3 +37,4 @@ echo "<h2>Liste des écoles</h2>
                 echo '<li><p> L\'école <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a> &ensp; <a href="controleurFrontal.php?controleur=ecole&action=valider&login=' . $loginURL . '">Valider</a> </p></li>';
             }
         }
+echo "</ul>";

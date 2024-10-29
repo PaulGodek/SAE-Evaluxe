@@ -12,9 +12,11 @@
         </p>
     </fieldset>
 </form>
-<?php
 
+
+<?php
 /** @var Professeur[] $professeurs */
+
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 
 echo "<h2>Liste des professeurs</h2> 
@@ -29,4 +31,4 @@ foreach ($professeurs as $professeur) {
     echo '<li><p> Le professeur <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;'.$prenomHTML .'</a></p></li>';
 }
 
-
+echo "</ul>";
