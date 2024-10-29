@@ -12,6 +12,7 @@ use App\GenerateurAvis\Lib\MessageFlash;
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
     <link rel="stylesheet" href="../ressources/css/button.css">
+    <link rel="stylesheet" href="../ressources/css/connect.css"
 </head>
 <body>
 <header>
