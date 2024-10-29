@@ -1,3 +1,9 @@
+#remplaceBaliseLegend {
+    text-align: center;
+    height: 100%;
+}
+
+
 .container {
     padding: 20px;
     min-width: 330px;
@@ -7,6 +13,21 @@
     max-width: 1000px;
     margin: 0 auto;
     margin-top: 50px;
+}
+
+#container_Choix {
+    width: 80%;
+    max-width: 1000px;
+    margin: 1.5% auto 0;
+    font-size: 1em;
+    background: var(--activeGrey);
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 1;
+}
+
+#logoAdmin, #logoStudent, #logoSchool, #logoTeacher {
+    width: 5rem;
+    height: 5rem;
 }
 
 label {
