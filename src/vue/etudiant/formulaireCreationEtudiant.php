@@ -32,7 +32,8 @@
             <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp2" id="mdp2_id" required>
         </p>
         <p class="InputAddOn">
-            <input class="InputAddOn-field" type="submit" value="Envoyer" />
+<!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
+            <button class = "button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>

@@ -9,7 +9,8 @@
         </p>
 
         <p class="InputAddOn">
-            <input class="InputAddOn-field" type="submit" value="Rechercher" />
+<!--            <input class="InputAddOn-field" type="submit" value="Rechercher" />-->
+            <button class = "button-submit" type="submit">Rechercher</button>
         </p>
     </fieldset>
 </form>

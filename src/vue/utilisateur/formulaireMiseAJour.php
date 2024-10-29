@@ -15,7 +15,8 @@ use App\GenerateurAvis\Modele\DataObject\Utilisateur;
             <input class="InputAddOn-field" type="text" name="type" id="type_id" value="<?= htmlspecialchars($utilisateur->getType())?>" required>
         </p>
         <p class="InputAddOn">
-            <input class="InputAddOn-field" type="submit" value="Envoyer" />
+<!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
+            <button class = "button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>

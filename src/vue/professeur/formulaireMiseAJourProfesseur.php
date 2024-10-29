@@ -23,7 +23,8 @@ use App\GenerateurAvis\Modele\DataObject\Professeur;
             <input class="InputAddOn-field" type="text"  name="prenom" id="prenom_id" value="<?= htmlspecialchars($professeur->getPrenom())?>" required>
         </p>
         <p class="InputAddOn">
-            <input class="InputAddOn-field" type="submit" value="Envoyer" />
+<!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
+            <button class = "button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>

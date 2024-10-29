@@ -63,15 +63,14 @@ use App\GenerateurAvis\Lib\MessageFlash;
 <footer>
     <div class="VBox" id="footer-main-vbox">
         <div class="HBox">
-            <div class="VBox">
-                <p>Contactez-nous !</p>
+            <div class="VBox" id="footer-team">
+                <p>UNIVERSITÉ DE MONTPELLIER</p>
+                <p>163 rue Auguste Broussonnet</p>
+                <p>34090 Montpellier</p>
             </div>
-            <div class="HBox" id="footer-team">
+            <div class="HBox" id="footer-logo">
                 <img id="logoIUT"  src="../ressources/images/Logo_IUT.png" alt="Logo">
                 <img id="logoUM"  src="../ressources/images/logo_um.png" alt="Logo">
-            </div>
-            <div class="VBox">
-                <p>Site de SAE 2024/2025 Semestre 3</p>
             </div>
         </div>
         <div class="VBox">

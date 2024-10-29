@@ -27,7 +27,8 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
             <input class="InputAddOn-field" type="text"  name="moyenne" id="moyenne_id" value="<?= htmlspecialchars($etudiant->getMoyenne())?>" required>
         </p>
         <p class="InputAddOn">
-            <input class="InputAddOn-field" type="submit" value="Envoyer" />
+<!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
+            <button class = "button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>
