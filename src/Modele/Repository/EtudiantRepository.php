@@ -36,7 +36,8 @@ class EtudiantRepository extends AbstractRepository
         return $tableauEtudiant;
     }
 
-    /*public static function recupererEtudiantsOrdonneParParcours(): array{
+    public static function recupererEtudiantsOrdonneParParcours(): array
+    {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY parcours ");
 
         $tableauEtudiant = [];
@@ -45,7 +46,6 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
     }
-     */
 
     /**
      * @throws RandomException
