@@ -50,12 +50,12 @@ class EtudiantRepository extends AbstractRepository
     /**
      * @throws RandomException
      */
-    protected function construireDepuisTableauSQL(array $EtudiantFormatTableau): Etudiant
+    protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
-        return new Etudiant($EtudiantFormatTableau['login'],
-            $EtudiantFormatTableau['nom'],
-            $EtudiantFormatTableau['prenom'],
-            $EtudiantFormatTableau['moyenne']);
+        return new Etudiant($etudiantFormatTableau['login'],
+            $etudiantFormatTableau['nom'],
+            $etudiantFormatTableau['prenom'],
+            $etudiantFormatTableau['moyenne']);
     }
 
     /**
@@ -136,7 +136,21 @@ class EtudiantRepository extends AbstractRepository
         );
     }
 
+    public static function rechercherEtudiantParLogin(string $recherche): array
+    {
 
+        $sql = "SELECT * FROM " . self::$tableEtudiant .
+            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $etudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
+        }
+        return $tableauEtudiant;
+
+    }
 
     public static function rechercherEtudiant(string $recherche){
 

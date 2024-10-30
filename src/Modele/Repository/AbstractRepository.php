@@ -65,7 +65,7 @@ abstract class AbstractRepository
         // Note: fetch() renvoie false si pas d'utilisateur correspondant
         $objetFormatTableau = $pdoStatement->fetch();
 
-        if ($objetFormatTableau == false) {
+        if (!$objetFormatTableau) {
             return null;
         }
         return ($this->construireDepuisTableauSQL($objetFormatTableau));

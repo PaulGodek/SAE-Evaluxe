@@ -19,6 +19,23 @@ class EcoleRepository extends AbstractRepository
         }
         return $tableauEcole;
     }
+
+    public static function rechercherEcoleParLogin(string $recherche): array
+    {
+
+        $sql = "SELECT * FROM " . self::$tableEcole .
+            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauEcole = [];
+        foreach ($pdoStatement as $ecoleFormatTableau) {
+            $tableauEcole[] = (new EcoleRepository)->construireDepuisTableauSQL($ecoleFormatTableau);
+        }
+        return $tableauEcole;
+
+    }
+
     public function recuperer(): array
 
     {
@@ -150,18 +167,33 @@ class EcoleRepository extends AbstractRepository
     }
 
     public static function valider(Ecole $ecole): bool
-        {
-            $sql = "UPDATE " . self::$tableEcole . " 
-            SET valide = 1
-            WHERE login = :loginTag;";
+    {
+        $sql = "UPDATE " . self::$tableEcole . " 
+        SET valide = 1
+        WHERE login = :loginTag;";
 
-            $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
 
-            $values = [
-                "loginTag" => $ecole->getLogin(),
-            ];
+        $values = [
+            "loginTag" => $ecole->getLogin(),
+        ];
 
-            return $pdoStatement->execute($values);
+        return $pdoStatement->execute($values);
+    }
+
+    public static function rechercherEcole(string $recherche){
+
+        $sql="SELECT * FROM " . self::$tableEcole .
+            " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%' OR nom='".$recherche."'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauEcole = [];
+        foreach ($pdoStatement as $ecoleFormatTableau) {
+            $tableauEcole[] = (new EcoleRepository())->construireDepuisTableauSQL($ecoleFormatTableau);
         }
+        return $tableauEcole;
+
+    }
 }

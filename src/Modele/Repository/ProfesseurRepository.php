@@ -20,11 +20,11 @@ class ProfesseurRepository extends AbstractRepository
         return "login";
     }
 
-    protected function construireDepuisTableauSQL(array $ProfFormatTableau): AbstractDataObject
+    protected function construireDepuisTableauSQL(array $professeurFormatTableau): AbstractDataObject
     {
-        return new Professeur($ProfFormatTableau['login'],
-            $ProfFormatTableau['nom'],
-            $ProfFormatTableau['prenom']);
+        return new Professeur($professeurFormatTableau['login'],
+            $professeurFormatTableau['nom'],
+            $professeurFormatTableau['prenom']);
     }
 
     protected function getNomsColonnes(): array
@@ -58,6 +58,23 @@ class ProfesseurRepository extends AbstractRepository
         return $tableauProfesseurs;
 
     }
+
+    public static function rechercherProfesseurParLogin(string $recherche): array
+    {
+
+        $sql = "SELECT * FROM " . self::$tableProfesseur .
+            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauProfesseurs = [];
+        foreach ($pdoStatement as $ProfesseurFormatTableau) {
+            $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
+        }
+        return $tableauProfesseurs;
+
+    }
+
     public static function recupererProfesseurParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableProfesseur . "  WHERE nom = :nomTag";
