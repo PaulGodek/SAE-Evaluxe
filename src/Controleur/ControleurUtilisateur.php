@@ -69,8 +69,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherResultatRechercheEcole(): void
     {
-
-        $ecoles = EcoleRepository::rechercherEcole($_GET['reponse']);
+        $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
