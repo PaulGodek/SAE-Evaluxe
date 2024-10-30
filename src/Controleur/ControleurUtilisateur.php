@@ -70,13 +70,12 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherResultatRechercheEcole(): void
     {
 
-        $ecoles = EcoleRepository::recupererEcoleParNom($_GET['nom']);
+        $ecoles = EcoleRepository::rechercherEcole($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
     public static function afficherResultatRechercheProfesseur(): void
     {
-
         $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
     }
@@ -84,6 +83,7 @@ class ControleurUtilisateur extends ControleurGenerique
     /**
      * @throws RandomException
      */
+    /*
     public static function afficherResultatRecherche(): void
     {
         $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
@@ -97,6 +97,12 @@ class ControleurUtilisateur extends ControleurGenerique
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["professeur" => $professeur, "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
         }
+    }*/
+    // Toute la fonction est ultra bizarre, j'en réécris une qui correspond plus à ce qu'on veut
+
+    public static function afficherResultatRechercheUtilisateur() : void {
+        $utilisateurs = UtilisateurRepository::rechercherUtilisateurParLogin($_GET["login"]);
+        self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "cheminCorpsVue" => "utilisateur/liste.php"]);
     }
 
     public static function afficherFormulaireCreationEcole(): void

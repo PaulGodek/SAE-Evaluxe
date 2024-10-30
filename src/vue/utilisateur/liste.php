@@ -1,5 +1,5 @@
 <form method="get" action="controleurFrontal.php">
-    <input type="hidden" name="action" value="afficherResultatRecherche"/>
+    <input type="hidden" name="action" value="afficherResultatRechercheUtilisateur"/>
     <input type="hidden" name="type" value="administrateur"/>
     <fieldset>
         <legend>Recherche :</legend>
