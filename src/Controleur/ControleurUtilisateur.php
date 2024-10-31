@@ -20,7 +20,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherListe(): void
     {
         $utilisateurs = (new UtilisateurRepository)->recupererOrdonneParType(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs","cheminCorpsVue"=>'utilisateur/liste.php']);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => 'utilisateur/liste.php']);  //"redirige" vers la vue
     }
 
 
@@ -29,8 +29,6 @@ class ControleurUtilisateur extends ControleurGenerique
         $utilisateurs = UtilisateurRepository::recupererUtilisateurOrdonneParLogin(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
     }
-
-
 
 
     public static function afficherDetail(): void
@@ -99,7 +97,8 @@ class ControleurUtilisateur extends ControleurGenerique
     }*/
     // Toute la fonction est ultra bizarre, j'en réécris une qui correspond plus à ce qu'on veut
 
-    public static function afficherResultatRechercheUtilisateur() : void {
+    public static function afficherResultatRechercheUtilisateur(): void
+    {
         $utilisateurs = UtilisateurRepository::rechercherUtilisateurParLogin($_GET["login"]);
         self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "cheminCorpsVue" => "utilisateur/liste.php"]);
     }
@@ -119,7 +118,7 @@ class ControleurUtilisateur extends ControleurGenerique
             return;
         }
 
-       ControleurEcole::creerDepuisFormulaire();
+        ControleurEcole::creerDepuisFormulaire();
     }
 
 
@@ -254,25 +253,16 @@ class ControleurUtilisateur extends ControleurGenerique
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
 
-        if ($utilisateur->getType() == "etudiant") {
-            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
-            ControleurUtilisateur::afficherVue('vueGenerale.php', [
-                "utilisateur" => $utilisateur,
-                "titre" => "Etudiant connecté",
-                "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
-            ]);
-        } else if ($utilisateur->getType() == "universite") {
+        if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
-            if($ecole->isEstValide()){
+            if ($ecole->isEstValide()) {
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
                     "ecole" => $ecole,
                     "cheminCorpsVue" => "ecole/ecoleConnecte.php"
                 ]);
-            }
-            else{
+            } else {
                 ConnexionUtilisateur::deconnecter();
                 ControleurUtilisateur::afficherErreur("Ce compte n'a pas été validé par l'administrateur ");
             };
@@ -284,7 +274,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "professeur" => $professeur,
                 "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
-        } else if($utilisateur->getType() == "administrateur") {
+        } else if ($utilisateur->getType() == "administrateur") {
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -294,6 +284,52 @@ class ControleurUtilisateur extends ControleurGenerique
             ]);
         }
 
+    }
+
+    public static function connecterEtudiant(): void
+    {
+        $login = $_GET["login"];
+        $mdpL = $_GET["password"];
+
+        $url = "https://webinfo.iutmontp.univ-montp2.fr/~dainiuted/connection/connection_ldap.php";
+        $data = http_build_query([
+            "login" => $login,
+            "mdpL" => $mdpL
+        ]);
+        $options = [
+            "http" => [
+                "header" => "Content-type: application/x-www-form-urlencoded\r\n",
+                "method" => "POST",
+                "content" => $data
+            ]
+        ];
+        $context = stream_context_create($options);
+
+        $response = file_get_contents($url, false, $context);
+
+        $responseData = json_decode($response, true);
+
+
+        if ($responseData['status'] === 'error') {
+            ControleurUtilisateur::afficherErreur($responseData['message']);
+            return;
+        }
+
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+
+        if (empty($utilisateur)) {
+            ControleurUtilisateur::afficherErreur("Login incorrect");
+            return;
+        }
+        ConnexionUtilisateur::connecter($utilisateur->getLogin());
+
+        $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
+        ControleurUtilisateur::afficherVue('vueGenerale.php', [
+            "utilisateur" => $utilisateur,
+            "titre" => "Etudiant connecté",
+            "etudiant" => $etudiant,
+            "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+        ]);
     }
 
 

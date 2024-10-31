@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="../ressources/css/connect.css">
 <div class="container">
     <form method="get" action="controleurFrontal.php">
-        <input type="hidden" name="action" value="connecter">
+        <input type="hidden" name="action" value="connecterEtudiant">
         <input type="hidden" name="controleur" value="utilisateur">
         <h2>Connexion Étudiant</h2>
         <fieldset>
