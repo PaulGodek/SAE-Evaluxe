@@ -252,8 +252,15 @@ class ControleurUtilisateur extends ControleurGenerique
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
-
-        if ($utilisateur->getType() == "universite") {
+        if ($utilisateur->getType() == "etudiant") {
+            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Etudiant connecté",
+                "etudiant" => $etudiant,
+                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+            ]);
+        } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -286,7 +293,8 @@ class ControleurUtilisateur extends ControleurGenerique
 
     }
 
-    public static function connecterEtudiant(): void
+    // connexion ldap
+    /*public static function connecterEtudiant(): void
     {
         $login = $_GET["login"];
         $mdpL = $_GET["password"];
@@ -330,7 +338,7 @@ class ControleurUtilisateur extends ControleurGenerique
             "etudiant" => $etudiant,
             "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
         ]);
-    }
+    }*/
 
 
     public static function deconnecter(): void
