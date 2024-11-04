@@ -44,7 +44,20 @@ class ControleurUtilisateur extends ControleurGenerique
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
-                    self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de l'étudiant {$etudiant->getPrenom()} {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+
+                    if ($nomPrenom) {
+                        $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
+                    } else {
+                        $titre = "Détail de l'étudiant (Nom et prénom non trouvés)";
+                    }
+
+                    self::afficherVue('vueGenerale.php', [
+                        "etudiant" => $etudiant,
+                        "titre" => $titre,
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php",
+                        "nomPrenom" => $nomPrenom
+                    ]);
                 } else if ($utilisateur->getType() == "universite") {
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);

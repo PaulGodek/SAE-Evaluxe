@@ -8,32 +8,40 @@ $pdo = ConnexionBaseDeDonnees::getPdo();
 
 $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
 $idEtudiant = $etudiant->getIdEtudiant();
-$etudiantDetails = null;
+$etudiantDetailsPerSemester = [];
+$studentInfo = null;
 
 foreach ($tables as $table) {
     $query = "SELECT Nom, Prénom, Abs, Just_1, Moy FROM {$table} WHERE etudid = :idEtudiant";
     $stmt = $pdo->prepare($query);
     $stmt->execute([':idEtudiant' => $idEtudiant]);
 
-    if ($etudiantDetails = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        break;
+    if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if (!$studentInfo) {
+            $studentInfo = [
+                'nom' => htmlspecialchars($details['Nom']),
+                'prenom' => htmlspecialchars($details['Prénom']),
+            ];
+        }
+
+        $etudiantDetailsPerSemester[] = [
+            'semester' => $table,
+            'abs' => htmlspecialchars($details['Abs']),
+            'just1' => htmlspecialchars($details['Just_1']),
+            'moy' => htmlspecialchars($details['Moy']),
+        ];
     }
 }
 
-if ($etudiantDetails) {
-    $nom = htmlspecialchars($etudiantDetails['Nom']);
-    $prenom = htmlspecialchars($etudiantDetails['Prénom']);
-    $abs = htmlspecialchars($etudiantDetails['Abs']);
-    $just1 = htmlspecialchars($etudiantDetails['Just_1']);
-    $moy = htmlspecialchars($etudiantDetails['Moy']);
+if ($studentInfo) {
+    echo "<strong>Détails de l'étudiant:</strong> {$studentInfo['nom']} {$studentInfo['prenom']}<br><br>";
 
-    echo "Détails de l'étudiant:<br>";
-    echo "Nom: {$nom}<br>";
-    echo "Prénom: {$prenom}<br>";
-    echo "Absences: {$abs}<br>";
-    echo "Justifications: {$just1}<br>";
-    echo "Moyenne: {$moy}<br>";
+    foreach ($etudiantDetailsPerSemester as $details) {
+        echo "<strong>Semestre:</strong> {$details['semester']}<br>";
+        echo "Absences: {$details['abs']}<br>";
+        echo "Justifications: {$details['just1']}<br>";
+        echo "Moyenne: {$details['moy']}<br><br>";
+    }
 } else {
-    echo "L'étudiant avec ID {$idEtudiant} n'a pas été trouvé dans les tables.";
+    echo "Aucun détail n'a été trouvé pour l'étudiant avec ID {$idEtudiant}.";
 }
-

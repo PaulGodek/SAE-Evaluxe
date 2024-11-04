@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use PDO;
 use Random\RandomException;
 
 class EtudiantRepository extends AbstractRepository
@@ -148,12 +149,13 @@ class EtudiantRepository extends AbstractRepository
 
     }
 
-    public static function rechercherEtudiant(string $recherche){
+    public static function rechercherEtudiant(string $recherche)
+    {
 
-        $sql="SELECT * FROM " . self::$tableEtudiant .
-        " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%'
-            OR prenom LIKE '%".$recherche."' OR prenom LIKE '%".$recherche."%' OR prenom LIKE '".$recherche."%'
-            OR prenom='".$recherche."' OR nom='".$recherche."'";
+        $sql = "SELECT * FROM " . self::$tableEtudiant .
+            " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
+            OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
+            OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
         echo $sql;
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -163,5 +165,26 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
 
+    }
+
+    public static function getNomPrenomParIdEtudiant($idEtudiant): ?array
+    {
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        foreach ($tables as $table) {
+            $query = "SELECT Nom, Prénom FROM {$table} WHERE etudid = :idEtudiant";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':idEtudiant' => $idEtudiant]);
+
+            if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                return [
+                    'Nom' => $result['Nom'],
+                    'Prenom' => $result['Prénom']
+                ];
+            }
+        }
+
+        return null;
     }
 }
