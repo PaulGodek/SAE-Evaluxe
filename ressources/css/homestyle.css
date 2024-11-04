@@ -238,4 +238,7 @@ ul li:hover {
     transition: background-color 0.3s ease;
 }
 
+legend {
+    font-weight: bold;
+}
 

@@ -1,6 +1,7 @@
 #remplaceBaliseLegend {
     text-align: center;
     height: 100%;
+    font-size: 1.8rem;
 }
 
 
@@ -95,6 +96,7 @@ h2 {
     background-color: #f0f0f0;
     transition: border 0.3s ease;
 }
+
 
 
 /* Customize labels */
