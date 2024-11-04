@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use PDO;
 use Random\RandomException;
 
 class EtudiantRepository extends AbstractRepository
@@ -53,9 +54,7 @@ class EtudiantRepository extends AbstractRepository
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
         return new Etudiant($etudiantFormatTableau['login'],
-            $etudiantFormatTableau['nom'],
-            $etudiantFormatTableau['prenom'],
-            $etudiantFormatTableau['moyenne']);
+            $etudiantFormatTableau['idEtudiant']);
     }
 
     /**
@@ -122,17 +121,15 @@ class EtudiantRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "prenom", "moyenne", "codeUnique"];
+        return ["login", "codeUnique", "idEtudiant"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
     {
         return array(
             "loginTag" => $etudiant->getLogin(),
-            "nomTag" => $etudiant->getNom(),
-            "prenomTag" => $etudiant->getPrenom(),
-            "moyenneTag" => $etudiant->getMoyenne(),
-            "codeUniqueTag" => $etudiant->getCodeUnique()
+            "codeUniqueTag" => $etudiant->getCodeUnique(),
+            "idEtudiantTag" => $etudiant->getIdEtudiant()
         );
     }
 
@@ -152,12 +149,13 @@ class EtudiantRepository extends AbstractRepository
 
     }
 
-    public static function rechercherEtudiant(string $recherche){
+    public static function rechercherEtudiant(string $recherche)
+    {
 
-        $sql="SELECT * FROM " . self::$tableEtudiant .
-        " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%'
-            OR prenom LIKE '%".$recherche."' OR prenom LIKE '%".$recherche."%' OR prenom LIKE '".$recherche."%'
-            OR prenom='".$recherche."' OR nom='".$recherche."'";
+        $sql = "SELECT * FROM " . self::$tableEtudiant .
+            " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
+            OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
+            OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
         echo $sql;
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -167,5 +165,97 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
 
+    }
+
+    public static function getNomPrenomParIdEtudiant($idEtudiant): ?array
+    {
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        foreach ($tables as $table) {
+            $query = "SELECT Nom, Prénom FROM {$table} WHERE etudid = :idEtudiant";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':idEtudiant' => $idEtudiant]);
+
+            if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                return [
+                    'Nom' => $result['Nom'],
+                    'Prenom' => $result['Prénom']
+                ];
+            }
+        }
+
+        return null;
+    }
+    public static function recupererDetailsEtudiantParId($idEtudiant): array
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $etudiantInfo = null;
+        $etudiantDetailsPerSemester = [];
+
+        foreach ($tables as $table) {
+            preg_match('/semestre(\d+)_/', $table, $matches);
+            $semesterNumber = isset($matches[1]) ? (int)$matches[1] : 0;
+
+            $ueColumns = [];
+            for ($i = 1; $i <= 6; $i++) {
+                $column = "UE {$semesterNumber}.{$i}";
+                if (self::columnExists($pdo, $table, $column)) {
+                    $ueColumns[] = "`{$column}` AS `UE_{$semesterNumber}_{$i}`";
+                }
+            }
+            $ueColumnsString = implode(', ', $ueColumns);
+
+            if (empty($ueColumnsString)) {
+                continue;
+            }
+
+            $query = "SELECT Nom, Prénom, Abs, Just_1, Moy, Parcours, {$ueColumnsString} FROM {$table} WHERE etudid = :idEtudiant";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':idEtudiant' => $idEtudiant]);
+
+            if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if (!$etudiantInfo) {
+                    $etudiantInfo = [
+                        'nom' => htmlspecialchars($details['Nom']),
+                        'prenom' => htmlspecialchars($details['Prénom']),
+                    ];
+                }
+
+                $absences = (int)htmlspecialchars($details['Abs'] ?? '0');
+                $justifications = (int)htmlspecialchars($details['Just_1'] ?? '0');
+                $moyenne = (float)htmlspecialchars($details['Moy'] ?? '0');
+                $parcours = htmlspecialchars($details['Parcours'] ?? '-');
+
+                $ueDetails = [];
+                for ($i = 1; $i <= 6; $i++) {
+                    $ueKey = "UE_{$semesterNumber}_{$i}";
+                    $ueDetails[] = [
+                        'ue' => "UE {$semesterNumber}.{$i}",
+                        'moy' => isset($details[$ueKey]) ? (float)$details[$ueKey] : 'N/A',
+                    ];
+                }
+
+                $etudiantDetailsPerSemester[$table] = [
+                    'abs' => $absences,
+                    'just1' => $justifications,
+                    'moyenne' => $moyenne,
+                    'parcours' => $parcours,
+                    'ue_details' => $ueDetails,
+                ];
+            }
+        }
+
+        return [
+            'info' => $etudiantInfo,
+            'details' => $etudiantDetailsPerSemester,
+        ];
+    }
+    private static function columnExists($pdo, $table, $column) {
+        $query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND COLUMN_NAME = :column";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':table' => $table, ':column' => $column]);
+        return (bool) $stmt->fetchColumn();
     }
 }
