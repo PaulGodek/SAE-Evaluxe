@@ -2,46 +2,40 @@
 /** @var Etudiant $etudiant */
 
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
-use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
-$pdo = ConnexionBaseDeDonnees::getPdo();
-
-$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
 $idEtudiant = $etudiant->getIdEtudiant();
-$etudiantDetailsPerSemester = [];
-$studentInfo = null;
+$result = EtudiantRepository::recupererDetailsEtudiantParId($idEtudiant);
 
-foreach ($tables as $table) {
-    $query = "SELECT Nom, Prénom, Abs, Just_1, Moy FROM {$table} WHERE etudid = :idEtudiant";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([':idEtudiant' => $idEtudiant]);
+$etudiantInfo = $result['info'];
+$etudiantDetailsPerSemester = $result['details'];
 
-    if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        if (!$studentInfo) {
-            $studentInfo = [
-                'nom' => htmlspecialchars($details['Nom']),
-                'prenom' => htmlspecialchars($details['Prénom']),
-            ];
+if ($etudiantInfo) {
+    echo '<div class="etudiant-details">';
+    echo "<h2>Détails de l'étudiant</h2>";
+    echo "<p>Nom: {$etudiantInfo['nom']}</p>";
+    echo "<p>Prénom: {$etudiantInfo['prenom']}</p>";
+
+    foreach ($etudiantDetailsPerSemester as $table => $details) {
+        preg_match('/semestre(\d+)_\d+/', $table, $matches);
+        $semesterNumber = $matches[1];
+        echo '<div class="semester-details">';
+        echo "<h3>Semestre: {$semesterNumber} </h3>";
+        echo "<p>Absences non justifiées: " . max(0, $details['abs'] - $details['just1']) . "</p>";
+        echo "<p>Moyenne: {$details['moyenne']}</p>";
+        echo "<p>Parcours: {$details['parcours']}</p>";
+
+        foreach ($details['ue_details'] as $ueDetail) {
+            echo '<div class="ue-detail">';
+            echo "<h4>{$ueDetail['ue']}</h4>";
+            echo "<p>Moyenne: " . ($ueDetail['moy'] !== 'N/A' ? $ueDetail['moy'] : "N/A") . "</p>";
+            echo '</div>';
         }
 
-        $etudiantDetailsPerSemester[] = [
-            'semester' => $table,
-            'abs' => htmlspecialchars($details['Abs'] ?? '0'),
-            'just1' => htmlspecialchars($details['Just_1'] ?? '0'),
-            'moy' => htmlspecialchars($details['Moy'] ?? '0'),
-        ];
+        echo '</div>';
     }
-}
 
-if ($studentInfo) {
-    echo "<strong>Détails de l'étudiant:</strong> {$studentInfo['nom']} {$studentInfo['prenom']}<br><br>";
-
-    foreach ($etudiantDetailsPerSemester as $details) {
-        echo "<strong>Semestre:</strong> {$details['semester']}<br>";
-        echo "Absences: {$details['abs']}<br>";
-        echo "Justifications: {$details['just1']}<br>";
-        echo "Moyenne: {$details['moy']}<br><br>";
-    }
+    echo '</div>';
 } else {
-    echo "Aucun détail n'a été trouvé pour l'étudiant avec ID {$idEtudiant}.";
+    echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
 }

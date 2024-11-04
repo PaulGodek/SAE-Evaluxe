@@ -187,4 +187,75 @@ class EtudiantRepository extends AbstractRepository
 
         return null;
     }
+    public static function recupererDetailsEtudiantParId($idEtudiant): array
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $etudiantInfo = null;
+        $etudiantDetailsPerSemester = [];
+
+        foreach ($tables as $table) {
+            preg_match('/semestre(\d+)_/', $table, $matches);
+            $semesterNumber = isset($matches[1]) ? (int)$matches[1] : 0;
+
+            $ueColumns = [];
+            for ($i = 1; $i <= 6; $i++) {
+                $column = "UE {$semesterNumber}.{$i}";
+                if (self::columnExists($pdo, $table, $column)) {
+                    $ueColumns[] = "`{$column}` AS `UE_{$semesterNumber}_{$i}`";
+                }
+            }
+            $ueColumnsString = implode(', ', $ueColumns);
+
+            if (empty($ueColumnsString)) {
+                continue;
+            }
+
+            $query = "SELECT Nom, Prénom, Abs, Just_1, Moy, Parcours, {$ueColumnsString} FROM {$table} WHERE etudid = :idEtudiant";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':idEtudiant' => $idEtudiant]);
+
+            if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if (!$etudiantInfo) {
+                    $etudiantInfo = [
+                        'nom' => htmlspecialchars($details['Nom']),
+                        'prenom' => htmlspecialchars($details['Prénom']),
+                    ];
+                }
+
+                $absences = (int)htmlspecialchars($details['Abs'] ?? '0');
+                $justifications = (int)htmlspecialchars($details['Just_1'] ?? '0');
+                $moyenne = (float)htmlspecialchars($details['Moy'] ?? '0');
+                $parcours = htmlspecialchars($details['Parcours'] ?? '-');
+
+                $ueDetails = [];
+                for ($i = 1; $i <= 6; $i++) {
+                    $ueKey = "UE_{$semesterNumber}_{$i}";
+                    $ueDetails[] = [
+                        'ue' => "UE {$semesterNumber}.{$i}",
+                        'moy' => isset($details[$ueKey]) ? (float)$details[$ueKey] : 'N/A',
+                    ];
+                }
+
+                $etudiantDetailsPerSemester[$table] = [
+                    'abs' => $absences,
+                    'just1' => $justifications,
+                    'moyenne' => $moyenne,
+                    'parcours' => $parcours,
+                    'ue_details' => $ueDetails,
+                ];
+            }
+        }
+
+        return [
+            'info' => $etudiantInfo,
+            'details' => $etudiantDetailsPerSemester,
+        ];
+    }
+    private static function columnExists($pdo, $table, $column) {
+        $query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND COLUMN_NAME = :column";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':table' => $table, ':column' => $column]);
+        return (bool) $stmt->fetchColumn();
+    }
 }
