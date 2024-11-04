@@ -4,7 +4,8 @@
 <?php
 
 use App\GenerateurAvis\Controleur\ControleurEcole;
-\App\GenerateurAvis\Lib\ConnexionUtilisateur::estConnecte();
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
-ControleurEcole::afficherEcole();
-?>
+ConnexionUtilisateur::estConnecte();
+
+require 'pageEcole.php';

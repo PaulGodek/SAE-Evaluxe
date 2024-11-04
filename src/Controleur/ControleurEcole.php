@@ -21,9 +21,10 @@ class ControleurEcole extends ControleurGenerique
         }
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
-        self::afficherVue('ecole/pageEcole.php', [
+        self::afficherVue('vueGenerale.php', [
             "ecole" => $ecole,
-            "titre" => "Gestion de l'École: {$ecole->getNom()}"
+            "titre" => "Gestion de l'École: {$ecole->getNom()}",
+            "cheminCorpsVue" => "ecole/pageEcole.php"
         ]);
     }
 
@@ -69,7 +70,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function creerDepuisFormulaire(): void
     {
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"],$_GET["ville"],false);
+        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], false);
         (new EcoleRepository)->ajouter($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
@@ -96,7 +97,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function mettreAJour(): void
     {
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"],$_GET["ville"]);
+        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"]);
         (new EcoleRepository)->mettreAJour($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
@@ -129,9 +130,10 @@ class ControleurEcole extends ControleurGenerique
         }
     }
 
-    public static function valider(){
+    public static function valider()
+    {
 
-         $ecole = ( new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
+        $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
 
         $ecole->setEstValide(true);
 
