@@ -53,9 +53,7 @@ class EtudiantRepository extends AbstractRepository
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
         return new Etudiant($etudiantFormatTableau['login'],
-            $etudiantFormatTableau['nom'],
-            $etudiantFormatTableau['prenom'],
-            $etudiantFormatTableau['moyenne']);
+            $etudiantFormatTableau['idEtudiant']);
     }
 
     /**
@@ -122,17 +120,15 @@ class EtudiantRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "prenom", "moyenne", "codeUnique"];
+        return ["login", "codeUnique", "idEtudiant"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
     {
         return array(
             "loginTag" => $etudiant->getLogin(),
-            "nomTag" => $etudiant->getNom(),
-            "prenomTag" => $etudiant->getPrenom(),
-            "moyenneTag" => $etudiant->getMoyenne(),
-            "codeUniqueTag" => $etudiant->getCodeUnique()
+            "codeUniqueTag" => $etudiant->getCodeUnique(),
+            "idEtudiantTag" => $etudiant->getIdEtudiant()
         );
     }
 
