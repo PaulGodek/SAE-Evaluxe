@@ -43,7 +43,9 @@ class ControleurEtudiant extends ControleurGenerique
             if ($etudiant == NULL) {
                 self::afficherErreur("L'étudiant  {$_GET['login']} n'existe pas");
             } else {
-                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
@@ -105,7 +107,7 @@ class ControleurEtudiant extends ControleurGenerique
             } else {
                 $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
                 $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
-                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$nomPrenom}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
