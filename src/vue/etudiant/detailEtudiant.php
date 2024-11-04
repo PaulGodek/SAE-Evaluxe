@@ -26,9 +26,9 @@ foreach ($tables as $table) {
 
         $etudiantDetailsPerSemester[] = [
             'semester' => $table,
-            'abs' => htmlspecialchars($details['Abs']),
-            'just1' => htmlspecialchars($details['Just_1']),
-            'moy' => htmlspecialchars($details['Moy']),
+            'abs' => htmlspecialchars($details['Abs'] ?? '0'),
+            'just1' => htmlspecialchars($details['Just_1'] ?? '0'),
+            'moy' => htmlspecialchars($details['Moy'] ?? '0'),
         ];
     }
 }
