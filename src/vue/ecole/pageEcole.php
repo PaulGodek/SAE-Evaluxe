@@ -14,16 +14,23 @@ use \App\GenerateurAvis\Modele\Repository\EtudiantRepository;
     <input type="hidden" name="login" value="<?php echo htmlspecialchars($ecole->getLogin()); ?>"/>
     <label for="codeUnique">Code Unique de l'Étudiant:</label>
     <input type="text" id="codeUnique" name="codeUnique" required>
-    <button class = "button-submit" type="submit">Ajouter Étudiant</button>
+    <button class="button-submit" type="submit">Ajouter Étudiant</button>
 </form>
 
 <h2>Étudiants Associés</h2>
 <ul>
     <?php foreach ($ecole->getFutursEtudiants() as $code): ?>
-        <?php $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($code); ?>
+        <?php $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($code);
+        $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+        if ($nomPrenom) {
+            $nomHTML = htmlspecialchars($nomPrenom['Nom']);
+            $prenomHTML = htmlspecialchars($nomPrenom['Prenom']);
+        } else {
+            $nomHTML = $prenomHTML = 'Nom inconnu';
+        } ?>
         <li>
             <a href='controleurFrontal.php?controleur=etudiant&action=afficherDetailEtudiantParCodeUnique&codeUnique=<?php echo urlencode($code); ?>'>
-                <?php echo htmlspecialchars($etudiant->getNom()) . " " . htmlspecialchars($etudiant->getPrenom()) ?>
+                <?php echo htmlspecialchars($nomHTML) . " " . htmlspecialchars($prenomHTML) ?>
             </a>
         </li>
     <?php endforeach; ?>

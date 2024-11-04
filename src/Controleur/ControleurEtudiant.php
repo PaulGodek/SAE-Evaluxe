@@ -43,7 +43,9 @@ class ControleurEtudiant extends ControleurGenerique
             if ($etudiant == NULL) {
                 self::afficherErreur("L'étudiant  {$_GET['login']} n'existe pas");
             } else {
-                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
@@ -58,13 +60,13 @@ class ControleurEtudiant extends ControleurGenerique
     /**
      * @throws RandomException
      */
-    public static function creerDepuisFormulaire(): void
+    /*public static function creerDepuisFormulaire(): void
     {
-        $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["idEtudiant"], $_GET["prenom"], $_GET["moyenne"]);
         (new EtudiantRepository)->ajouter($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
-    }
+    }*/
 
     public static function afficherErreur(string $messageErreur = ""): void
     {
@@ -90,7 +92,7 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function mettreAJour(): void
     {
-        $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["idEtudiant"]);
         (new EtudiantRepository)->mettreAJour($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
@@ -103,7 +105,9 @@ class ControleurEtudiant extends ControleurGenerique
             if ($etudiant == NULL) {
                 self::afficherErreur("L'étudiant  {$_GET['codeUnique']} n'existe pas");
             } else {
-                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
             }
         } catch (TypeError $e) {
             self::afficherErreur("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");

@@ -8,10 +8,12 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use PDO;
 use Random\RandomException;
 use TypeError;
 
@@ -42,7 +44,20 @@ class ControleurUtilisateur extends ControleurGenerique
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
-                    self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de l'étudiant {$etudiant->getPrenom()} {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+
+                    if ($nomPrenom) {
+                        $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
+                    } else {
+                        $titre = "Détail de l'étudiant (Nom et prénom non trouvés)";
+                    }
+
+                    self::afficherVue('vueGenerale.php', [
+                        "etudiant" => $etudiant,
+                        "titre" => $titre,
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php",
+                        "nomPrenom" => $nomPrenom
+                    ]);
                 } else if ($utilisateur->getType() == "universite") {
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
@@ -252,8 +267,15 @@ class ControleurUtilisateur extends ControleurGenerique
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
-
-        if ($utilisateur->getType() == "universite") {
+        if ($utilisateur->getType() == "etudiant") {
+            $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "utilisateur" => $utilisateur,
+                "titre" => "Etudiant connecté",
+                "etudiant" => $etudiant,
+                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+            ]);
+        } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -286,7 +308,8 @@ class ControleurUtilisateur extends ControleurGenerique
 
     }
 
-    public static function connecterEtudiant(): void
+    // connexion ldap
+    /*public static function connecterEtudiant(): void
     {
         $login = $_GET["login"];
         $mdpL = $_GET["password"];
@@ -330,7 +353,7 @@ class ControleurUtilisateur extends ControleurGenerique
             "etudiant" => $etudiant,
             "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
         ]);
-    }
+    }*/
 
 
     public static function deconnecter(): void
@@ -344,6 +367,46 @@ class ControleurUtilisateur extends ControleurGenerique
             "cheminCorpsVue" => "utilisateur/utilisateurDeconnecte.php"
         ]);
     }
+
+    /**
+     * @throws RandomException
+     */
+    /*pour importer les données de notre tables avec tous
+    les informations pour sauvegarder seulement login, codeUnique et idEtudiant*/
+    public static function refaire(): void
+    {
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        foreach ($tables as $table) {
+            $query = "
+            SELECT LOWER(CONCAT(Nom, LEFT(Prénom, 1))) AS login, etudid AS etudid
+            FROM {$table} AS s
+            LEFT JOIN EtudiantTest AS e ON LOWER(CONCAT(s.Nom, LEFT(s.Prénom, 1))) = e.login
+            WHERE e.login IS NULL
+        ";
+
+            $stmt = $pdo->query($query);
+            $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $insertStmt = $pdo->prepare("
+            INSERT INTO EtudiantTest (login, codeUnique, idEtudiant)
+            VALUES (:login, :codeUnique, :idEtudiant)
+        ");
+
+            foreach ($students as $student) {
+                $etudiant = new Etudiant($student['login'], $student['etudid']);
+                $codeUnique = $etudiant->getCodeUnique();
+
+                $insertStmt->execute([
+                    ':login' => $student['login'],
+                    ':idEtudiant' => $student['etudid'],
+                    ':codeUnique' => $codeUnique
+                ]);
+            }
+        }
+    }
+
 
 }
 
