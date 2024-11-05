@@ -364,3 +364,7 @@ legend {
     top: 20px;
     text-decoration: none;
 }
+
+#cookie-banner .close-button {
+    font-size: 30px;
+}

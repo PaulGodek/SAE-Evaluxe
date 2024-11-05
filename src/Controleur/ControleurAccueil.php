@@ -13,11 +13,7 @@ class ControleurAccueil {
 
     public static function afficherErreur(string $messageErreur = ""): void
     {
-        self::afficherVue('vueGenerale.php', [
-            'messageErreur' => $messageErreur,
-            'titre' => 'Erreur',
-            'cheminCorpsVue' => 'siteweb/erreur.php'
-        ]);
+        ControleurGenerique::afficherErreur($messageErreur, "accueil");
     }
 
     private static function afficherVue(string $cheminVue, array $parametres = []): void
