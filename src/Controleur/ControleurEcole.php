@@ -5,21 +5,27 @@ namespace App\GenerateurAvis\Controleur;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use TypeError;
 
 class ControleurEcole extends ControleurGenerique
 {
     public static function afficherEcole(): void
     {
-        if (!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
             self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        $loginEcole = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        $loginEcole = "";
+        if (ConnexionUtilisateur::estEcole())
+            $loginEcole = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        else if (ConnexionUtilisateur::estAdministrateur() && isset($_GET["loginEcole"]))
+            $loginEcole = $_GET["loginEcole"];
+
         $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
         self::afficherVue('vueGenerale.php', [
             "ecole" => $ecole,
-            "titre" => "Gestion de l'École: {$ecole->getNom()}",
+            "titre" => "Gestion de l'École : {$ecole->getNom()}",
             "cheminCorpsVue" => "ecole/pageEcole.php"
         ]);
     }
@@ -105,16 +111,18 @@ class ControleurEcole extends ControleurGenerique
 
     public static function ajouterEtudiant(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte() && !ControleurGenerique::verifierEcoleConnecte()) return;
+        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ControleurGenerique::verifierEcoleConnecte()) return;
         $login = $_GET['login'];
         $codeUnique = $_GET['codeUnique'];
-        if (!ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
-            return;
-        }
         $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
 
-        $ecole->addFuturEtudiant($codeUnique);
+        if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
+            $ecole->addFuturEtudiant($codeUnique);
+        else {
+            self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
+            return;
+        }
 
         if ($ecole->saveFutursEtudiants()) {
 

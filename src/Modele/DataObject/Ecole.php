@@ -86,6 +86,15 @@ class Ecole extends AbstractDataObject
         }
     }
 
+    public function removeFuturEtudiant(string $code): void
+    {
+        foreach ($this->futursEtudiants as $futursEtudiant) {
+            if (strcmp($code, $futursEtudiant) === 0) {
+                unset($this->futursEtudiants[$futursEtudiant]);
+            }
+        }
+    }
+
     public function getFutursEtudiants(): array
     {
         return $this->futursEtudiants;
