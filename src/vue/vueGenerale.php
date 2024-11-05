@@ -89,19 +89,8 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 
     <?php if (!Cookie::contient("bannerClosed")): ?>
         <div id="cookie-banner"><h2>Politique de confidentialité</h2>
-            <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits
-                fichiers de données qui sont stockés sur votre ordinateur ou appareil mobile lorsque vous visitez un
-                site
-                web. Ils nous permettent de collecter des informations sur votre comportement de navigation, comme les
-                pages
-                que vous visitez et les services que vous utilisez. Nous utilisons ces informations pour personnaliser
-                votre
-                expérience, pour comprendre comment notre site est utilisé et pour améliorer nos services. En continuant
-                à
-                utiliser notre site, vous acceptez notre utilisation des cookies. Pour plus dinformations sur notre
-                utilisation des cookies et sur la manière dont vous pouvez contrôler les cookies, veuillez consulter
-                notre
-                politique de confidentialité.</p>
+            <p> Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits fichiers de données enregistrés sur votre ordinateur ou appareil mobile lors de votre visite. Ils nous permettent de recueillir des informations sur votre comportement de navigation, telles que les pages que vous consultez et les services que vous utilisez.
+                Ces informations nous aident à personnaliser votre expérience, à mieux comprendre l'utilisation de notre site et à améliorer nos services. En poursuivant votre navigation sur notre site, vous consentez à notre utilisation des cookies. Pour en savoir plus sur notre politique d'utilisation des cookies et sur les moyens de les contrôler, veuillez consulter notre politique de confidentialité..</p>
             <a href="controleurFrontal.php?action=setCookie" class="close-button">✖</a>
         </div>
     <?php endif; ?>

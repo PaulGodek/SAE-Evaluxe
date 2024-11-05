@@ -33,12 +33,12 @@ class ControleurEtudiant extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
-    /*public static function afficherListeEtudiantOrdonneParParcours(): void
+    public static function afficherListeEtudiantOrdonneParParcours(): void
     {
         if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
-    }*/
+    }
 
     public static function afficherDetail(): void
     {
