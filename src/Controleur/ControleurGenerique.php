@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Controleur;
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 
 class ControleurGenerique
@@ -16,6 +17,19 @@ class ControleurGenerique
     {
 
         echo($messageErreur);
+    }
+    public static function verifierAdminConnectee(): bool
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
+            return false;
+        }
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return false;
+        }
+        return true;
     }
 
     public static function redirectionVersURL(string $type, string $message, string $url): void

@@ -27,21 +27,21 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherListe(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParNom(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecoles = EcoleRepository::recupererEcolesOrdonneParNom(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParVille(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
@@ -49,7 +49,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         if ($ecole == NULL) {
@@ -88,14 +88,14 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
     public static function mettreAJour(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"]);
         (new EcoleRepository)->mettreAJour($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
@@ -129,7 +129,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function valider(): void
     {
-        if (!self::verifierAdminConnectee()) return;
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
 
         $ecole->setEstValide(true);
@@ -139,19 +139,5 @@ class ControleurEcole extends ControleurGenerique
 
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
-    }
-
-    private static function verifierAdminConnectee(): bool
-    {
-        if (!ConnexionUtilisateur::estConnecte()) {
-            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
-            return false;
-        }
-
-        if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            return false;
-        }
-        return true;
     }
 }
