@@ -44,7 +44,7 @@
 
 /* Style high contrast  */
 .high-contrast-mode {
-    background-color: black;
+    background-color: #333333;
     color: yellow;
 }
 
@@ -61,7 +61,7 @@
     background-color: black;
 }
 
-.high-contrast-mode #remplaceBaliseLegend {
+.high-contrast-mode #remplaceBaliseLegend, .high-contrast-mode .button-submit, .high-contrast-mode #accessibilityMenu label {
     color: cyan;
 }
 
@@ -69,17 +69,24 @@
     background-color: black;
 }
 
+.high-contrast-mode footer {
+    background-color: #111111;
+}
+
 /* Style font */
-.large-font-mode {
-    font-size: 1.5em;
+.large-font-mode, .large-font-mode label {
+    font-size: 1.5rem;
 }
 
 /* Style dark mode */
 .dark-mode {
-    background-color: #121212;
+    background-color: #333333;
     color: var(--lightGrey);
 }
 
+.dark-mode footer {
+    background-color: black;
+}
 .dark-mode #container_Choix {
     background-color: black;
 }
@@ -95,4 +102,8 @@
 
 .dark-mode #accessibilityMenu {
     background-color: black;
+}
+
+.dark-mode .nav-item  {
+    color: white;
 }
