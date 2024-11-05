@@ -133,6 +133,10 @@ class ControleurEcole extends ControleurGenerique
     {
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
+        if (is_null($ecole)) {
+            self::afficherErreurEcole("Cette école n'existe pas.");
+            return;
+        }
 
         $ecole->setEstValide(true);
 
