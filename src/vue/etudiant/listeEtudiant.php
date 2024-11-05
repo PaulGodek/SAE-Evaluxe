@@ -16,6 +16,7 @@
 <?php
 
 /** @var Etudiant[] $etudiants */
+/** @var bool $parParcours */
 
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
