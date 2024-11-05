@@ -3,7 +3,6 @@
 
 <?php
 
-use App\GenerateurAvis\Controleur\ControleurEcole;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
 ConnexionUtilisateur::estConnecte();
