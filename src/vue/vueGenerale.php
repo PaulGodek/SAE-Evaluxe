@@ -20,10 +20,36 @@ use App\GenerateurAvis\Lib\MessageFlash;
         <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
     </a>
 
-    <div id="burgerParent">
-        <div class="burger">
-            <span></span>
-        </div>
+    <!-- Checkbox cho burger menu -->
+    <input type="checkbox" id="burgerToggle" hidden>
+
+    <!-- Label làm icon burger, gắn với checkbox -->
+    <label for="burgerToggle" id="burgerIcon">☰</label>
+
+
+    <div id="burger">
+        <?php
+        if (!ConnexionUtilisateur::estConnecte()) : ?>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
+               class="item">Accueil</a>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference"
+               class="item">Connexion</a>
+        <?php else: ?>
+            <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="item">Utilisateurs</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
+            <?php endif; ?>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
+            <!--            <nav>-->
+            <!--                <form action="controleurFrontal.php" method="get">-->
+            <!--                    <input type="hidden" name="controleur" value="Connexion">-->
+            <!--                    <input type="hidden" name="action" value="deconnecter">-->
+            <!--                    <button type="submit">Déconnexion</button>-->
+            <!--                </form>-->
+            <!--            </nav>-->
+        <?php endif; ?>
     </div>
 
     <nav class="navbar">
