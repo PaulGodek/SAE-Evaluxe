@@ -35,6 +35,15 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
+            return;
+        }
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         try {
 
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);

@@ -43,10 +43,6 @@ class ConnexionUtilisateur
 
     public static function estTypeUtilisateur(string $type): bool
     {
-        if (!self::estConnecte()) {
-            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
-            return false;
-        }
         $login = self::getLoginUtilisateurConnecte();
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
         return $utilisateur !== null && ($utilisateur->getType() === $type);

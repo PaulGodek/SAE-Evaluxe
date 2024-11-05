@@ -49,21 +49,16 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() || !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+        if (!self::verifierAdminConnectee()) return;
+
+        $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
+        if ($ecole == NULL) {
+            self::afficherErreur("L'école {$_GET['login']} n'existe pas");
             return;
         }
-        try {
-            $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
-            if ($ecole == NULL) {
-                self::afficherErreur("L'école  {$_GET['login']} n'existe pas");
-            } else {
-                self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
-            }
-        } catch (TypeError $e) {
-            self::afficherErreur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
-        }
+        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
     }
+
 
     /*public static function afficherFormulaireCreation(): void
     {
@@ -149,7 +144,7 @@ class ControleurEcole extends ControleurGenerique
     private static function verifierAdminConnectee(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            ConnexionUtilisateur::estAdministrateur();
+            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
             return false;
         }
 
