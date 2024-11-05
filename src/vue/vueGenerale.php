@@ -102,7 +102,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 utilisation des cookies et sur la manière dont vous pouvez contrôler les cookies, veuillez consulter
                 notre
                 politique de confidentialité.</p>
-            <a href="controleurFrontal.php?action=setCookie">✖</a>
+            <a href="controleurFrontal.php?action=setCookie" class="close-button">✖</a>
         </div>
     <?php endif; ?>
 
@@ -128,7 +128,6 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     </div>
 </footer>
 <script src="../ressources/javascript/accessibility.js"></script>
-<script src="../ressources/javascript/bannerCookie.js"></script>
 
 
 </body>
