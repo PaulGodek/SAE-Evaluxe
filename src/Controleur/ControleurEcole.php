@@ -111,8 +111,8 @@ class ControleurEcole extends ControleurGenerique
     public static function ajouterEtudiant(): void
     {
         $peutChecker = false;
-        if (ControleurGenerique::verifierAdminConnecte()) $peutChecker = true;
-        if (ControleurGenerique::verifierEcoleConnecte()) $peutChecker = true;
+        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
+        if (ConnexionUtilisateur::estEcole()) $peutChecker = true;
         if ($peutChecker) {
             $login = $_GET['login'];
             $codeUnique = $_GET['codeUnique'];
