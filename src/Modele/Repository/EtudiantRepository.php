@@ -84,14 +84,13 @@ class EtudiantRepository extends AbstractRepository
     public static function recupererEtudiantParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableEtudiant . "  WHERE nom = :nomTag";
-        // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "nomTag" => $nom,
 
         );
-        // On donne les valeurs et on exécute la requête
+
         $pdoStatement->execute($values);
 
         $tableauEtudiant = [];
@@ -99,10 +98,6 @@ class EtudiantRepository extends AbstractRepository
             $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
 
         }
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-
 
         return $tableauEtudiant;
     }

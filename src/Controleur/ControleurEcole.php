@@ -5,7 +5,6 @@ namespace App\GenerateurAvis\Controleur;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
-use TypeError;
 
 class ControleurEcole extends ControleurGenerique
 {
@@ -60,7 +59,7 @@ class ControleurEcole extends ControleurGenerique
     }
 
 
-    /*public static function afficherFormulaireCreation(): void
+    public static function afficherFormulaireCreation(): void
     {
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
     }
@@ -71,7 +70,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->ajouter($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
-    }*/
+    }
 
     public static function afficherErreurEcole(string $messageErreur = ""): void
     {

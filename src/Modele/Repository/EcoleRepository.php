@@ -90,14 +90,12 @@ class EcoleRepository extends AbstractRepository
     public static function recupererEcoleParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableEcole . "  WHERE nom = :nomTag";
-        // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "nomTag" => $nom,
 
         );
-        // On donne les valeurs et on exécute la requête
         $pdoStatement->execute($values);
 
         $tableauEcole = [];
@@ -105,10 +103,6 @@ class EcoleRepository extends AbstractRepository
             $tableauEcole[] = (new EcoleRepository)->construireDepuisTableauSQL($ecoleFormatTableau);
 
         }
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-
 
         return $tableauEcole;
     }
@@ -174,7 +168,6 @@ class EcoleRepository extends AbstractRepository
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-
         $values = [
             "loginTag" => $ecole->getLogin(),
         ];
@@ -182,7 +175,8 @@ class EcoleRepository extends AbstractRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function rechercherEcole(string $recherche){
+    public static function rechercherEcole(string $recherche): array
+    {
 
         $sql="SELECT * FROM " . self::$tableEcole .
             " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%' OR nom='".$recherche."'";
@@ -194,6 +188,5 @@ class EcoleRepository extends AbstractRepository
             $tableauEcole[] = (new EcoleRepository())->construireDepuisTableauSQL($ecoleFormatTableau);
         }
         return $tableauEcole;
-
     }
 }
