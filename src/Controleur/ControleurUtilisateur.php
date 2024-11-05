@@ -7,6 +7,7 @@ use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\HTTP\Cookie;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -18,6 +19,14 @@ use TypeError;
 
 class ControleurUtilisateur extends ControleurGenerique
 {
+
+    public static function setCookie(): void
+    {
+        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
+        header('Location: controleurFrontal.php?action=home');
+        exit();
+    }
+
     public static function afficherListe(): void
     {
         if (self::verifierAdminConnecte()) {

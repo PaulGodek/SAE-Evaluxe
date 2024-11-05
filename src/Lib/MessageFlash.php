@@ -28,7 +28,7 @@ class MessageFlash
         );
         $session = Session::getInstance();
         if ($session->contient(self::$cleFlash)) {
-            $array = \App\SAE\Lib\MessageFlash::lireMessages(self::$cleFlash);
+            $array = \App\GenerateurAvis\Lib\MessageFlash::lireMessages(self::$cleFlash);
             $array[$type] = $message;
         }
         $session->enregistrer(self::$cleFlash, $array);

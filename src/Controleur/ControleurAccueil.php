@@ -1,5 +1,6 @@
 <?php
 namespace App\GenerateurAvis\Controleur;
+use App\GenerateurAvis\Modele\HTTP\Cookie;
 
 class ControleurAccueil {
     public static function afficher(): void

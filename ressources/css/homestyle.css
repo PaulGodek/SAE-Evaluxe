@@ -319,3 +319,48 @@ legend {
     font-weight: bold;
 }
 
+
+/*COOKIE*/
+#cookie-banner {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--rougeUM);
+    color: #000;
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    z-index: 12;
+}
+
+#cookie-banner h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    flex-basis: 100%;
+    text-align: left;
+}
+
+#cookie-banner p {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 40px 0 20px;
+    justify-content: center;
+    text-align: justify;
+}
+
+#cookie-banner a {
+    background-color: transparent;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    text-decoration: none;
+}
