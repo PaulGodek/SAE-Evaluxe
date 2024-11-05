@@ -21,13 +21,6 @@ use TypeError;
 class ControleurUtilisateur extends ControleurGenerique
 {
 
-    #[NoReturn] public static function setCookie(): void
-    {
-        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
-        header('Location: controleurFrontal.php?action=home');
-        exit();
-    }
-
     public static function afficherListe(): void
     {
         if (self::verifierAdminConnecte()) {
@@ -393,6 +386,13 @@ class ControleurUtilisateur extends ControleurGenerique
                 ]);
             }
         }
+    }
+
+    public static function setCookieBanner(): void
+    {
+        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
+        header('Location: controleurFrontal.php?action=home');
+        exit();
     }
 
 
