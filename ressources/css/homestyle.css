@@ -168,6 +168,22 @@ main {
     text-decoration: none;
 }
 
+#accessibilityButton {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    background-color: var(--rougeUM);
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /*---START RESPONSIVE---*/
 @media (max-width: 41200px) {
     header {
@@ -291,11 +307,11 @@ ul li {
     margin-bottom: 10px;
     border-radius: 5px;
     line-height: 1.5;
-    /*background-color: #f9f9f9;*/
+    background-color: #f9f9f9;
 }
 
 ul li:hover {
-    /*background-color: #e0e0e0;*/
+    background-color: #e0e0e0;
     transition: background-color 0.3s ease;
 }
 

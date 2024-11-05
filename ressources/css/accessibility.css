@@ -1,49 +1,30 @@
 /*ACCESSIBILITY*/
-/* Nút Accessibility */
-
-#accessibilityButton {
-    position: fixed;
-    top: 30px;
-    right: 20px;
-    background-color: var(--rougeUM);
-    border: none;
-    border-radius: 50%;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1001;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Style cho icon bên trong nút */
 #accessibilityIcon {
     width: 24px;
     height: 24px;
 }
 
-/* Menu Accessibility ẩn ban đầu */
+/* Menu Accessibility */
 #accessibilityMenu {
     display: none;
-    position: fixed;
-    top: 60px;
-    right: 20px;
-    background-color: #fff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    position: absolute;
+    top: 100%; /* Hiện ngay dưới header */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
     padding: 10px;
-    z-index: 1000;
-    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9;
 }
 
-/* Hiển thị menu trợ năng khi checkbox #accessibilityToggle được chọn */
 #accessibilityToggle:checked + #accessibilityButton + #accessibilityMenu {
     display: flex;
     flex-direction: column;
 }
 
-/* Style cho từng tùy chọn bên trong menu */
+/* Style menu */
 #accessibilityMenu label {
     padding: 10px 20px;
     margin: 5px 0;
@@ -61,29 +42,57 @@
     color: var(--rougeUM);
 }
 
-/* Style cho toàn trang khi chế độ high contrast bật */
+/* Style high contrast  */
 .high-contrast-mode {
     background-color: black;
     color: yellow;
 }
 
-/* Style cho tất cả các link khi chế độ high contrast bật */
 .high-contrast-mode a {
-    color: cyan; /* Màu sắc nổi bật cho các link */
+    color: cyan;
 }
 
-/* Style cho toàn trang khi chế độ font lớn bật */
+.high-contrast-mode #container_Choix {
+    background-color: black;
+}
+
+.high-contrast-mode ul li {
+    border-color: white;
+    background-color: black;
+}
+
+.high-contrast-mode #remplaceBaliseLegend {
+    color: cyan;
+}
+
+.high-contrast-mode #accessibilityMenu {
+    background-color: black;
+}
+
+/* Style font */
 .large-font-mode {
-    font-size: 1.5em; /* Tăng kích thước font */
+    font-size: 1.5em;
 }
 
-/* Style cho toàn trang khi chế độ dark mode bật */
+/* Style dark mode */
 .dark-mode {
-    background-color: #121212; /* Màu nền tối */
-    color: #f0f0f0; /* Màu chữ sáng */
+    background-color: #121212;
+    color: var(--lightGrey);
 }
 
-/* Style cho tất cả các link khi chế độ dark mode bật */
+.dark-mode #container_Choix {
+    background-color: black;
+}
+
 .dark-mode a {
-    color: #bb86fc; /* Màu sắc nổi bật cho các link trong chế độ tối */
+    color: #bb86fc;
+}
+
+.dark-mode ul li {
+    border-color: white;
+    background-color: #121212;
+}
+
+.dark-mode #accessibilityMenu {
+    background-color: black;
 }

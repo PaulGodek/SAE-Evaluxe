@@ -20,13 +20,9 @@ use App\GenerateurAvis\Lib\MessageFlash;
     <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher">
         <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
     </a>
-
-    <!-- Checkbox cho burger menu -->
     <input type="checkbox" id="burgerToggle" hidden>
 
-    <!-- Label làm icon burger, gắn với checkbox -->
     <label for="burgerToggle" id="burgerIcon">☰</label>
-
 
     <div id="burger">
         <?php
@@ -44,6 +40,23 @@ use App\GenerateurAvis\Lib\MessageFlash;
             <?php endif; ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
         <?php endif; ?>
+    </div>
+
+    <!--    accessibility-->
+    <input type="checkbox" id="accessibilityToggle" hidden>
+    <label for="accessibilityToggle" id="accessibilityButton">
+        <img src="../ressources/images/accessibility-icon.webp" id="accessibilityIcon" alt="Accessibility Icon">
+    </label>
+
+    <div id="accessibilityMenu">
+        <input type="checkbox" id="highContrast" hidden>
+        <label for="highContrast">Contraste élevé</label>
+
+        <input type="checkbox" id="largeFont" hidden>
+        <label for="largeFont">Augmenter la taille de la police</label>
+
+        <input type="checkbox" id="darkMode" hidden>
+        <label for="darkMode">Mode sombre</label>
     </div>
 
     <nav class="navbar">
@@ -64,23 +77,6 @@ use App\GenerateurAvis\Lib\MessageFlash;
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
         <?php endif; ?>
     </nav>
-
-            <!--    accessibility-->
-    <input type="checkbox" id="accessibilityToggle" hidden>
-    <label for="accessibilityToggle" id="accessibilityButton">
-        <img src="../ressources/images/accessibility-icon.webp" id="accessibilityIcon" alt="Accessibility Icon">
-    </label>
-
-    <div id="accessibilityMenu">
-        <input type="checkbox" id="highContrast" hidden>
-        <label for="highContrast">High Contrast</label>
-
-        <input type="checkbox" id="largeFont" hidden>
-        <label for="largeFont">Increase Font Size</label>
-
-        <input type="checkbox" id="darkMode" hidden>
-        <label for="darkMode">Dark Mode</label>
-    </div>
 
 </header>
 
@@ -109,19 +105,8 @@ use App\GenerateurAvis\Lib\MessageFlash;
             <p>Copyright 2024 - Tous droits réservés</p>
         </div>
     </div>
+    <script src="../ressources/javascript/accessibility.js"></script>
 </footer>
-<script>
-    document.getElementById("highContrast").addEventListener("change", function() {
-        document.body.classList.toggle("high-contrast-mode", this.checked);
-    });
 
-    document.getElementById("largeFont").addEventListener("change", function() {
-        document.body.classList.toggle("large-font-mode", this.checked);
-    });
-
-    document.getElementById("darkMode").addEventListener("change", function() {
-        document.body.classList.toggle("dark-mode", this.checked);
-    });
-</script>
 </body>
 </html>
