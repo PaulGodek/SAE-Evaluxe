@@ -311,34 +311,42 @@ legend {
     background-color: var(--rougeUM);
     color: #000;
     padding: 20px;
+    text-align: center;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     z-index: 12;
 }
 
 #cookie-banner h2 {
     font-size: 1.5em;
-    margin: 0 20px 10px 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
     flex-basis: 100%;
+    text-align: left;
 }
 
 #cookie-banner p {
-    margin: 0 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 40px 0 20px;
+    justify-content: center;
     text-align: justify;
 }
 
 #cookie-banner a {
-    background: none;
+    background-color: transparent;
+    border: none;
     color: #000;
-    font-size: 20px;
     cursor: pointer;
+    font-size: 20px;
     position: absolute;
     right: 20px;
     top: 20px;
     text-decoration: none;
 }
-
 #cookie-banner .close-button {
     font-size: 30px;
 }
