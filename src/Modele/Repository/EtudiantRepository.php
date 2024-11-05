@@ -51,8 +51,16 @@ class EtudiantRepository extends AbstractRepository
         return $tableauEtudiant;
     }
 
-    /*public static function recupererEtudiantsOrdonneParParcours(): array{
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY parcours ");
+    public static function recupererEtudiantsOrdonneParParcours(): array
+    {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+            " e 
+        JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
+        JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
+        JOIN semestre3_2024 s3 on s3.etudid=e.idEtudiant
+        JOIN semestre4_2024 s4 on s4.etudid=e.idEtudiant
+        JOIN semestre5_2024 s5 on s5.etudid=e.idEtudiant
+        ORDER BY s1.Parcours,s2.Parcours,s3.Parcours,s4.Parcours,s5.Parcours;");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -60,7 +68,6 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
     }
-     */
 
     /**
      * @throws RandomException
