@@ -44,7 +44,7 @@ if (class_exists($nomDeClasseControleur)) {
         ControleurGenerique::home();
     }
 } else {
-    ControleurUtilisateur::afficherErreur(" Ce controleur n'existe pas ");
+    ControleurGenerique::afficherErreur("Ce controleur n'existe pas ");
 
 }
 

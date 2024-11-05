@@ -13,7 +13,7 @@ class ControleurGenerique
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
-    public static function afficherErreur(string $messageErreur = "", string $controleur = "utilisateur"): void
+    public static function afficherErreur(string $messageErreur = "", string $controleur = "site web"): void
     {
         self::afficherVue('vueGenerale.php', ['messageErreur' => $messageErreur, 'controleur' => $controleur, 'titre' => "Erreur", 'cheminCorpsVue' => 'erreur.php']);
     }
