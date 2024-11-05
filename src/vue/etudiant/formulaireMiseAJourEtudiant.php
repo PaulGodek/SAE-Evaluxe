@@ -15,19 +15,15 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
             <input class="InputAddOn-field" type="text"  name="login" id="login_id" value="<?= htmlspecialchars($etudiant->getLogin())?>" readonly>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="nom_id">Nom&#42;</label>
-            <input class="InputAddOn-field" type="text"  name="nom" id="nom_id" value="<?= htmlspecialchars($etudiant->getNom())?>" required>
+            <label class="InputAddOn-item" for="idE_id">Id étudiant&#42;</label>
+            <input class="InputAddOn-field" type="text"  name="etudid" id="idE_id" value="<?= htmlspecialchars($etudiant->getIdEtudiant())?>" required>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="prenom_id">Prenom&#42;</label>
-            <input class="InputAddOn-field" type="text"  name="prenom" id="prenom_id" value="<?= htmlspecialchars($etudiant->getPrenom())?>" required>
+            <label class="InputAddOn-item" for="codeUnique_id">Code Unique&#42;</label>
+            <input class="InputAddOn-field" type="text"  name="codeU" id="codeUnique_id" value="<?= htmlspecialchars($etudiant->getCodeUnique())?>" readonly>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="moyenne_id">Moyenne&#42;</label>
-            <input class="InputAddOn-field" type="text"  name="moyenne" id="moyenne_id" value="<?= htmlspecialchars($etudiant->getMoyenne())?>" required>
-        </p>
-        <p class="InputAddOn">
-<!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
+            <!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
             <button class = "button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>

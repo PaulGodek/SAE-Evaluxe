@@ -92,7 +92,7 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function mettreAJour(): void
     {
-        $etudiant = new Etudiant($_GET["login"], $_GET["idEtudiant"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["etudid"]);
         (new EtudiantRepository)->mettreAJour($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
