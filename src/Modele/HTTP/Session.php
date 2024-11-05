@@ -3,7 +3,6 @@
 namespace App\GenerateurAvis\Modele\HTTP;
 
 use App\GenerateurAvis\Configuration\ConfigurationSite;
-use App\GenerateurAvis\Modele\HTTP\Cookie;
 use Exception;
 
 class Session
@@ -18,7 +17,7 @@ class Session
         if (session_start() === false) {
             throw new Exception("La session n'a pas réussi à démarrer.");
         }
-        $this->verifierDerniereActivite(); // Vérifier l'expiration lors du démarrage de la session
+        $this->verifierDerniereActivite();
     }
 
     public static function getInstance(): Session
@@ -33,11 +32,9 @@ class Session
     {
         $dureeExpiration = ConfigurationSite::getDureeExpirationSession();
         if (isset($_SESSION['derniere_activite']) && (time() - $_SESSION['derniere_activite']) > $dureeExpiration) {
-            // Détruire la session si l'expiration est dépassée
             $this->detruire();
-            return; // Quitter la méthode pour éviter d'enregistrer à nouveau l'activité
+            return;
         }
-        // Mettre à jour l'heure de la dernière activité
         $_SESSION['derniere_activite'] = time();
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\GenerateurAvis\Lib;
 
-use App\GenerateurAvis\Controleur\ControleurUtilisateur;
 use App\GenerateurAvis\Modele\HTTP\Session;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 

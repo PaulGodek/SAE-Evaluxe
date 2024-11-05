@@ -3,20 +3,19 @@
 namespace App\GenerateurAvis\Modele\DataObject;
 
 use Random\RandomException;
-use function Sodium\add;
 
 class Etudiant extends AbstractDataObject
 {
 
     private string $login;
     private string $codeUnique;
-    private string $idEtudiant;
+    private int $idEtudiant;
     private static array $codesUniquesUtilisees = [];
 
     /**
      * @throws RandomException
      */
-    public function __construct(string $login, string $idEtudiant)
+    public function __construct(string $login, int $idEtudiant)
     {
         $this->login = substr($login, 0, 64);
         $this->idEtudiant = $idEtudiant;
@@ -51,20 +50,13 @@ class Etudiant extends AbstractDataObject
         return $this->codeUnique;
     }
 
-    public function getIdEtudiant(): string
+    public function getIdEtudiant(): int
     {
         return $this->idEtudiant;
     }
 
-    public function setIdEtudiant(string $idEtudiant): void
+    public function setIdEtudiant(int $idEtudiant): void
     {
         $this->idEtudiant = $idEtudiant;
     }
-
-
-    // Pour pouvoir convertir un objet en chaîne de caractères
-    /*public function __toString() : string
-    {
-        return "<p>Utilisateur $this->prenom $this->nom de login $this->login.</p>";
-    }*/
 }

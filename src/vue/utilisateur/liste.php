@@ -50,4 +50,3 @@ foreach ($utilisateurs as $utilisateur) {
     $type=$utilisateur->getType();
 
 }
-//echo '</ul><p><a href="controleurFrontal.php?action=afficherFormulaireCreationEtudiant">Créer un etudiant</a>&emsp;<a href="controleurFrontal.php?action=afficherFormulaireCreationEcole">Créer une école</a> </p>';

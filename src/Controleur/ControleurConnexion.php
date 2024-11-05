@@ -2,8 +2,6 @@
 
 namespace App\GenerateurAvis\Controleur;
 
-use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
-
 class ControleurConnexion
 {
     public static function afficherConnexionAdministrateur(): void

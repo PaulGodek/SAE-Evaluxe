@@ -6,7 +6,6 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
-use TypeError;
 
 class ControleurEcole extends ControleurGenerique
 {
@@ -66,7 +65,7 @@ class ControleurEcole extends ControleurGenerique
     }
 
 
-    /*public static function afficherFormulaireCreation(): void
+    public static function afficherFormulaireCreation(): void
     {
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
     }
@@ -77,7 +76,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->ajouter($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
-    }*/
+    }
 
     public static function afficherErreurEcole(string $messageErreur = ""): void
     {
@@ -111,29 +110,36 @@ class ControleurEcole extends ControleurGenerique
 
     public static function ajouterEtudiant(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        if (!ControleurGenerique::verifierEcoleConnecte()) return;
-        $login = $_GET['login'];
-        $codeUnique = $_GET['codeUnique'];
-        $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
+        $peutChecker = false;
+        if (ControleurGenerique::verifierAdminConnecte()) $peutChecker = true;
+        if (ControleurGenerique::verifierEcoleConnecte()) $peutChecker = true;
+        if ($peutChecker) {
+            $login = $_GET['login'];
+            $codeUnique = $_GET['codeUnique'];
+            $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
 
-        if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
             $ecole->addFuturEtudiant($codeUnique);
-        else {
-            self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
-            return;
-        }
 
-        if ($ecole->saveFutursEtudiants()) {
+            if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
+                $ecole->addFuturEtudiant($codeUnique);
+            else {
+                self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
+                return;
+            }
 
-            self::afficherVue('vueGenerale.php', [
-                "titre" => "Ajout d'un étudiant",
-                "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
-                "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
-                "codeUnique" => $codeUnique
-            ]);
+            if ($ecole->saveFutursEtudiants()) {
+
+                self::afficherVue('vueGenerale.php', [
+                    "titre" => "Ajout d'un étudiant",
+                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
+                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
+                    "codeUnique" => $codeUnique
+                ]);
+            } else {
+                self::afficherErreurEcole("Erreur lors de l'ajout de l'étudiant.");
+            }
         } else {
-            self::afficherErreurEcole("Erreur lors de l'ajout de l'étudiant.");
+            self::afficherErreurEcole("Vous n'avez pas l'autorisation de réaliser cette action.");
         }
     }
 

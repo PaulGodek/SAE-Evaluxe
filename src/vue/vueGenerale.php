@@ -43,7 +43,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
         <?php endif; ?>
     </div>
 
-    <!--    accessibility-->
+    <!-- accessibility -->
     <input type="checkbox" id="accessibilityToggle" hidden>
     <label for="accessibilityToggle" id="accessibilityButton">
         <img src="../ressources/images/accessibility-icon.webp" id="accessibilityIcon" alt="Accessibility Icon">
@@ -51,14 +51,15 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 
     <div id="accessibilityMenu">
         <input type="checkbox" id="highContrast" hidden>
-        <label for="highContrast">Contraste élevé</label>
+        <label for="highContrast" class="accessibility-option">Contraste élevé</label>
 
         <input type="checkbox" id="largeFont" hidden>
-        <label for="largeFont">Augmenter la taille de la police</label>
+        <label for="largeFont" class="accessibility-option">Augmenter la taille de la police</label>
 
         <input type="checkbox" id="darkMode" hidden>
-        <label for="darkMode">Mode sombre</label>
+        <label for="darkMode" class="accessibility-option">Mode sombre</label>
     </div>
+
 
     <nav class="navbar">
         <?php

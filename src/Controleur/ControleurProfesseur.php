@@ -2,10 +2,8 @@
 
 namespace App\GenerateurAvis\Controleur;
 
-use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
-use Random\RandomException;
 use TypeError;
 
 class ControleurProfesseur extends ControleurGenerique

@@ -97,18 +97,6 @@ class ControleurEtudiant extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
     }
 
-//    /**
-//     * @throws RandomException
-//    */
-    /*public static function creerDepuisFormulaire(): void
-    {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiant = new Etudiant($_GET["login"], $_GET["idEtudiant"], $_GET["prenom"], $_GET["moyenne"]);
-        (new EtudiantRepository)->ajouter($etudiant);
-        $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
-    }*/
-
     public static function afficherErreurEtudiant(string $messageErreur = ""): void
     {
         self::afficherErreur($messageErreur, "etudiant");

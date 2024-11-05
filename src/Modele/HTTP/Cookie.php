@@ -9,9 +9,9 @@ class Cookie
         $valeurS = serialize($valeur);
 
         if ($dureeExpiration === null) {
-            setcookie($cle, $valeurS, 0, '/'); // Durée de vie par défaut
+            setcookie($cle, $valeurS, 0, '/');
         } else {
-            setcookie($cle, $valeurS, time() + $dureeExpiration, '/'); // Durée de vie spécifiée
+            setcookie($cle, $valeurS, time() + $dureeExpiration, '/');
         }
     }
 
@@ -20,7 +20,7 @@ class Cookie
         if (self::contient($cle)) {
             return unserialize($_COOKIE[$cle]);
         }
-        return null; // Retourne null si le cookie n'existe pas
+        return null;
     }
 
     public static function contient(string $cle): bool
@@ -31,8 +31,8 @@ class Cookie
     public static function supprimer(string $cle): void
     {
         if (self::contient($cle)) {
-            setcookie($cle, '', time() - 3600, '/'); // Expires the cookie
-            unset($_COOKIE[$cle]); // Supprime la variable de tableau
+            setcookie($cle, '', time() - 3600, '/');
+            unset($_COOKIE[$cle]);
         }
     }
 }

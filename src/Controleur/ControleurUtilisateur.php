@@ -13,6 +13,7 @@ use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use JetBrains\PhpStorm\NoReturn;
 use PDO;
 use Random\RandomException;
 use TypeError;
@@ -20,7 +21,7 @@ use TypeError;
 class ControleurUtilisateur extends ControleurGenerique
 {
 
-    public static function setCookie(): void
+    #[NoReturn] public static function setCookie(): void
     {
         Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
         header('Location: controleurFrontal.php?action=home');
@@ -88,7 +89,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherResultatRechercheEtudiant(): void
     {
         if (self::verifierAdminConnecte()) {
-            $etudiants = EtudiantRepository::rechercherEtudiant($_GET['reponse']);
+            $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
     }
@@ -108,28 +109,6 @@ class ControleurUtilisateur extends ControleurGenerique
             self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
         }
     }
-
-    /**
-     * @throws RandomException
-     */
-    /*
-    public static function afficherResultatRecherche(): void
-    {
-        if (self::verifierAdminConnecte()) {
-            $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
-            if ($utilisateur->getType() == "etudiant") {
-                $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
-                self::afficherVue("vueGenerale.php", ["etudiant" => $etudiant, "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
-            } else if ($utilisateur->getType() == "universite") {
-                $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
-                self::afficherVue("vueGenerale.php", ["ecole" => $ecole, "cheminCorpsVue" => "ecole/detailEcole.php"]);
-            } else if ($utilisateur->getType() == "professeur") {
-                $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
-                self::afficherVue("vueGenerale.php", ["professeur" => $professeur, "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
-            }
-        }
-    }*/
-    // Toute la fonction est ultra bizarre, j'en réécris une qui correspond plus à ce qu'on veut
 
     public static function afficherResultatRechercheUtilisateur(): void
     {
@@ -158,38 +137,6 @@ class ControleurUtilisateur extends ControleurGenerique
             }
 
             ControleurEcole::creerDepuisFormulaire();
-        }
-    }
-
-
-    public static function afficherFormulaireCreationEtudiant(): void
-    {
-        if (self::verifierAdminConnecte()) {
-            self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'utilisateur", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
-        }
-    }
-
-    /**
-     * @throws RandomException
-     */
-    public static function creerEtudiantDepuisFormulaire(): void
-    {
-        if (self::verifierAdminConnecte()) {
-            $mdp = $_GET['mdp'] ?? '';
-            $mdp2 = $_GET['mdp2'] ?? '';
-
-            if ($mdp !== $mdp2) {
-                self::afficherErreurUtilisateur("Mots de passe distincts");
-                return;
-            }
-            $utilisateur = self::construireDepuisFormulaire($_GET);
-            (new UtilisateurRepository)->ajouter($utilisateur);
-
-
-            $etudiant = new Etudiant($_GET["login"], $_GET["nom"], $_GET["prenom"], $_GET["moyenne"]);
-            (new EtudiantRepository)->ajouter($etudiant);
-            $etudiants = (new EtudiantRepository())->recuperer();
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Création d'étudiant", "cheminCorpsVue" => "etudiant/etudiantCree.php"]);
         }
     }
 
@@ -261,7 +208,6 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function mettreAJour(): void
     {
         if (self::verifierAdminConnecte()) {
-            //$utilisateur = new Utilisateur($_GET["login"], $_GET["type"], $_GET["password_hash"]);
             if ($_GET["type"] == "etudiant") {
                 ControleurEtudiant::mettreAJour();
             } else if ($_GET["type"] == "universite") {

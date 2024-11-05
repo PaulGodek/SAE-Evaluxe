@@ -38,12 +38,4 @@ class Utilisateur extends AbstractDataObject
     {
         return $this->password_hash;
     }
-
-
-
-    // Pour pouvoir convertir un objet en chaîne de caractères
-    /*public function __toString() : string
-    {
-        return "<p>Utilisateur $this->prenom $this->nom de login $this->login.</p>";
-    }*/
 }

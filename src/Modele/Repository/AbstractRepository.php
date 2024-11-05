@@ -57,11 +57,8 @@ abstract class AbstractRepository
             "clePrimaireTag" => $clePrimaire,
 
         );
-        // On donne les valeurs et on exécute la requête
         $pdoStatement->execute($values);
 
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
         $objetFormatTableau = $pdoStatement->fetch();
 
         if (!$objetFormatTableau) {

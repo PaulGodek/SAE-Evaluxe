@@ -4,8 +4,6 @@ namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
-use Random\RandomException;
-
 class ProfesseurRepository extends AbstractRepository
 {
     private static string $tableProfesseur = "ProfTest";
@@ -78,14 +76,12 @@ class ProfesseurRepository extends AbstractRepository
     public static function recupererProfesseurParNom($nom): array
     {
         $sql = "SELECT * from " . self::$tableProfesseur . "  WHERE nom = :nomTag";
-        // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "nomTag" => $nom,
 
         );
-        // On donne les valeurs et on exécute la requête
         $pdoStatement->execute($values);
 
         $tableauProfesseur = [];
@@ -93,10 +89,6 @@ class ProfesseurRepository extends AbstractRepository
             $tableauProfesseur[] = (new ProfesseurRepository)->construireDepuisTableauSQL($professeurFormatTableau);
 
         }
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-
 
         return $tableauProfesseur;
     }

@@ -3,7 +3,7 @@
     <fieldset>
         <legend>Recherche :</legend>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="reponse">Nom/prenom de l'étudiant</label>
+            <label class="InputAddOn-item" for="reponse">Login de l'étudiant (nomp)</label>
             <input class="InputAddOn-field" type="text" name="reponse" placeholder="Ex : Dupont " id="reponse" required>
         </p>
 
