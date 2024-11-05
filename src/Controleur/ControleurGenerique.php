@@ -13,19 +13,47 @@ class ControleurGenerique
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
-    public static function afficherErreur(string $messageErreur = " "): void
+    public static function afficherErreur(string $messageErreur = "", string $controleur = "utilisateur"): void
     {
-
-        echo($messageErreur);
+        self::afficherVue('vueGenerale.php', ['messageErreur' => $messageErreur, 'controleur' => $controleur, 'titre' => "Erreur", 'cheminCorpsVue' => 'erreur.php']);
     }
-    public static function verifierAdminConnectee(): bool
+
+    public static function verifierAdminConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            ControleurUtilisateur::afficherErreur("Veuillez vous connecter d'abord.");
+            self::afficherErreur("Veuillez vous connecter d'abord.");
             return false;
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return false;
+        }
+        return true;
+    }
+
+    public static function verifierEcoleConnecte(): bool
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return false;
+        }
+
+        if (!ConnexionUtilisateur::estEcole()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return false;
+        }
+        return true;
+    }
+
+    public static function verifierEtudiantConnecte(): bool
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return false;
+        }
+
+        if (!ConnexionUtilisateur::estEtudiant()) {
             self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
             return false;
         }
