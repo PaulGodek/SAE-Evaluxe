@@ -89,7 +89,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherResultatRechercheEtudiant(): void
     {
         if (self::verifierAdminConnecte()) {
-            $etudiants = EtudiantRepository::rechercherEtudiant($_GET['reponse']);
+            $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
     }

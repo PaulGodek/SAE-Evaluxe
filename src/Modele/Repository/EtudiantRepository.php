@@ -165,7 +165,8 @@ class EtudiantRepository extends AbstractRepository
 
     }
 
-    public static function rechercherEtudiant(string $recherche)
+    //Pour plus tard
+    /*public static function rechercherEtudiant(string $recherche)
     {
 
         $sql = "SELECT * FROM " . self::$tableEtudiant .
@@ -181,7 +182,7 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
 
-    }
+    }*/
 
     public static function getNomPrenomParIdEtudiant($idEtudiant): ?array
     {
