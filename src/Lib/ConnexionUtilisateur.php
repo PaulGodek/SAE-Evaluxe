@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Lib;
 
+use App\GenerateurAvis\Controleur\ControleurUtilisateur;
 use App\GenerateurAvis\Modele\HTTP\Session;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 
@@ -37,27 +38,34 @@ class ConnexionUtilisateur
     {
         $session = Session::getInstance();
         $loginUtilisateurConnecte = $session->lire(self::$cleConnexion) ?? null;
-
         return $loginUtilisateurConnecte === $login;
+    }
+
+    public static function estTypeUtilisateur(string $type): bool
+    {
+        $login = self::getLoginUtilisateurConnecte();
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+        return $utilisateur !== null && ($utilisateur->getType() === $type);
     }
 
     public static function estAdministrateur(): bool
     {
-        if (!self::estConnecte()) {
-            return false;
-        }
-        $login = self::getLoginUtilisateurConnecte();
-        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        return $utilisateur !== null && ($utilisateur->getType() === 'administrateur');
+        return self::estTypeUtilisateur('administrateur');
     }
 
-    public static function estEcole($login): bool
+    public static function estEcole(): bool
     {
-        if (!self::estConnecte()) {
-            return false;
-        }
-        $login = self::getLoginUtilisateurConnecte();
-        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        return $utilisateur !== null && ($utilisateur->getType() === 'universite');
+        return self::estTypeUtilisateur('universite');
     }
+
+    public static function estEtudiant(): bool
+    {
+        return self::estTypeUtilisateur('etudiant');
+    }
+
+    public static function estProfesseur(): bool
+    {
+        return self::estTypeUtilisateur('professeur');
+    }
+
 }

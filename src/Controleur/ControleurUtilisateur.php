@@ -8,19 +8,30 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use App\GenerateurAvis\Modele\HTTP\Cookie;
+use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use PDO;
 use Random\RandomException;
 use TypeError;
 
 class ControleurUtilisateur extends ControleurGenerique
 {
+
+    public static function setCookie(): void
+    {
+        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
+        header('Location: controleurFrontal.php?action=home');
+        exit();
+    }
+
     public static function afficherListe(): void
     {
         $utilisateurs = (new UtilisateurRepository)->recupererOrdonneParType(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs","cheminCorpsVue"=>'utilisateur/liste.php']);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => 'utilisateur/liste.php']);  //"redirige" vers la vue
     }
 
 
@@ -31,10 +42,9 @@ class ControleurUtilisateur extends ControleurGenerique
     }
 
 
-
-
     public static function afficherDetail(): void
     {
+        if (!ControleurGenerique::verifierAdminConnectee()) return;
         try {
 
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
@@ -44,7 +54,20 @@ class ControleurUtilisateur extends ControleurGenerique
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
-                    self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de l'étudiant {$etudiant->getPrenom()} {$etudiant->getNom()}", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+
+                    if ($nomPrenom) {
+                        $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
+                    } else {
+                        $titre = "Détail de l'étudiant (Nom et prénom non trouvés)";
+                    }
+
+                    self::afficherVue('vueGenerale.php', [
+                        "etudiant" => $etudiant,
+                        "titre" => $titre,
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php",
+                        "nomPrenom" => $nomPrenom
+                    ]);
                 } else if ($utilisateur->getType() == "universite") {
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
@@ -69,14 +92,12 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherResultatRechercheEcole(): void
     {
-
-        $ecoles = EcoleRepository::recupererEcoleParNom($_GET['nom']);
+        $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
         self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
     public static function afficherResultatRechercheProfesseur(): void
     {
-
         $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
     }
@@ -84,6 +105,7 @@ class ControleurUtilisateur extends ControleurGenerique
     /**
      * @throws RandomException
      */
+    /*
     public static function afficherResultatRecherche(): void
     {
         $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
@@ -97,6 +119,13 @@ class ControleurUtilisateur extends ControleurGenerique
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
             self::afficherVue("vueGenerale.php", ["professeur" => $professeur, "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
         }
+    }*/
+    // Toute la fonction est ultra bizarre, j'en réécris une qui correspond plus à ce qu'on veut
+
+    public static function afficherResultatRechercheUtilisateur(): void
+    {
+        $utilisateurs = UtilisateurRepository::rechercherUtilisateurParLogin($_GET["login"]);
+        self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "cheminCorpsVue" => "utilisateur/liste.php"]);
     }
 
     public static function afficherFormulaireCreationEcole(): void
@@ -114,7 +143,7 @@ class ControleurUtilisateur extends ControleurGenerique
             return;
         }
 
-       ControleurEcole::creerDepuisFormulaire();
+        ControleurEcole::creerDepuisFormulaire();
     }
 
 
@@ -248,7 +277,6 @@ class ControleurUtilisateur extends ControleurGenerique
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
-
         if ($utilisateur->getType() == "etudiant") {
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
@@ -259,15 +287,14 @@ class ControleurUtilisateur extends ControleurGenerique
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
-            if($ecole->isEstValide()){
+            if ($ecole->isEstValide()) {
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
                     "ecole" => $ecole,
                     "cheminCorpsVue" => "ecole/ecoleConnecte.php"
                 ]);
-            }
-            else{
+            } else {
                 ConnexionUtilisateur::deconnecter();
                 ControleurUtilisateur::afficherErreur("Ce compte n'a pas été validé par l'administrateur ");
             };
@@ -279,7 +306,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "professeur" => $professeur,
                 "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
-        } else if($utilisateur->getType() == "administrateur") {
+        } else if ($utilisateur->getType() == "administrateur") {
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -290,6 +317,53 @@ class ControleurUtilisateur extends ControleurGenerique
         }
 
     }
+
+    // connexion ldap
+    /*public static function connecterEtudiant(): void
+    {
+        $login = $_GET["login"];
+        $mdpL = $_GET["password"];
+
+        $url = "https://webinfo.iutmontp.univ-montp2.fr/~dainiuted/connection/connection_ldap.php";
+        $data = http_build_query([
+            "login" => $login,
+            "mdpL" => $mdpL
+        ]);
+        $options = [
+            "http" => [
+                "header" => "Content-type: application/x-www-form-urlencoded\r\n",
+                "method" => "POST",
+                "content" => $data
+            ]
+        ];
+        $context = stream_context_create($options);
+
+        $response = file_get_contents($url, false, $context);
+
+        $responseData = json_decode($response, true);
+
+
+        if ($responseData['status'] === 'error') {
+            ControleurUtilisateur::afficherErreur($responseData['message']);
+            return;
+        }
+
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+
+        if (empty($utilisateur)) {
+            ControleurUtilisateur::afficherErreur("Login incorrect");
+            return;
+        }
+        ConnexionUtilisateur::connecter($utilisateur->getLogin());
+
+        $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
+        ControleurUtilisateur::afficherVue('vueGenerale.php', [
+            "utilisateur" => $utilisateur,
+            "titre" => "Etudiant connecté",
+            "etudiant" => $etudiant,
+            "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+        ]);
+    }*/
 
 
     public static function deconnecter(): void
@@ -303,6 +377,46 @@ class ControleurUtilisateur extends ControleurGenerique
             "cheminCorpsVue" => "utilisateur/utilisateurDeconnecte.php"
         ]);
     }
+
+    /**
+     * @throws RandomException
+     */
+    /*pour importer les données de notre tables avec tous
+    les informations pour sauvegarder seulement login, codeUnique et idEtudiant*/
+    public static function refaire(): void
+    {
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        foreach ($tables as $table) {
+            $query = "
+            SELECT LOWER(CONCAT(Nom, LEFT(Prénom, 1))) AS login, etudid AS etudid
+            FROM {$table} AS s
+            LEFT JOIN EtudiantTest AS e ON LOWER(CONCAT(s.Nom, LEFT(s.Prénom, 1))) = e.login
+            WHERE e.login IS NULL
+        ";
+
+            $stmt = $pdo->query($query);
+            $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $insertStmt = $pdo->prepare("
+            INSERT INTO EtudiantTest (login, codeUnique, idEtudiant)
+            VALUES (:login, :codeUnique, :idEtudiant)
+        ");
+
+            foreach ($students as $student) {
+                $etudiant = new Etudiant($student['login'], $student['etudid']);
+                $codeUnique = $etudiant->getCodeUnique();
+
+                $insertStmt->execute([
+                    ':login' => $student['login'],
+                    ':idEtudiant' => $student['etudid'],
+                    ':codeUnique' => $codeUnique
+                ]);
+            }
+        }
+    }
+
 
 }
 

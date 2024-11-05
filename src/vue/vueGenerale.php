@@ -2,6 +2,7 @@
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Modele\HTTP\Cookie;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -12,18 +13,51 @@ use App\GenerateurAvis\Lib\MessageFlash;
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
     <link rel="stylesheet" href="../ressources/css/button.css">
-    <link rel="stylesheet" href="../ressources/css/connect.css"
+    <link rel="stylesheet" href="../ressources/css/connect.css">
+    <link rel="stylesheet" href="../ressources/css/accessibility.css">
 </head>
 <body>
 <header>
     <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher">
         <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
     </a>
+    <input type="checkbox" id="burgerToggle" hidden>
 
-    <div id="burgerParent">
-        <div class="burger">
-            <span></span>
-        </div>
+    <label for="burgerToggle" id="burgerIcon">☰</label>
+
+    <div id="burger">
+        <?php
+        if (!ConnexionUtilisateur::estConnecte()) : ?>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
+               class="item">Accueil</a>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference"
+               class="item">Connexion</a>
+        <?php else: ?>
+            <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="item">Utilisateurs</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
+            <?php endif; ?>
+            <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
+        <?php endif; ?>
+    </div>
+
+    <!--    accessibility-->
+    <input type="checkbox" id="accessibilityToggle" hidden>
+    <label for="accessibilityToggle" id="accessibilityButton">
+        <img src="../ressources/images/accessibility-icon.webp" id="accessibilityIcon" alt="Accessibility Icon">
+    </label>
+
+    <div id="accessibilityMenu">
+        <input type="checkbox" id="highContrast" hidden>
+        <label for="highContrast">Contraste élevé</label>
+
+        <input type="checkbox" id="largeFont" hidden>
+        <label for="largeFont">Augmenter la taille de la police</label>
+
+        <input type="checkbox" id="darkMode" hidden>
+        <label for="darkMode">Mode sombre</label>
     </div>
 
     <nav class="navbar">
@@ -42,15 +76,9 @@ use App\GenerateurAvis\Lib\MessageFlash;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
             <?php endif; ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
-            <!--            <nav>-->
-            <!--                <form action="controleurFrontal.php" method="get">-->
-            <!--                    <input type="hidden" name="controleur" value="Connexion">-->
-            <!--                    <input type="hidden" name="action" value="deconnecter">-->
-            <!--                    <button type="submit">Déconnexion</button>-->
-            <!--                </form>-->
-            <!--            </nav>-->
         <?php endif; ?>
     </nav>
+
 </header>
 
 <main>
@@ -58,6 +86,26 @@ use App\GenerateurAvis\Lib\MessageFlash;
     /** @var string $cheminCorpsVue */
     require __DIR__ . "/{$cheminCorpsVue}";
     ?>
+
+    <?php if (!Cookie::contient("bannerClosed")): ?>
+        <div id="cookie-banner"><h2>Politique de confidentialité</h2>
+            <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits
+                fichiers de données qui sont stockés sur votre ordinateur ou appareil mobile lorsque vous visitez un
+                site
+                web. Ils nous permettent de collecter des informations sur votre comportement de navigation, comme les
+                pages
+                que vous visitez et les services que vous utilisez. Nous utilisons ces informations pour personnaliser
+                votre
+                expérience, pour comprendre comment notre site est utilisé et pour améliorer nos services. En continuant
+                à
+                utiliser notre site, vous acceptez notre utilisation des cookies. Pour plus dinformations sur notre
+                utilisation des cookies et sur la manière dont vous pouvez contrôler les cookies, veuillez consulter
+                notre
+                politique de confidentialité.</p>
+            <a href="controleurFrontal.php?action=setCookie">✖</a>
+        </div>
+    <?php endif; ?>
+
 </main>
 
 <footer>
@@ -79,5 +127,9 @@ use App\GenerateurAvis\Lib\MessageFlash;
         </div>
     </div>
 </footer>
+<script src="../ressources/javascript/accessibility.js"></script>
+<script src="../ressources/javascript/bannerCookie.js"></script>
+
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 <form method="get" action="controleurFrontal.php">
-    <input type="hidden" name="action" value="afficherResultatRecherche"/>
+    <input type="hidden" name="action" value="afficherResultatRechercheUtilisateur"/>
     <input type="hidden" name="type" value="administrateur"/>
     <fieldset>
         <legend>Recherche :</legend>
@@ -35,9 +35,9 @@ foreach ($utilisateurs as $utilisateur) {
         $loginURL = rawurlencode($utilisateur->getLogin());
         if($type!=$utilisateur->getType()){
             if($utilisateur->getType()=="etudiant"){
-                echo '<h3>Etudiants :</h3>';
+                echo '<h3>Étudiants :</h3>';
             }else if($utilisateur->getType()=="universite"){
-                echo '<h3>Ecoles :</h3>';
+                echo '<h3>Écoles :</h3>';
             }else if($utilisateur->getType()=="professeur"){
                 echo '<h3>Enseignants :</h3>';
             }
@@ -50,4 +50,4 @@ foreach ($utilisateurs as $utilisateur) {
     $type=$utilisateur->getType();
 
 }
-echo '</ul><p><a href="controleurFrontal.php?action=afficherFormulaireCreationEtudiant">Créer un etudiant</a>&emsp;<a href="controleurFrontal.php?action=afficherFormulaireCreationEcole">Créer une école</a> </p>';
+//echo '</ul><p><a href="controleurFrontal.php?action=afficherFormulaireCreationEtudiant">Créer un etudiant</a>&emsp;<a href="controleurFrontal.php?action=afficherFormulaireCreationEcole">Créer une école</a> </p>';

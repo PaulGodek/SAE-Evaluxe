@@ -1,0 +1,98 @@
+/*ACCESSIBILITY*/
+#accessibilityIcon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Menu Accessibility */
+#accessibilityMenu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Hiện ngay dưới header */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9;
+}
+
+#accessibilityToggle:checked + #accessibilityButton + #accessibilityMenu {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style menu */
+#accessibilityMenu label {
+    padding: 10px 20px;
+    margin: 5px 0;
+    background-color: var(--rougeUM);
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+#accessibilityMenu label:hover {
+    background-color: var(--lightGrey);
+    color: var(--rougeUM);
+}
+
+/* Style high contrast  */
+.high-contrast-mode {
+    background-color: black;
+    color: yellow;
+}
+
+.high-contrast-mode a {
+    color: cyan;
+}
+
+.high-contrast-mode #container_Choix {
+    background-color: black;
+}
+
+.high-contrast-mode ul li {
+    border-color: white;
+    background-color: black;
+}
+
+.high-contrast-mode #remplaceBaliseLegend {
+    color: cyan;
+}
+
+.high-contrast-mode #accessibilityMenu {
+    background-color: black;
+}
+
+/* Style font */
+.large-font-mode {
+    font-size: 1.5em;
+}
+
+/* Style dark mode */
+.dark-mode {
+    background-color: #121212;
+    color: var(--lightGrey);
+}
+
+.dark-mode #container_Choix {
+    background-color: black;
+}
+
+.dark-mode a {
+    color: #bb86fc;
+}
+
+.dark-mode ul li {
+    border-color: white;
+    background-color: #121212;
+}
+
+.dark-mode #accessibilityMenu {
+    background-color: black;
+}

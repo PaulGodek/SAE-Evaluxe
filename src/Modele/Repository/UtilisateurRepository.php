@@ -51,4 +51,20 @@ class UtilisateurRepository extends AbstractRepository
             "password_hashTag" => $utilisateur->getPasswordHash()
         );
     }
+
+    public static function rechercherUtilisateurParLogin(string $recherche): array
+    {
+
+        $sql = "SELECT * FROM " . self::$tableUtilisateur .
+            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+        echo $sql;
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+
+        $tableauUtilisateur = [];
+        foreach ($pdoStatement as $utilisateurFormatTableau) {
+            $tableauUtilisateur[] = (new UtilisateurRepository())->construireDepuisTableauSQL($utilisateurFormatTableau);
+        }
+        return $tableauUtilisateur;
+
+    }
 }

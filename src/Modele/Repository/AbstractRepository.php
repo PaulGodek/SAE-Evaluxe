@@ -25,7 +25,6 @@ abstract class AbstractRepository
     {
         $sql = 'INSERT INTO  '.$this->getNomTable() .' ('.join(',',$this->getNomsColonnes()).') VALUES (:' .join("Tag, :",$this->getNomsColonnes()).'Tag)';
 
-        // Préparation de la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = $this->formatTableauSQL($objet);
@@ -65,7 +64,7 @@ abstract class AbstractRepository
         // Note: fetch() renvoie false si pas d'utilisateur correspondant
         $objetFormatTableau = $pdoStatement->fetch();
 
-        if ($objetFormatTableau == false) {
+        if (!$objetFormatTableau) {
             return null;
         }
         return ($this->construireDepuisTableauSQL($objetFormatTableau));
