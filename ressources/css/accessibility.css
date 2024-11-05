@@ -1,0 +1,89 @@
+/*ACCESSIBILITY*/
+/* Nút Accessibility */
+
+#accessibilityButton {
+    position: fixed;
+    top: 30px;
+    right: 20px;
+    background-color: var(--rougeUM);
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style cho icon bên trong nút */
+#accessibilityIcon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Menu Accessibility ẩn ban đầu */
+#accessibilityMenu {
+    display: none;
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 1000;
+    flex-direction: column;
+}
+
+/* Hiển thị menu trợ năng khi checkbox #accessibilityToggle được chọn */
+#accessibilityToggle:checked + #accessibilityButton + #accessibilityMenu {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style cho từng tùy chọn bên trong menu */
+#accessibilityMenu label {
+    padding: 10px 20px;
+    margin: 5px 0;
+    background-color: var(--rougeUM);
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+#accessibilityMenu label:hover {
+    background-color: var(--lightGrey);
+    color: var(--rougeUM);
+}
+
+/* Style cho toàn trang khi chế độ high contrast bật */
+.high-contrast-mode {
+    background-color: black;
+    color: yellow;
+}
+
+/* Style cho tất cả các link khi chế độ high contrast bật */
+.high-contrast-mode a {
+    color: cyan; /* Màu sắc nổi bật cho các link */
+}
+
+/* Style cho toàn trang khi chế độ font lớn bật */
+.large-font-mode {
+    font-size: 1.5em; /* Tăng kích thước font */
+}
+
+/* Style cho toàn trang khi chế độ dark mode bật */
+.dark-mode {
+    background-color: #121212; /* Màu nền tối */
+    color: #f0f0f0; /* Màu chữ sáng */
+}
+
+/* Style cho tất cả các link khi chế độ dark mode bật */
+.dark-mode a {
+    color: #bb86fc; /* Màu sắc nổi bật cho các link trong chế độ tối */
+}

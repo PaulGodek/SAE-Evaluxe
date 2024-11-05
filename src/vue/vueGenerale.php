@@ -12,7 +12,8 @@ use App\GenerateurAvis\Lib\MessageFlash;
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
     <link rel="stylesheet" href="../ressources/css/button.css">
-    <link rel="stylesheet" href="../ressources/css/connect.css"
+    <link rel="stylesheet" href="../ressources/css/connect.css">
+    <link rel="stylesheet" href="../ressources/css/accessibility.css">
 </head>
 <body>
 <header>
@@ -42,13 +43,6 @@ use App\GenerateurAvis\Lib\MessageFlash;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
             <?php endif; ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
-            <!--            <nav>-->
-            <!--                <form action="controleurFrontal.php" method="get">-->
-            <!--                    <input type="hidden" name="controleur" value="Connexion">-->
-            <!--                    <input type="hidden" name="action" value="deconnecter">-->
-            <!--                    <button type="submit">Déconnexion</button>-->
-            <!--                </form>-->
-            <!--            </nav>-->
         <?php endif; ?>
     </div>
 
@@ -68,15 +62,26 @@ use App\GenerateurAvis\Lib\MessageFlash;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
             <?php endif; ?>
             <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
-            <!--            <nav>-->
-            <!--                <form action="controleurFrontal.php" method="get">-->
-            <!--                    <input type="hidden" name="controleur" value="Connexion">-->
-            <!--                    <input type="hidden" name="action" value="deconnecter">-->
-            <!--                    <button type="submit">Déconnexion</button>-->
-            <!--                </form>-->
-            <!--            </nav>-->
         <?php endif; ?>
     </nav>
+
+            <!--    accessibility-->
+    <input type="checkbox" id="accessibilityToggle" hidden>
+    <label for="accessibilityToggle" id="accessibilityButton">
+        <img src="../ressources/images/accessibility-icon.webp" id="accessibilityIcon" alt="Accessibility Icon">
+    </label>
+
+    <div id="accessibilityMenu">
+        <input type="checkbox" id="highContrast" hidden>
+        <label for="highContrast">High Contrast</label>
+
+        <input type="checkbox" id="largeFont" hidden>
+        <label for="largeFont">Increase Font Size</label>
+
+        <input type="checkbox" id="darkMode" hidden>
+        <label for="darkMode">Dark Mode</label>
+    </div>
+
 </header>
 
 <main>
@@ -105,5 +110,18 @@ use App\GenerateurAvis\Lib\MessageFlash;
         </div>
     </div>
 </footer>
+<script>
+    document.getElementById("highContrast").addEventListener("change", function() {
+        document.body.classList.toggle("high-contrast-mode", this.checked);
+    });
+
+    document.getElementById("largeFont").addEventListener("change", function() {
+        document.body.classList.toggle("large-font-mode", this.checked);
+    });
+
+    document.getElementById("darkMode").addEventListener("change", function() {
+        document.body.classList.toggle("dark-mode", this.checked);
+    });
+</script>
 </body>
 </html>
