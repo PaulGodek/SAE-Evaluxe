@@ -15,8 +15,15 @@ class EtudiantRepository extends AbstractRepository
      * @throws RandomException
      */
     public static function recupererEtudiantsOrdonneParNom(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY nom");
+    {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+            " e 
+        JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
+        JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
+        JOIN semestre3_2024 s3 on s3.etudid=e.idEtudiant
+        JOIN semestre4_2024 s4 on s4.etudid=e.idEtudiant
+        JOIN semestre5_2024 s5 on s5.etudid=e.idEtudiant
+        ORDER BY s1.Nom,s2.Nom,s3.Nom,s4.Nom,s5.Nom ");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -27,8 +34,15 @@ class EtudiantRepository extends AbstractRepository
 
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
-    {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . self::$tableEtudiant . " ORDER BY prenom ");
+    {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+        " e 
+        JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
+        JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
+        JOIN semestre3_2024 s3 on s3.etudid=e.idEtudiant
+        JOIN semestre4_2024 s4 on s4.etudid=e.idEtudiant
+        JOIN semestre5_2024 s5 on s5.etudid=e.idEtudiant
+        ORDER BY s1.Prénom,s2.Prénom,s3.Prénom,s4.Prénom,s5.Prénom ");
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
