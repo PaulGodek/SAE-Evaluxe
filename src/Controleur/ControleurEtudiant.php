@@ -44,9 +44,10 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
+        if (!isset($_GET["login"])) self::afficherErreurEtudiant("Le login n'est pas renseigné");
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estEtudiant()) $peutChecker = true;
+        if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
         if ($peutChecker) {
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
