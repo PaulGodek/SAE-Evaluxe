@@ -2,6 +2,7 @@
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Modele\HTTP\Cookie;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -85,6 +86,26 @@ use App\GenerateurAvis\Lib\MessageFlash;
     /** @var string $cheminCorpsVue */
     require __DIR__ . "/{$cheminCorpsVue}";
     ?>
+
+    <?php if (!Cookie::contient("bannerClosed")): ?>
+        <div id="cookie-banner"><h2>Politique de confidentialité</h2>
+            <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits
+                fichiers de données qui sont stockés sur votre ordinateur ou appareil mobile lorsque vous visitez un
+                site
+                web. Ils nous permettent de collecter des informations sur votre comportement de navigation, comme les
+                pages
+                que vous visitez et les services que vous utilisez. Nous utilisons ces informations pour personnaliser
+                votre
+                expérience, pour comprendre comment notre site est utilisé et pour améliorer nos services. En continuant
+                à
+                utiliser notre site, vous acceptez notre utilisation des cookies. Pour plus dinformations sur notre
+                utilisation des cookies et sur la manière dont vous pouvez contrôler les cookies, veuillez consulter
+                notre
+                politique de confidentialité.</p>
+            <a href="controleurFrontal.php?action=setCookie">✖</a>
+        </div>
+    <?php endif; ?>
+
 </main>
 
 <footer>
@@ -105,8 +126,10 @@ use App\GenerateurAvis\Lib\MessageFlash;
             <p>Copyright 2024 - Tous droits réservés</p>
         </div>
     </div>
-    <script src="../ressources/javascript/accessibility.js"></script>
 </footer>
+<script src="../ressources/javascript/accessibility.js"></script>
+<script src="../ressources/javascript/bannerCookie.js"></script>
+
 
 </body>
 </html>

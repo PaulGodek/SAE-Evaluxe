@@ -18,6 +18,11 @@ class ControleurGenerique
         echo($messageErreur);
     }
 
+    public static function home(): void
+    {
+        self::afficherVue('vueGenerale.php', ["titre" => "Accueil", "cheminCorpsVue" => "siteweb/accueil.php"]);
+    }
+
     public static function redirectionVersURL(string $type, string $message, string $url): void
     {
         MessageFlash::ajouter($type,$message);
