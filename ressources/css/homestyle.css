@@ -136,13 +136,13 @@ main {
 /* Icon burger */
 #burgerIcon {
     display: none;
-    font-size: 24px;
+    font-size: 50px;
     cursor: pointer;
     color: var(--lightGrey);
     position: fixed;
     right: 20px;
     top: 20px;
-    z-index: 1001; /* Để icon nằm trên menu */
+    z-index: 1001;
 }
 
 #burger {
