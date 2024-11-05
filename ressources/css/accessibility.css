@@ -8,7 +8,7 @@
 #accessibilityMenu {
     display: none;
     position: absolute;
-    top: 100%; /* Hiện ngay dưới header */
+    top: 100%;
     right: 0;
     background-color: white;
     border: 1px solid #ccc;
@@ -23,6 +23,22 @@
     display: flex;
     flex-direction: column;
 }
+
+.accessibility-option::after {
+    content: '';
+    display: none;
+    margin-left: 5px;
+    color: black;
+    font-weight: bold;
+}
+
+#highContrast:checked + label[for="highContrast"]::after,
+#largeFont:checked + label[for="largeFont"]::after,
+#darkMode:checked + label[for="darkMode"]::after {
+    content: '✔';
+    display: inline;
+}
+
 
 /* Style menu */
 #accessibilityMenu label {
