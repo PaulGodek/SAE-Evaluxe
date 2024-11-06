@@ -32,20 +32,6 @@ class ControleurGenerique
         return true;
     }
 
-    public static function verifierEcoleConnecte(): bool
-    {
-        if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
-            return false;
-        }
-
-        if (!ConnexionUtilisateur::estEcole()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            return false;
-        }
-        return true;
-    }
-
     public static function verifierEtudiantConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
@@ -54,6 +40,34 @@ class ControleurGenerique
         }
 
         if (!ConnexionUtilisateur::estEtudiant()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return false;
+        }
+        return true;
+    }
+
+    public static function verifierProfesseurConnecte(): bool
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return false;
+        }
+
+        if (!ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return false;
+        }
+        return true;
+    }
+
+    public static function verifierEcoleConnecte(): bool
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return false;
+        }
+
+        if (!ConnexionUtilisateur::estEcole()) {
             self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
             return false;
         }
