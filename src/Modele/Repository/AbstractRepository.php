@@ -3,6 +3,9 @@
 namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\DataObject\Professeur;
 
 abstract class AbstractRepository
 {
@@ -23,6 +26,37 @@ abstract class AbstractRepository
 
     public function ajouter(AbstractDataObject $objet): bool
     {
+
+
+
+        // SOLUTION TEMPORAIRE, pour pouvoir ajouter correctement il faut d'abord l'utilisateur, il faudra utiliser des Triggers
+        if ($objet instanceof Ecole) {
+            $type = "universite";
+        } else if ($objet instanceof Professeur) {
+            $type = "professeur";
+        } else if ($objet instanceof Etudiant) {
+            $type = "etudiant";
+        } else {
+            $type = "administrateur";
+        }
+        $listeTag = array(
+            "login", "type", "password_hash"
+        );
+        $sql = 'INSERT INTO Utilisateur (login, type, password_hash) VALUES (:' .join("Tag, :",$listeTag).'Tag)';
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginTag" => $objet->getLogin(),
+            "typeTag" => $type,
+            "password_hashTag" => $_GET["mdp"]
+        );
+
+        $pdoStatement->execute($values);
+        // FIN SOLUTION TEMPORAIRE
+
+
+
         $sql = 'INSERT INTO  '.$this->getNomTable() .' ('.join(',',$this->getNomsColonnes()).') VALUES (:' .join("Tag, :",$this->getNomsColonnes()).'Tag)';
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);

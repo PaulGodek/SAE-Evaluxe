@@ -120,17 +120,15 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function creerEcoleDepuisFormulaire(): void
     {
-        if (self::verifierAdminConnecte()) {
-            $mdp = $_GET['mdp'] ?? '';
-            $mdp2 = $_GET['mdp2'] ?? '';
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
 
-            if ($mdp !== $mdp2) {
-                self::afficherErreurUtilisateur("Mots de passe distincts");
-                return;
-            }
-
-            ControleurEcole::creerDepuisFormulaire();
+        if ($mdp !== $mdp2) {
+            self::afficherErreurUtilisateur("Mots de passe distincts");
+            return;
         }
+
+        ControleurEcole::creerDepuisFormulaire();
     }
 
     public static function afficherFormulaireCreationProfesseur(): void
