@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
@@ -49,7 +50,7 @@ abstract class AbstractRepository
         $values = array(
             "loginTag" => $objet->getLogin(),
             "typeTag" => $type,
-            "password_hashTag" => $_GET["mdp"]
+            "password_hashTag" => MotDePasse::hacher($_GET["mdp"])
         );
 
         $pdoStatement->execute($values);
