@@ -22,7 +22,7 @@ use App\GenerateurAvis\Modele\DataObject\Professeur;
 
 echo "<h2>Liste des professeurs</h2> 
         
-    <p><a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParNom'>  Trier par nom  </a>&emsp; <a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParPrenom'>  Trier par prenom  </a>"/*<a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParParcours'>  Trier par parcours  </a>*/."</p> 
+    <p><a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParNom'>  Trier par nom  </a>&emsp; <a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParPrenom'>  Trier par prenom  </a></p> 
     
 <ul>";
 foreach ($professeurs as $professeur) {

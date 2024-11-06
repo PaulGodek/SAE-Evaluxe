@@ -18,7 +18,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 </head>
 <body>
 <header>
-    <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher">
+    <a href="controleurFrontal.php?controleur=Accueil&action=afficher">
         <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
     </a>
     <input type="checkbox" id="burgerToggle" hidden>
@@ -28,9 +28,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     <div id="burger">
         <?php
         if (!ConnexionUtilisateur::estConnecte()) : ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
+            <a href="controleurFrontal.php?controleur=Accueil&action=afficher"
                class="item">Accueil</a>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference"
+            <a href="controleurFrontal.php?controleur=Connexion&action=afficherPreference"
                class="item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
@@ -39,7 +39,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
             <?php endif; ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
+            <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
         <?php endif; ?>
     </div>
 
@@ -65,9 +65,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
         <?php
 
         if (!ConnexionUtilisateur::estConnecte()) : ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Accueil&action=afficher"
+            <a href="controleurFrontal.php?controleur=Accueil&action=afficher"
                class="nav-item">Accueil</a>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=Connexion&action=afficherPreference"
+            <a href="controleurFrontal.php?controleur=Connexion&action=afficherPreference"
                class="nav-item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
@@ -76,7 +76,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
             <?php endif; ?>
-            <a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
+            <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
         <?php endif; ?>
     </nav>
 
