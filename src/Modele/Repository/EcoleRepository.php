@@ -37,7 +37,6 @@ class EcoleRepository extends AbstractRepository
     }
 
     public function recuperer(): array
-
     {
         $objets = [];
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable().' ORDER BY  valide,nom ');
@@ -143,20 +142,23 @@ class EcoleRepository extends AbstractRepository
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
     {
-
         if($ecole->isEstValide()){
-            $valide=1;
+            $valide="1";
         }else{
-            $valide=0;
+            $valide="0";
+        }
+        if (!empty($ecole->getFutursEtudiants())) {
+            $futursEtudiantsEncode = json_encode($ecole->getFutursEtudiants());
+        } else {
+            $futursEtudiantsEncode = NULL;
         }
         return array(
             "loginTag" => $ecole->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
             "villeTag"=>$ecole->getVille(),
-            "futursEtudiantsTag"=> $ecole->getFutursEtudiants(),
+            "futursEtudiantsTag"=> $futursEtudiantsEncode,
             "valideTag"=>$valide
-
         );
     }
 
