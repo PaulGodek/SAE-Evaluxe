@@ -13,9 +13,13 @@ class ControleurEtudiant extends ControleurGenerique
 {
     public static function afficherListe(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $peutChecker = false;
+        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+        if ($peutChecker) {
+            $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        }
     }
 
     /**
@@ -23,23 +27,35 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $peutChecker = false;
+        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+        if ($peutChecker) {
+            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        }
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $peutChecker = false;
+        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+        if ($peutChecker) {
+            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        }
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $peutChecker = false;
+        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+        if ($peutChecker) {
+            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        }
     }
 
     public static function afficherDetail(): void
@@ -48,6 +64,7 @@ class ControleurEtudiant extends ControleurGenerique
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
         if ($peutChecker) {
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
@@ -73,6 +90,7 @@ class ControleurEtudiant extends ControleurGenerique
         if (!isset($_GET["codeUnique"])) self::afficherErreurEtudiant("Le code unique n'est pas valide");
         if (ConnexionUtilisateur::estEtudiant() && strcmp((new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique(), $_GET["codeUnique"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estEcole() && in_array($_GET["codeUnique"], (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getFutursEtudiants())) $peutChecker = true;
+        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
         if ($peutChecker) {
             try {
                 $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
