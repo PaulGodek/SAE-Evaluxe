@@ -9,7 +9,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
+    <title> <?= $titre ?> </title>
+    <link rel="icon" href="../ressources/images/logoRed.png">
+
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
     <link rel="stylesheet" href="../ressources/css/button.css">
