@@ -18,6 +18,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     <link rel="stylesheet" href="../ressources/css/connect.css">
     <link rel="stylesheet" href="../ressources/css/accessibility.css">
     <link rel="stylesheet" href="../ressources/css/messageFlash.css">
+    <link rel="stylesheet" href="../ressources/css/etudiant.css">
 </head>
 <body>
 <header>
