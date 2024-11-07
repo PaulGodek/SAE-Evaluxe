@@ -1,4 +1,4 @@
-<p>Administrateur connecté</p>
+<!--<p>Administrateur connecté</p>-->
 
 <!--<a href="/sae3a-base/web/controleurFrontal.php?controleur=utilisateur&action=refaire"
    class="nav-item">Refaire les codes uniques et importer les ids</a>-->
