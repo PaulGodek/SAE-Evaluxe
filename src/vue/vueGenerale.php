@@ -17,6 +17,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     <link rel="stylesheet" href="../ressources/css/button.css">
     <link rel="stylesheet" href="../ressources/css/connect.css">
     <link rel="stylesheet" href="../ressources/css/accessibility.css">
+    <link rel="stylesheet" href="../ressources/css/messageFlash.css">
 </head>
 <body>
 <header>
@@ -86,6 +87,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 
 <main>
     <?php
+    foreach (MessageFlash::lireTousMessages() as $type => $lireMessage) {
+        echo '<div class="alert alert-' . $type . '">' . $lireMessage . '</div>';
+    }
     /** @var string $cheminCorpsVue */
     require __DIR__ . "/{$cheminCorpsVue}";
     ?>
