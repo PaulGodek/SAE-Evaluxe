@@ -76,6 +76,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
             <?php endif; ?>
+            <?php if (ConnexionUtilisateur::estProfesseur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
+            <?php endif; ?>
             <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
         <?php endif; ?>
     </nav>
