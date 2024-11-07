@@ -95,7 +95,10 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherResultatRechercheEtudiant(): void
     {
-        if (self::verifierAdminConnecte()) {
+        $avoirDroits = false;
+        if(ConnexionUtilisateur::estAdministrateur()) $avoirDroits = true;
+        if(ConnexionUtilisateur::estProfesseur()) $avoirDroits = true;
+        if ($avoirDroits) {
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
