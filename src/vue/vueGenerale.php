@@ -9,12 +9,15 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
+    <title> <?= $titre ?> </title>
+    <link rel="icon" href="../ressources/images/logoRed.png">
+
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
     <link rel="stylesheet" href="../ressources/css/charte-graphique-UM.css">
     <link rel="stylesheet" href="../ressources/css/button.css">
     <link rel="stylesheet" href="../ressources/css/connect.css">
     <link rel="stylesheet" href="../ressources/css/accessibility.css">
+    <link rel="stylesheet" href="../ressources/css/messageFlash.css">
 </head>
 <body>
 <header>
@@ -87,6 +90,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 
 <main>
     <?php
+    foreach (MessageFlash::lireTousMessages() as $type => $lireMessage) {
+        echo '<div class="alert alert-' . $type . '">' . $lireMessage . '</div>';
+    }
     /** @var string $cheminCorpsVue */
     require __DIR__ . "/{$cheminCorpsVue}";
     ?>

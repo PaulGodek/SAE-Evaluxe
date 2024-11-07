@@ -1,4 +1,4 @@
-<p>École connecté</p>
+<!--<p>École connecté</p>-->
 
 
 <?php

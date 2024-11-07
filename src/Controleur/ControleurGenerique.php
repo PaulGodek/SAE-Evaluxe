@@ -21,12 +21,14 @@ class ControleurGenerique
     public static function verifierAdminConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
+//            self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("error", "Veuillez vous connecter d'abord.", "afficherPreference&controleur=Connexion");
             return false;
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+//            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "home");
             return false;
         }
         return true;
@@ -35,12 +37,14 @@ class ControleurGenerique
     public static function verifierEtudiantConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
+//            self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("error", "Veuillez vous connecter d'abord.", "afficherPreference&controleur=Connexion");
             return false;
         }
 
         if (!ConnexionUtilisateur::estEtudiant()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+//            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "home");
             return false;
         }
         return true;
@@ -49,12 +53,15 @@ class ControleurGenerique
     public static function verifierProfesseurConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
+//            self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("error", "Veuillez vous connecter d'abord.", "afficherPreference&controleur=Connexion");
+
             return false;
         }
 
         if (!ConnexionUtilisateur::estProfesseur()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+//            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "home");
             return false;
         }
         return true;
@@ -63,12 +70,14 @@ class ControleurGenerique
     public static function verifierEcoleConnecte(): bool
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
+//            self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("error", "Veuillez vous connecter d'abord.", "afficherPreference&controleur=Connexion");
             return false;
         }
 
         if (!ConnexionUtilisateur::estEcole()) {
-            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+//            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "home");
             return false;
         }
         return true;
