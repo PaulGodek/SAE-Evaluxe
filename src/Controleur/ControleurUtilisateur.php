@@ -41,7 +41,17 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return;
+        }
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            if(!ConnexionUtilisateur::estProfesseur()){
+                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
+                return;
+            }
+        }
         try {
 
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
@@ -66,12 +76,15 @@ class ControleurUtilisateur extends ControleurGenerique
                         "nomPrenom" => $nomPrenom
                     ]);
                 } else if ($utilisateur->getType() == "universite") {
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
                 } else if ($utilisateur->getType() == "professeur") {
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
                     $professeur = (new ProfesseurRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Détail du professeur {$professeur->getNom()} ", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
                 } else {
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
                     self::afficherVue('vueGenerale.php', ['utilisateur' => $utilisateur, "cheminCorpsVue" => "utilisateur/detail.php"]);
                 }
             }
@@ -352,7 +365,9 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function refaire(): void
     {
         // histoire d'être sûr que c'est bien un admin qui fait ça :
-        if (!self::verifierAdminConnecte()) {return;}
+        if (!self::verifierAdminConnecte()) {
+            return;
+        }
 
         $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
         $pdo = ConnexionBaseDeDonnees::getPdo();
@@ -388,7 +403,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function setCookieBanner(): void
     {
-        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
+        Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
         header('Location: controleurFrontal.php?action=home');
         exit();
     }
