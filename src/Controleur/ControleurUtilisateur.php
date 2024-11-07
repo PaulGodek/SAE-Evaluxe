@@ -3,6 +3,7 @@
 namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
@@ -244,6 +245,7 @@ class ControleurUtilisateur extends ControleurGenerique
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
         if ($utilisateur->getType() == "etudiant") {
+            MessageFlash::ajouter("success","Etudiant connecté");
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -254,6 +256,7 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
+                MessageFlash::ajouter("success","Ecole connecté");
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
@@ -265,6 +268,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherErreurUtilisateur("Ce compte n'a pas été validé par l'administrateur ");
             };
         } else if ($utilisateur->getType() == "professeur") {
+            MessageFlash::ajouter("success","Professeur connecté");
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -273,6 +277,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
+            MessageFlash::ajouter("success","Administrateur connecté");
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -335,13 +340,8 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function deconnecter(): void
     {
         ConnexionUtilisateur::deconnecter();
-        $utilisateurs = (new UtilisateurRepository())->recuperer();
-
-        ControleurUtilisateur::afficherVue('vueGenerale.php', [
-            "utilisateurs" => $utilisateurs,
-            "titre" => "Utilisateur déconnecté",
-            "cheminCorpsVue" => "utilisateur/utilisateurDeconnecte.php"
-        ]);
+//        $utilisateurs = (new UtilisateurRepository())->recuperer();
+        self::redirectionVersURL("success", "Déconnexion réussie", "home");
     }
 
     /**

@@ -5,7 +5,7 @@ class ControleurAccueil {
     public static function afficher(): void
     {
         self::afficherVue('vueGenerale.php', [
-            'titre' => 'Bienvenue sur le site',
+            'titre' => 'Accueil',
             'cheminCorpsVue' => 'siteweb/accueil.php'
         ]);
     }
