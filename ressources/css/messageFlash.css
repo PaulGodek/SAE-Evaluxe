@@ -57,7 +57,7 @@
     border-color: var(--pastelYellow);
 }
 
-.alert-danger {
+.alert-error {
     color: var(--darkRed);
     background-color: var(--lightpastelRed);
     border-color: var(--pastelRed);

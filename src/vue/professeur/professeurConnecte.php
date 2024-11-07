@@ -1,3 +1,3 @@
-<p>Professeur connecté</p>
+<!--<p>Professeur connecté</p>-->
 
 <?php require 'detailProfesseur.php'; ?>
