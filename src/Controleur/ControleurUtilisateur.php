@@ -97,7 +97,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
-            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
     }
 
@@ -105,7 +105,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
-            self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
+            self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "titre" => "Résultat recherche école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
         }
     }
 
@@ -113,7 +113,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
-            self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+            self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "titre" => "Résultat recherche professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
         }
     }
 
@@ -121,7 +121,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $utilisateurs = UtilisateurRepository::rechercherUtilisateurParLogin($_GET["login"]);
-            self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "cheminCorpsVue" => "utilisateur/liste.php"]);
+            self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "titre" => "Résultat recherche utilisateur", "cheminCorpsVue" => "utilisateur/liste.php"]);
         }
     }
 
