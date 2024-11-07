@@ -336,12 +336,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         ConnexionUtilisateur::deconnecter();
         $utilisateurs = (new UtilisateurRepository())->recuperer();
-
-        ControleurUtilisateur::afficherVue('vueGenerale.php', [
-            "utilisateurs" => $utilisateurs,
-            "titre" => "Utilisateur déconnecté",
-            "cheminCorpsVue" => "utilisateur/utilisateurDeconnecte.php"
-        ]);
+        self::redirectionVersURL("success", "Déconnexion réussie", "home");
     }
 
     /**
