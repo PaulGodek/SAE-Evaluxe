@@ -2,8 +2,11 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\DataObject\Professeur;
 use PDO;
 use Random\RandomException;
 
@@ -36,7 +39,7 @@ class EtudiantRepository extends AbstractRepository
     public static function recupererEtudiantsOrdonneParPrenom(): array
     {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
-        " e 
+            " e 
         JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
         JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
         JOIN semestre3_2024 s3 on s3.etudid=e.idEtudiant
@@ -204,6 +207,7 @@ class EtudiantRepository extends AbstractRepository
 
         return null;
     }
+
     public static function recupererDetailsEtudiantParId($idEtudiant): array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
@@ -269,10 +273,52 @@ class EtudiantRepository extends AbstractRepository
             'details' => $etudiantDetailsPerSemester,
         ];
     }
-    private static function columnExists($pdo, $table, $column) {
+
+    public static function recupererTousLesDetailsEtudiantParId($idEtudiant): array
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $etudiantInfo = null;
+        $etudiantDetailsPerSemester = [];
+
+        foreach ($tables as $table) {
+            preg_match('/semestre(\d+)_/', $table, $matches);
+
+            $query = "SELECT * FROM {$table} WHERE etudid = :idEtudiant";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([':idEtudiant' => $idEtudiant]);
+
+            if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if (!$etudiantInfo) {
+                    $etudiantInfo = [
+                        'nom' => htmlspecialchars($details['Nom'] ?? ''),
+                        'prenom' => htmlspecialchars($details['Prénom'] ?? ''),
+                        'etudid' => htmlspecialchars($details['etudid'] ?? ''),
+                        'codenip' => htmlspecialchars($details['code_nip'] ?? 'N/A'),
+                        'civ' => htmlspecialchars($details['Civ'] ?? 'N/A'),
+                    ];
+                }
+
+                unset($details['Nom'], $details['Prénom'], $details['etudid'], $details['code_nip'], $details['Civ']);
+
+                $etudiantDetailsPerSemester[$table] = array_map(function ($value) {
+                    return htmlspecialchars($value ?? '');
+                }, $details);
+            }
+        }
+
+        return [
+            'info' => $etudiantInfo,
+            'details' => $etudiantDetailsPerSemester,
+        ];
+    }
+
+
+    private static function columnExists($pdo, $table, $column)
+    {
         $query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND COLUMN_NAME = :column";
         $stmt = $pdo->prepare($query);
         $stmt->execute([':table' => $table, ':column' => $column]);
-        return (bool) $stmt->fetchColumn();
+        return (bool)$stmt->fetchColumn();
     }
 }

@@ -41,7 +41,17 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::afficherErreur("Veuillez vous connecter d'abord.");
+            return;
+        }
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            if(!ConnexionUtilisateur::estProfesseur()){
+                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
+                return;
+            }
+        }
         try {
 
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
@@ -66,13 +76,16 @@ class ControleurUtilisateur extends ControleurGenerique
                         "nomPrenom" => $nomPrenom
                     ]);
                 } else if ($utilisateur->getType() == "universite") {
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
                     $ecole = (new EcoleRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()} ", "cheminCorpsVue" => "ecole/detailEcole.php"]);
                 } else if ($utilisateur->getType() == "professeur") {
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
                     $professeur = (new ProfesseurRepository)->recupererParClePrimaire($utilisateur->getLogin());
                     self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Détail du professeur {$professeur->getNom()} ", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
                 } else {
-                    self::afficherVue('vueGenerale.php', ['utilisateur' => $utilisateur, "titre" => "Détail utilisateur","cheminCorpsVue" => "utilisateur/detail.php"]);
+                    if (!ControleurGenerique::verifierAdminConnecte()) return;
+                    self::afficherVue('vueGenerale.php', ['utilisateur' => $utilisateur, "titre" => "Détail utilisateur", "cheminCorpsVue" => "utilisateur/detail.php"]);
                 }
             }
         } catch (TypeError $e) {
@@ -84,7 +97,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
-            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
     }
 
@@ -92,7 +105,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
-            self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "titre" => "Résultat recherche école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+            self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "cheminCorpsVue" => "ecole/listeEcole.php"]);
         }
     }
 
@@ -100,7 +113,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
-            self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "titre" => "Résultat recherche professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+            self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
         }
     }
 
@@ -108,7 +121,7 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (self::verifierAdminConnecte()) {
             $utilisateurs = UtilisateurRepository::rechercherUtilisateurParLogin($_GET["login"]);
-            self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "titre" => "Résultat recherche utilisateur", "cheminCorpsVue" => "utilisateur/liste.php"]);
+            self::afficherVue("vueGenerale.php", ["utilisateurs" => $utilisateurs, "cheminCorpsVue" => "utilisateur/liste.php"]);
         }
     }
 
@@ -352,7 +365,9 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function refaire(): void
     {
         // histoire d'être sûr que c'est bien un admin qui fait ça :
-        if (!self::verifierAdminConnecte()) {return;}
+        if (!self::verifierAdminConnecte()) {
+            return;
+        }
 
         $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
         $pdo = ConnexionBaseDeDonnees::getPdo();
@@ -388,7 +403,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function setCookieBanner(): void
     {
-        Cookie::enregistrer('bannerClosed', true,10 * 365 * 24 * 60 * 60);
+        Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
         header('Location: controleurFrontal.php?action=home');
         exit();
     }

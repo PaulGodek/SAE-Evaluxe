@@ -9,7 +9,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> <?= $titre ?> </title>
+    <title> <?= $titre ?? 'Page' ?> </title>
     <link rel="icon" href="../ressources/images/logoRed.png">
 
     <link rel="stylesheet" href="../ressources/css/homestyle.css">
@@ -78,6 +78,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
+            <?php endif; ?>
+            <?php if (ConnexionUtilisateur::estProfesseur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
             <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
         <?php endif; ?>
