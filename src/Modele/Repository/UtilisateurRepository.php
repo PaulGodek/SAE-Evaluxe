@@ -57,7 +57,7 @@ class UtilisateurRepository extends AbstractRepository
 
         $sql = "SELECT * FROM " . self::$tableUtilisateur .
             " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
-        echo $sql;
+
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauUtilisateur = [];

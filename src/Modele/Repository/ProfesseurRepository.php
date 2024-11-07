@@ -46,7 +46,7 @@ class ProfesseurRepository extends AbstractRepository
             " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
             OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
             OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
-        echo $sql;
+
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauProfesseurs = [];
@@ -62,7 +62,7 @@ class ProfesseurRepository extends AbstractRepository
 
         $sql = "SELECT * FROM " . self::$tableProfesseur .
             " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
-        echo $sql;
+
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauProfesseurs = [];

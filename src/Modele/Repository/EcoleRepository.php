@@ -182,7 +182,6 @@ class EcoleRepository extends AbstractRepository
 
         $sql="SELECT * FROM " . self::$tableEcole .
             " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%' OR nom='".$recherche."'";
-        echo $sql;
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauEcole = [];
