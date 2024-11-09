@@ -2,11 +2,8 @@
 /** @var Etudiant $etudiant */
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
-use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
-use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
-use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 
 $idEtudiant = $etudiant->getIdEtudiant();
 $estEcole = ConnexionUtilisateur::estEcole();
@@ -36,13 +33,17 @@ switch ($type) {
                 echo "<h3>Semestre: {$semesterNumber} </h3>";
                 echo "<p>Absences non justifiées: " . max(0, $details['abs'] - $details['just1']) . "</p>";
                 echo "<p>Moyenne: {$details['moyenne']}</p>";
-                echo "<p>Parcours: {$details['parcours']}</p>";
-
+                if($details['parcours']!=='-'){
+                    echo "<p>Parcours: {$details['parcours']}</p>";
+                }
                 foreach ($details['ue_details'] as $ueDetail) {
-                    echo '<div class="ue-detail">';
-                    echo "<h4>{$ueDetail['ue']}</h4>";
-                    echo "<p>Moyenne: " . ($ueDetail['moy'] !== 'N/A' ? $ueDetail['moy'] : "N/A") . "</p>";
-                    echo '</div>';
+
+                    if($ueDetail['moy'] !== 'N/A' ){
+                        echo '<div class="ue-detail">';
+                        echo "<h4>{$ueDetail['ue']}</h4>";
+                        echo "<p>Moyenne: " . ($ueDetail['moy']) . "</p>";
+                        echo '</div>';
+                    }
                 }
 
                 echo '</div>';
@@ -58,15 +59,29 @@ switch ($type) {
 
         $etudiantInfo = $result['info'];
         $etudiantDetailsPerSemester = $result['details'];
+        $codeUnique = EtudiantRepository::getCodeUniqueEtudiantConnecte();
 
         if ($etudiantInfo) {
             echo '<div class="etudiant-details">';
             echo "<h2>Détails de l'étudiant</h2>";
+            echo "<h3>Code unique: {$codeUnique}</h3>";
             echo "<p>Nom: {$etudiantInfo['nom']}</p>";
             echo "<p>Prénom: {$etudiantInfo['prenom']}</p>";
             echo "<p>Id étudiant: {$etudiantInfo['etudid']}</p>";
             echo "<p>Code nip: {$etudiantInfo['codenip']}</p>";
             echo "<p>Civilité: {$etudiantInfo['civ']}</p>";
+            if($etudiantInfo['bac']!=='N/A'){
+                echo "<p>Bac: {$etudiantInfo['bac']}</p>";
+            }
+            if($etudiantInfo['specialite']!=='N/A'){
+                echo "<p>Spécialité: {$etudiantInfo['specialite']}</p>";
+            }
+            if($etudiantInfo['typeAdm']!=='N/A'){
+                echo "<p>Type d'admission: {$etudiantInfo['typeAdm']}</p>";
+            }
+            if($etudiantInfo['rgAdm']!=='N/A'){
+                echo "<p>Rg. Adm.: {$etudiantInfo['rgAdm']}</p>";
+            }
 
             foreach ($etudiantDetailsPerSemester as $table => $details) {
                 preg_match('/semestre(\d+)_\d+/', $table, $matches);
@@ -79,11 +94,10 @@ switch ($type) {
                         echo "<p>Absences non justifiées: " . max(0, $value - $details['just1']) . "</p>";
                     } elseif ($column == 'just1') {
                         continue;
-                    } else {
-                        echo "<p>" . ucfirst(str_replace('_', ' ', $column)) . ": " . ($value !== '' ? $value : 'N/A') . "</p>";
+                    } elseif ($value !== '') {
+                        echo "<p>" . ucfirst(str_replace('_', ' ', $column)) . ": $value</p>";
                     }
                 }
-
                 echo '</div>';
             }
 
@@ -168,3 +182,4 @@ switch ($type) {
         background-color: #f1f1f1;
     }
 </style>
+

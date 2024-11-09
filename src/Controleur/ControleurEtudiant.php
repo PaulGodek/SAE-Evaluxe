@@ -88,7 +88,7 @@ class ControleurEtudiant extends ControleurGenerique
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (!isset($_GET["codeUnique"])) self::afficherErreurEtudiant("Le code unique n'est pas valide");
-        if (ConnexionUtilisateur::estEtudiant() && strcmp((new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique(), $_GET["codeUnique"]) === 0) $peutChecker = true;
+        if (ConnexionUtilisateur::estEtudiant() && strcmp(EtudiantRepository::getCodeUniqueEtudiantConnecte(), $_GET["codeUnique"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estEcole() && in_array($_GET["codeUnique"], (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getFutursEtudiants())) $peutChecker = true;
         if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
         if ($peutChecker) {
