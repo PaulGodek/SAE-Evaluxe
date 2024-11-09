@@ -291,15 +291,20 @@ class EtudiantRepository extends AbstractRepository
             if ($details = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 if (!$etudiantInfo) {
                     $etudiantInfo = [
-                        'nom' => htmlspecialchars($details['Nom'] ?? ''),
-                        'prenom' => htmlspecialchars($details['Prénom'] ?? ''),
-                        'etudid' => htmlspecialchars($details['etudid'] ?? ''),
-                        'codenip' => htmlspecialchars($details['code_nip'] ?? 'N/A'),
-                        'civ' => htmlspecialchars($details['Civ'] ?? 'N/A'),
+                        'nom' => htmlspecialchars($details['Nom']),
+                        'prenom' => htmlspecialchars($details['Prénom']),
+                        'nomEtPrenom' => htmlspecialchars($details['nom_et_prénom']),
+                        'etudid' => htmlspecialchars($details['etudid']),
+                        'codenip' => htmlspecialchars($details['code_nip']),
+                        'civ' => htmlspecialchars($details['Civ']),
+                        'bac' => htmlspecialchars($details['Bac'] ?? 'N/A'),
+                        'specialite' => htmlspecialchars($details['Spécialité'] ?? 'N/A'),
+                        'typeAdm' => htmlspecialchars($details['Type Adm.'] ?? 'N/A'),
+                        'rgAdm' => htmlspecialchars($details['Rg. Adm.'] ?? 'N/A'),
                     ];
                 }
 
-                unset($details['Nom'], $details['Prénom'], $details['etudid'], $details['code_nip'], $details['Civ']);
+                unset($details['Nom'], $details['Prénom'], $details['nom_et_prénom'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.']);
 
                 $etudiantDetailsPerSemester[$table] = array_map(function ($value) {
                     return htmlspecialchars($value ?? '');
