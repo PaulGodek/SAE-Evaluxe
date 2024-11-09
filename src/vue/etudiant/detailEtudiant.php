@@ -59,10 +59,12 @@ switch ($type) {
 
         $etudiantInfo = $result['info'];
         $etudiantDetailsPerSemester = $result['details'];
+        $codeUnique = EtudiantRepository::getCodeUniqueEtudiantConnecte();
 
         if ($etudiantInfo) {
             echo '<div class="etudiant-details">';
             echo "<h2>Détails de l'étudiant</h2>";
+            echo "<h3>Code unique: {$codeUnique}</h3>";
             echo "<p>Nom: {$etudiantInfo['nom']}</p>";
             echo "<p>Prénom: {$etudiantInfo['prenom']}</p>";
             echo "<p>Id étudiant: {$etudiantInfo['etudid']}</p>";

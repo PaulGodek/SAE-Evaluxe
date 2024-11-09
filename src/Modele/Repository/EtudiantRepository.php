@@ -326,4 +326,8 @@ class EtudiantRepository extends AbstractRepository
         $stmt->execute([':table' => $table, ':column' => $column]);
         return (bool)$stmt->fetchColumn();
     }
+
+    public static function getCodeUniqueEtudiantConnecte(): string{
+        return (new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique();
+    }
 }
