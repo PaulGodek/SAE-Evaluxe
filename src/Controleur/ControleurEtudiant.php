@@ -11,6 +11,11 @@ use TypeError;
 
 class ControleurEtudiant extends ControleurGenerique
 {
+    public static function afficherErreurEtudiant(string $messageErreur = ""): void
+    {
+        self::afficherErreur($messageErreur, "etudiant");
+    }
+
     public static function afficherListe(): void
     {
         $peutChecker = false;
@@ -114,11 +119,6 @@ class ControleurEtudiant extends ControleurGenerique
     {
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
-    }
-
-    public static function afficherErreurEtudiant(string $messageErreur = ""): void
-    {
-        self::afficherErreur($messageErreur, "etudiant");
     }
 
     public static function supprimer(): void

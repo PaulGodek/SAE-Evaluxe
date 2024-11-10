@@ -2,8 +2,13 @@
 
 namespace App\GenerateurAvis\Controleur;
 
-class ControleurConnexion
+class ControleurConnexion extends ControleurGenerique
 {
+    public static function afficherErreurConnexion(string $messageErreur = ""): void
+    {
+        self::afficherErreur($messageErreur, "connexion");
+    }
+
     public static function afficherConnexionAdministrateur(): void
     {
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionAdministrateur.php', "titre" => "Connexion Administrateur"]);
@@ -12,11 +17,6 @@ class ControleurConnexion
     public static function afficherPreference(): void
     {
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/preference.php', "titre" => "Préférences"]);
-    }
-
-    public static function afficherErreur(string $message): void
-    {
-        self::afficherVue('vueGenerale.php', ["messageErreur" => $message, "titre" => "Erreur"]);
     }
 
     public static function afficherConnexionEtudiant(): void
@@ -31,11 +31,5 @@ class ControleurConnexion
     public static function afficherConnexionProfesseur(): void
     {
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionProfesseur.php', "titre" => "Connexion Professeur"]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
-    {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 }

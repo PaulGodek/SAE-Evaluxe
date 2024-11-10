@@ -8,6 +8,11 @@ use TypeError;
 
 class ControleurProfesseur extends ControleurGenerique
 {
+    public static function afficherErreurProfesseur(string $messageErreur = ""): void
+    {
+        self::afficherErreur($messageErreur, 'professeur');
+    }
+
     public static function afficherListe(): void
     {
 
@@ -62,11 +67,6 @@ class ControleurProfesseur extends ControleurGenerique
             $professeurs = (new ProfesseurRepository)->recuperer();
             self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création de compte professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
         } 
-    }
-
-    public static function afficherErreurProfesseur(string $messageErreur = ""): void
-    {
-        self::afficherErreur($messageErreur, 'professeur');
     }
 
     public static function supprimer(): void

@@ -1,5 +1,6 @@
 <?php
 
+use App\GenerateurAvis\Controleur\ControleurAccueil;
 use App\GenerateurAvis\Controleur\ControleurConnexion;
 use App\GenerateurAvis\Controleur\ControleurGenerique;
 use App\GenerateurAvis\Controleur\ControleurUtilisateur;
@@ -41,7 +42,7 @@ if (class_exists($nomDeClasseControleur)) {
             $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible" . $nomDeClasseControleur);
         }
     } else {
-        ControleurGenerique::home();
+        ControleurAccueil::afficherAccueil();
     }
 } else {
     ControleurGenerique::afficherErreur("Ce controleur n'existe pas ");

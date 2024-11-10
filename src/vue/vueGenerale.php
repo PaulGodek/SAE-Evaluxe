@@ -21,7 +21,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 </head>
 <body>
 <header>
-    <a href="controleurFrontal.php?controleur=Accueil&action=afficher">
+    <a href="controleurFrontal.php?controleur=Accueil&action=afficherAccueil">
         <img id="logoToggle" class="logo" src="../ressources/images/logoRed.png" alt="Logo">
     </a>
     <input type="checkbox" id="burgerToggle" hidden>
@@ -31,7 +31,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     <div id="burger">
         <?php
         if (!ConnexionUtilisateur::estConnecte()) : ?>
-            <a href="controleurFrontal.php?controleur=Accueil&action=afficher"
+            <a href="controleurFrontal.php?controleur=Accueil&action=afficherAccueil"
                class="item">Accueil</a>
             <a href="controleurFrontal.php?controleur=Connexion&action=afficherPreference"
                class="item">Connexion</a>
@@ -68,7 +68,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
         <?php
 
         if (!ConnexionUtilisateur::estConnecte()) : ?>
-            <a href="controleurFrontal.php?controleur=Accueil&action=afficher"
+            <a href="controleurFrontal.php?controleur=Accueil&action=afficherAccueil"
                class="nav-item">Accueil</a>
             <a href="controleurFrontal.php?controleur=Connexion&action=afficherPreference"
                class="nav-item">Connexion</a>

@@ -13,7 +13,7 @@ class ControleurGenerique
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
-    public static function afficherErreur(string $messageErreur = "", string $controleur = "site web"): void
+    public static function afficherErreur(string $messageErreur = "", string $controleur = ""): void
     {
         self::afficherVue('vueGenerale.php', ['messageErreur' => $messageErreur, 'controleur' => $controleur, 'titre' => "Erreur", 'cheminCorpsVue' => 'erreur.php']);
     }
@@ -81,11 +81,6 @@ class ControleurGenerique
             return false;
         }
         return true;
-    }
-
-    public static function home(): void
-    {
-        self::afficherVue('vueGenerale.php', ["titre" => "Accueil", "cheminCorpsVue" => "siteweb/accueil.php"]);
     }
 
     public static function redirectionVersURL(string $type, string $message, string $url): void

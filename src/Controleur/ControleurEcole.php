@@ -9,6 +9,11 @@ use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 class ControleurEcole extends ControleurGenerique
 {
+    public static function afficherErreurEcole(string $messageErreur = ""): void
+    {
+        self::afficherErreur($messageErreur, 'ecole');
+    }
+
     public static function afficherEcole(): void
     {
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
@@ -77,11 +82,6 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->ajouter($ecole);
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
-    }
-
-    public static function afficherErreurEcole(string $messageErreur = ""): void
-    {
-        self::afficherErreur($messageErreur, 'ecole');
     }
 
     public static function supprimer(): void
