@@ -57,7 +57,6 @@ switch ($type) {
         break;
     default:
         $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($idEtudiant);
-
         $etudiantInfo = $result['info'];
         $etudiantDetailsPerSemester = $result['details'];
         if($estEtudiant){
