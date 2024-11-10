@@ -14,7 +14,6 @@ use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
-use JetBrains\PhpStorm\NoReturn;
 use PDO;
 use Random\RandomException;
 use TypeError;
@@ -350,14 +349,6 @@ class ControleurUtilisateur extends ControleurGenerique
             "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
         ]);
     }*/
-
-
-    public static function deconnecter(): void
-    {
-        ConnexionUtilisateur::deconnecter();
-//        $utilisateurs = (new UtilisateurRepository())->recuperer();
-        self::redirectionVersURL("success", "Déconnexion réussie", "home");
-    }
 
     /**
      * @throws RandomException

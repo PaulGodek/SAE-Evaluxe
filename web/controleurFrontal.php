@@ -20,7 +20,7 @@ if (isset($_GET["controleur"])) {
 } else {
     $controleur = "utilisateur";
 }
-if ($controleur === 'Connexion' && isset($_GET['action']) && $_GET['action'] === 'deconnecter') {
+if (strcmp($controleur, 'Connexion') === 0 && isset($_GET['action']) && strcmp($_GET['action'], 'deconnecter') === 0) {
     $controleurConnexion = new ControleurConnexion();
     $controleurConnexion->deconnecter();
     exit;

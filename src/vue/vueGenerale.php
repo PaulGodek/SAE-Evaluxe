@@ -42,7 +42,10 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
             <?php endif; ?>
-            <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="item">Déconnexion</a>
+            <?php if (ConnexionUtilisateur::estProfesseur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
+            <?php endif; ?>
+            <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="item">Déconnexion</a>
         <?php endif; ?>
     </div>
 
@@ -82,7 +85,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
             <?php if (ConnexionUtilisateur::estProfesseur()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
-            <a href="controleurFrontal.php?controleur=utilisateur&action=deconnecter" class="nav-item">Déconnexion</a>
+            <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">Déconnexion</a>
         <?php endif; ?>
     </nav>
 
