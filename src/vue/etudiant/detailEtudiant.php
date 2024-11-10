@@ -63,7 +63,6 @@ switch ($type) {
         if($estEtudiant){
             $codeUnique = EtudiantRepository::getCodeUniqueEtudiantConnecte();
         }
-
         if ($etudiantInfo) {
             echo '<div class="etudiant-details">';
             echo "<h2>Détails de l'étudiant</h2>";
