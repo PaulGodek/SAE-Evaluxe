@@ -18,13 +18,12 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListe(): void
     {
-        $peutChecker = false;
-        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
-        if ($peutChecker) {
-            $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
         }
+        $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     /**
@@ -32,40 +31,38 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
-        $peutChecker = false;
-        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
-        if ($peutChecker) {
-            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
         }
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
-        $peutChecker = false;
-        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
-        if ($peutChecker) {
-            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
         }
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
     {
-        $peutChecker = false;
-        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
-        if ($peutChecker) {
-            $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
         }
+
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
     {
-        if (!isset($_GET["login"])) self::afficherErreurEtudiant("Le login n'est pas renseigné");
+        if (!isset($_GET["login"])) {self::afficherErreurEtudiant("Le login n'est pas renseigné"); return;}
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
@@ -90,12 +87,13 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherDetailEtudiantParCodeUnique(): void
     {
+        if (!isset($_GET["codeUnique"])) {self::afficherErreurEtudiant("Le code unique n'est pas renseigné"); return;}
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (!isset($_GET["codeUnique"])) self::afficherErreurEtudiant("Le code unique n'est pas valide");
         if (ConnexionUtilisateur::estEtudiant() && strcmp(EtudiantRepository::getCodeUniqueEtudiantConnecte(), $_GET["codeUnique"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estEcole() && in_array($_GET["codeUnique"], (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getFutursEtudiants())) $peutChecker = true;
         if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+
         if ($peutChecker) {
             try {
                 $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
@@ -117,13 +115,19 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherFormulaireCreation(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
     }
 
     public static function supprimer(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $login = $_GET["login"];
         (new EtudiantRepository)->supprimer($login);
         $etudiants = (new EtudiantRepository)->recuperer();
@@ -132,7 +136,10 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
         self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
     }
@@ -142,7 +149,10 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function mettreAJour(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $etudiant = new Etudiant($_GET["login"], $_GET["etudid"]);
         (new EtudiantRepository)->mettreAJour($etudiant);
         $etudiants = (new EtudiantRepository)->recuperer();
