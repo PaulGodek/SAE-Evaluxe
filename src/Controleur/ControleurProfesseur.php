@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Controleur;
 
+use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use TypeError;
@@ -38,12 +39,14 @@ class ControleurProfesseur extends ControleurGenerique
         try {
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
             if ($professeur == NULL) {
-                self::afficherErreurProfesseur("Le professeur {$_GET['login']} n'existe pas");
+                self::afficherErreurProfesseur(" ");
+                MessageFlash::ajouter("error", "Le professeur {$_GET['login']} n'existe pas");
             } else {
                 self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Détail de {$professeur->getNom()}", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
             }
         } catch (TypeError $e) {
-            self::afficherErreurProfesseur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            self::afficherErreurProfesseur(" ");
+            MessageFlash::ajouter("warning", $e->getMessage());
         }
     }
 
@@ -59,8 +62,9 @@ class ControleurProfesseur extends ControleurGenerique
         if (self::verifierAdminConnecte()) {
             $professeur = new professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
             (new ProfesseurRepository)->ajouter($professeur);
+            MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
             $professeurs = (new ProfesseurRepository)->recuperer();
-            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création de compte professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
+            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création de compte professeur", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
         } 
     }
 
@@ -74,8 +78,9 @@ class ControleurProfesseur extends ControleurGenerique
         if (self::verifierAdminConnecte()) {
             $login = $_GET["login"];
             (new ProfesseurRepository)->supprimer($login);
+            MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($login)." a bien été supprimé");
             $professeurs = (new ProfesseurRepository)->recuperer();
-            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $login, "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurSupprime.php"]);
+            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $login, "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
         } 
     }
 
@@ -92,8 +97,9 @@ class ControleurProfesseur extends ControleurGenerique
         if (self::verifierAdminConnecte()) {
             $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
             (new ProfesseurRepository)->mettreAJour($professeur);
+            MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($professeur->getLogin())." a bien été mis à jour");
             $professeurs = (new ProfesseurRepository)->recuperer();
-            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
+            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
         } 
     }
 }

@@ -1,2 +1,0 @@
-<p>Utilisateur deconnecté</p>
-
