@@ -49,9 +49,18 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
-            self::afficherErreurUtilisateur("Vous n'avez pas de droit d'accès pour cette page.");
+        if (!ConnexionUtilisateur::estConnecte()) {
+            //self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("warning","Veuillez vous connecter d'abord","afficherPreference&controleur=Connexion");
             return;
+        }
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            if(!ConnexionUtilisateur::estProfesseur()){
+//                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
+                self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+                return;
+            }
         }
         if (!isset($_GET["login"])) {
             self::afficherErreurUtilisateur("Le login n'est pas renseigné");
@@ -61,7 +70,8 @@ class ControleurUtilisateur extends ControleurGenerique
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
 
             if ($utilisateur == NULL) {
-                self::afficherErreurUtilisateur("L'utilisateur de login {$_GET['login']} n'existe pas");
+                MessageFlash::ajouter("warning","L'utilisateur de login {$_GET['login']} n'existe pas");
+                self::afficherErreurUtilisateur(" ");
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
@@ -90,7 +100,8 @@ class ControleurUtilisateur extends ControleurGenerique
                 }
             }
         } catch (TypeError $e) {
-            self::afficherErreurUtilisateur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            MessageFlash::ajouter("warning", $e->getMessage());
+            self::afficherErreurUtilisateur(" ");
         }
     }
 
@@ -154,7 +165,8 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdp2 = $_GET['mdp2'] ?? '';
 
         if ($mdp !== $mdp2) {
-            self::afficherErreurUtilisateur("Mots de passe distincts");
+             self::redirectionVersURL("warning","Les mots de passes ne correspondent pas","afficherFormulaireCreation&controleur=ecole");
+//            self::afficherErreurUtilisateur("Mots de passe distincts");
             return;
         }
 
@@ -183,7 +195,8 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdp2 = $_GET['mdp2'] ?? '';
 
         if ($mdp !== $mdp2) {
-            self::afficherErreurUtilisateur("Mots de passe distincts");
+            MessageFlash::ajouter("warning","Les mots de passes ne correspondent pas");
+            self::afficherErreurUtilisateur(" ");
             return;
         }
         $utilisateur = self::construireDepuisFormulaire($_GET);
@@ -192,8 +205,9 @@ class ControleurUtilisateur extends ControleurGenerique
 
         $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->ajouter($professeur);
+        MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
         $professeurs = (new ProfesseurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
+        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
     }
 
     public static function supprimer(): void
@@ -202,11 +216,12 @@ class ControleurUtilisateur extends ControleurGenerique
             self::afficherErreurUtilisateur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-
         $login = $_GET["login"];
         (new UtilisateurRepository)->supprimer($login);
+        MessageFlash::ajouter("success","L'utilisateur de login ".htmlspecialchars($login)." a bien été supprimé");
         $utilisateurs = (new UtilisateurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
+
     }
 
     public static function afficherFormulaireMiseAJour(): void
@@ -268,19 +283,21 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdpL = $_GET["password"] ?? "";
 
         if (empty($login) || empty($mdpL)) {
-            self::afficherErreurUtilisateur("Login et/ou mot de passe manquant");
+            MessageFlash::ajouter("warning","Login et/ou mot de passe manquant");
+            self::afficherErreurUtilisateur("");
             return;
         }
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
 
         if (empty($utilisateur)) {
-            self::afficherErreurUtilisateur("Login incorrect");
+            MessageFlash::ajouter("warning","Login incorrect");
+            self::afficherErreurUtilisateur(" ");
             return;
         }
 
         if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
-            self::afficherErreurUtilisateur("Mot de passe incorrect");
-            return;
+            MessageFlash::ajouter("warning","Mot de passe incorrect");
+            self::afficherErreurUtilisateur(" ");
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
@@ -291,7 +308,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Etudiant connecté",
                 "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+                "cheminCorpsVue" => "etudiant/detailEtudiant.php"
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
@@ -301,7 +318,7 @@ class ControleurUtilisateur extends ControleurGenerique
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
                     "ecole" => $ecole,
-                    "cheminCorpsVue" => "ecole/ecoleConnecte.php"
+                    "cheminCorpsVue" => "ecole/pageEcole.php"
                 ]);
             } else {
                 ConnexionUtilisateur::deconnecter();
@@ -314,7 +331,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Professeur connecté",
                 "professeur" => $professeur,
-                "cheminCorpsVue" => "professeur/professeurConnecte.php"
+                "cheminCorpsVue" => "professeur/detailProfesseur.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
             MessageFlash::ajouter("success","Administrateur connecté");
@@ -372,7 +389,7 @@ class ControleurUtilisateur extends ControleurGenerique
             "utilisateur" => $utilisateur,
             "titre" => "Etudiant connecté",
             "etudiant" => $etudiant,
-            "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+            "cheminCorpsVue" => "etudiant/detailEtudiant.php"
         ]);
     }*/
 
@@ -423,7 +440,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function setCookieBanner(): void
     {
         Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
-        header('Location: controleurFrontal.php?action=home');
+        header('Location: controleurFrontal.php?actionAccueil=afficher&controleur=Accueil');
         exit();
     }
 }
