@@ -48,7 +48,8 @@ class ControleurUtilisateur extends ControleurGenerique
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
             if(!ConnexionUtilisateur::estProfesseur()){
-                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
+//                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
+                self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
                 return;
             }
         }
@@ -141,7 +142,8 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdp2 = $_GET['mdp2'] ?? '';
 
         if ($mdp !== $mdp2) {
-            self::afficherErreurUtilisateur("Mots de passe distincts");
+             self::redirectionVersURL("warning","Les mots de passes ne correspondent pas","afficherFormulaireCreation&controleur=ecole");
+//            self::afficherErreurUtilisateur("Mots de passe distincts");
             return;
         }
 
@@ -162,7 +164,8 @@ class ControleurUtilisateur extends ControleurGenerique
             $mdp2 = $_GET['mdp2'] ?? '';
 
             if ($mdp !== $mdp2) {
-                self::afficherErreurUtilisateur("Mots de passe distincts");
+                MessageFlash::ajouter("warning","Les mots de passes ne correspondent pas");
+                self::afficherErreurUtilisateur(" ");
                 return;
             }
             $utilisateur = self::construireDepuisFormulaire($_GET);
@@ -171,6 +174,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
             $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
             (new ProfesseurRepository)->ajouter($professeur);
+            MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
             $professeurs = (new ProfesseurRepository)->recuperer();
             self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
         }
@@ -186,6 +190,7 @@ class ControleurUtilisateur extends ControleurGenerique
         if (self::verifierAdminConnecte()) {
             $login = $_GET["login"];
             (new UtilisateurRepository)->supprimer($login);
+            MessageFlash::ajouter("success","L'utilisateur de login ".htmlspecialchars($login)." a bien été supprimé");
             $utilisateurs = (new UtilisateurRepository)->recuperer();
             self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
         }
@@ -244,17 +249,20 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdpL = $_GET["password"];
 
         if (empty($login) || empty($mdpL)) {
-            self::afficherErreurUtilisateur("Login et/ou mot de passe manquant");
+            self::redirectionVersURL("warning", "Login et/ou mot de passe manquant","$action&controleur=Connexion");
+//            self::afficherErreurUtilisateur("");
             return;
         }
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
 
         if (empty($utilisateur)) {
+            MessageFlash::ajouter("warning","Login incorrect");
             self::afficherErreurUtilisateur("Login incorrect");
             return;
         }
 
         if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
+            MessageFlash::ajouter("warning","Mot de passe incorrect");
             self::afficherErreurUtilisateur("Mot de passe incorrect");
             return;
         }
@@ -407,7 +415,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function setCookieBanner(): void
     {
         Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
-        header('Location: controleurFrontal.php?action=home');
+        header('Location: controleurFrontal.php?action=afficher&controleur=Accueil');
         exit();
     }
 

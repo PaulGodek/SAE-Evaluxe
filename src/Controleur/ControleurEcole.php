@@ -78,8 +78,9 @@ class ControleurEcole extends ControleurGenerique
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], false);
         (new EcoleRepository)->ajouter($ecole);
-        $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+//        $ecoles = (new EcoleRepository)->recuperer();
+//        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
+        MessageFlash::ajouter("success", "L'école a été créée avec succès.");
     }
 
     public static function afficherErreurEcole(string $messageErreur = ""): void
@@ -92,6 +93,7 @@ class ControleurEcole extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $login = $_GET["login"];
         (new EcoleRepository)->supprimer($login);
+        MessageFlash::ajouter("success","L'école a été supprimée avec succès");
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
     }
@@ -108,10 +110,10 @@ class ControleurEcole extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"]);
         (new EcoleRepository)->mettreAJour($ecole);
+        MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
     }
-
     public static function ajouterEtudiant(): void
     {
         $peutChecker = false;
@@ -127,23 +129,27 @@ class ControleurEcole extends ControleurGenerique
             if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
                 $ecole->addFuturEtudiant($codeUnique);
             else {
-                self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
+//                self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
+                MessageFlash::ajouter("error", "Ce code unique n'est associé à aucun étudiant.");
                 return;
             }
 
             if ($ecole->saveFutursEtudiants()) {
+                MessageFlash::ajouter("success", "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.");
 
-                self::afficherVue('vueGenerale.php', [
-                    "titre" => "Ajout d'un étudiant",
-                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
-                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
-                    "codeUnique" => $codeUnique
-                ]);
+//                self::afficherVue('vueGenerale.php', [
+//                    "titre" => "Ajout d'un étudiant",
+//                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
+//                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
+//                    "codeUnique" => $codeUnique
+//                ]);
             } else {
-                self::afficherErreurEcole("Erreur lors de l'ajout de l'étudiant.");
+//                self::afficherErreurEcole("Erreur lors de l'ajout de l'étudiant.");
+                MessageFlash::ajouter("error","Erreur lors de l'ajout de l'étudiant");
             }
         } else {
-            self::afficherErreurEcole("Vous n'avez pas l'autorisation de réaliser cette action.");
+//             self::afficherErreurEcole("Vous n'avez pas l'autorisation de réaliser cette action.");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
         }
     }
 
@@ -152,12 +158,13 @@ class ControleurEcole extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
         if (is_null($ecole)) {
-            self::afficherErreurEcole("Cette école n'existe pas.");
+//            self::afficherErreurEcole("Cette école n'existe pas.");
+            MessageFlash::ajouter("error", "Cette école n'existe pas.");
             return;
         }
 
         $ecole->setEstValide(true);
-
+        MessageFlash::ajouter("success", "L'école a été validée avec succès.");
         (new EcoleRepository())->valider($ecole);
         $ecoles = (new EcoleRepository())->recuperer();
 
