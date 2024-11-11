@@ -4,8 +4,8 @@
     <fieldset>
         <legend>Recherche :</legend>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="reponse">Nom/prenom du professeur</label>
-            <input class="InputAddOn-field" type="text" name ="reponse" placeholder="Ex : Dupont "  id="reponse" required>
+            <label class="InputAddOn-item" for="nomID">Nom de l'école</label>
+            <input class="InputAddOn-field" type="text" name="nom" placeholder="Ex : Polytech"  id="nomID" required>
         </p>
 
         <p class="InputAddOn">

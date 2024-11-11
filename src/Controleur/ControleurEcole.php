@@ -211,7 +211,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherFormulaireCreation(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurUtilisateur("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'ecole", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
