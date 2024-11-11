@@ -4,6 +4,8 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Lib\MotDePasse;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
 class ControleurGenerique
 {
@@ -81,6 +83,19 @@ class ControleurGenerique
             return false;
         }
         return true;
+    }
+
+
+
+    public static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur
+    {
+        $mdpHache = MotDePasse::hacher($tableauDonneesFormulaire['mdp']);
+        $utilisateur = new Utilisateur(
+            $tableauDonneesFormulaire['login'],
+            $tableauDonneesFormulaire['type'],
+            $mdpHache
+        );
+        return $utilisateur;
     }
 
     public static function redirectionVersURL(string $type, string $message, string $url): void

@@ -175,4 +175,14 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
+
+    public static function afficherResultatRechercheEtudiant(): void
+    {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
+        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+    }
 }

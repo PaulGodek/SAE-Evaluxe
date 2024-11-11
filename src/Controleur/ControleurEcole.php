@@ -20,7 +20,7 @@ class ControleurEcole extends ControleurGenerique
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
 
 //            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
             return;
         }
         $loginEcole = "";
@@ -82,13 +82,26 @@ class ControleurEcole extends ControleurGenerique
             self::afficherErreurEcole(" ");
             return;
         }
-        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
     }
 
-
-    public static function afficherFormulaireCreation(): void
+    public static function creerEcoleDepuisFormulaire(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            self::redirectionVersURL("warning","Les mots de passes ne correspondent pas","afficherFormulaireCreation&controleur=ecole");
+//            self::afficherErreurUtilisateur("Mots de passe distincts");
+            return;
+        }
+
+        ControleurEcole::creerDepuisFormulaire();
     }
 
     public static function creerDepuisFormulaire(): void
@@ -193,5 +206,24 @@ class ControleurEcole extends ControleurGenerique
 
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
+    }
+
+    public static function afficherFormulaireCreation(): void
+    {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurUtilisateur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'ecole", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
+    }
+
+    public static function afficherResultatRechercheEcole(): void
+    {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
+        self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "titre" => "Résultat recherche école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 }

@@ -104,7 +104,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
         <div id="cookie-banner"><h2>Politique de confidentialité</h2>
             <p> Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits fichiers de données enregistrés sur votre ordinateur ou appareil mobile lors de votre visite. Ils nous permettent de recueillir des informations sur votre comportement de navigation, telles que les pages que vous consultez et les services que vous utilisez.
                 Ces informations nous aident à personnaliser votre expérience, à mieux comprendre l'utilisation de notre site et à améliorer nos services. En poursuivant votre navigation sur notre site, vous consentez à notre utilisation des cookies. Pour en savoir plus sur notre politique d'utilisation des cookies et sur les moyens de les contrôler, veuillez consulter notre politique de confidentialité..</p>
-            <a href="controleurFrontal.php?action=setCookieBanner" class="close-button">✖</a>
+            <a href="controleurFrontal.php?controleur=utilisateur&action=setCookieBanner" class="close-button">✖</a>
         </div>
     <?php endif; ?>
 
