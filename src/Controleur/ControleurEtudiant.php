@@ -63,7 +63,7 @@ class ControleurEtudiant extends ControleurGenerique
     {
         if (!isset($_GET["login"])) {
             MessageFlash::ajouter("error","Le login n'est pas renseigné");
-//            self::afficherErreurEtudiant("Le login n'est pas renseigné");
+            self::afficherErreurEtudiant(" ");
         }
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
@@ -73,7 +73,7 @@ class ControleurEtudiant extends ControleurGenerique
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
                 if ($etudiant == NULL) {
-//                    self::afficherErreurEtudiant("L'étudiant  {$_GET['login']} n'existe pas");
+                    self::afficherErreurEtudiant(" ");
                     MessageFlash::ajouter("error","L'étudiant  {$_GET['login']} n'existe pas");
                 } else {
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
@@ -81,12 +81,12 @@ class ControleurEtudiant extends ControleurGenerique
                     self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
-                //self::afficherErreurEtudiant("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+                self::afficherErreurEtudiant(" ");
                 MessageFlash::ajouter("error","Jsp ce qu'il s'est passé dsl");
 
             }
         } else {
-//            self::afficherErreurEtudiant("Vous n'avez pas les autorisations pour réaliser cette action.");
+            self::afficherErreurEtudiant(" ");
             MessageFlash::ajouter("warning","Vous n'avez pas les autorisations pour réaliser cette action.");
         }
     }
@@ -97,7 +97,7 @@ class ControleurEtudiant extends ControleurGenerique
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (!isset($_GET["codeUnique"])) {
             MessageFlash::ajouter("error","Le code unique n'est pas valide");
-            //self::afficherErreurEtudiant("Le code unique n'est pas valide");
+            self::afficherErreurEtudiant(" ");
         }
         if (ConnexionUtilisateur::estEtudiant() && strcmp(EtudiantRepository::getCodeUniqueEtudiantConnecte(), $_GET["codeUnique"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estEcole() && in_array($_GET["codeUnique"], (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getFutursEtudiants())) $peutChecker = true;
@@ -107,7 +107,7 @@ class ControleurEtudiant extends ControleurGenerique
                 $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
                 if ($etudiant == NULL) {
                     MessageFlash::ajouter("error","L'étudiant  {$_GET['codeUnique']} n'existe pas");
-//                    self::afficherErreurEtudiant("L'étudiant  {$_GET['codeUnique']} n'existe pas");
+                    self::afficherErreurEtudiant(" ");
                 } else {
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
@@ -115,12 +115,12 @@ class ControleurEtudiant extends ControleurGenerique
                 }
             } catch (TypeError $e) {
                 MessageFlash::ajouter("error","Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
-                //self::afficherErreurEtudiant("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
+                self::afficherErreurEtudiant(" ");
             }
         }
         else {
             MessageFlash::ajouter("warning","Vous n'avez pas l'autorisation de réaliser cette action.");
-            //self::afficherErreurEtudiant("Vous n'avez pas l'autorisation de réaliser cette action.");
+            self::afficherErreurEtudiant(" ");
         }
     }
 

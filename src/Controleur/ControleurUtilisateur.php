@@ -42,7 +42,8 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherDetail(): void
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            self::afficherErreur("Veuillez vous connecter d'abord.");
+            //self::afficherErreur("Veuillez vous connecter d'abord.");
+            self::redirectionVersURL("warning","Veuillez vous connecter d'abord","afficherPreference&controleur=Connexion");
             return;
         }
 
@@ -58,7 +59,8 @@ class ControleurUtilisateur extends ControleurGenerique
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
 
             if ($utilisateur == NULL) {
-                self::afficherErreurUtilisateur("L'utilisateur de login {$_GET['login']} n'existe pas");
+                MessageFlash::ajouter("warning","L'utilisateur de login {$_GET['login']} n'existe pas");
+                self::afficherErreurUtilisateur(" ");
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
@@ -90,7 +92,8 @@ class ControleurUtilisateur extends ControleurGenerique
                 }
             }
         } catch (TypeError $e) {
-            self::afficherErreurUtilisateur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            MessageFlash::ajouter("warning", $e->getMessage());
+            self::afficherErreurUtilisateur(" ");
         }
     }
 
@@ -192,7 +195,7 @@ class ControleurUtilisateur extends ControleurGenerique
             (new UtilisateurRepository)->supprimer($login);
             MessageFlash::ajouter("success","L'utilisateur de login ".htmlspecialchars($login)." a bien été supprimé");
             $utilisateurs = (new UtilisateurRepository)->recuperer();
-            self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
+            self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/liste.php"]);
         }
     }
 
@@ -249,22 +252,21 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdpL = $_GET["password"];
 
         if (empty($login) || empty($mdpL)) {
-            self::redirectionVersURL("warning", "Login et/ou mot de passe manquant","$action&controleur=Connexion");
-//            self::afficherErreurUtilisateur("");
+            MessageFlash::ajouter("warning","Login et/ou mot de passe manquant");
+            self::afficherErreurUtilisateur("");
             return;
         }
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
 
         if (empty($utilisateur)) {
             MessageFlash::ajouter("warning","Login incorrect");
-            self::afficherErreurUtilisateur("Login incorrect");
+            self::afficherErreurUtilisateur(" ");
             return;
         }
 
         if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
             MessageFlash::ajouter("warning","Mot de passe incorrect");
-            self::afficherErreurUtilisateur("Mot de passe incorrect");
-            return;
+            self::afficherErreurUtilisateur(" ");
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
@@ -285,7 +287,7 @@ class ControleurUtilisateur extends ControleurGenerique
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
                     "ecole" => $ecole,
-                    "cheminCorpsVue" => "ecole/ecoleConnecte.php"
+                    "cheminCorpsVue" => "ecole/pageEcole.php"
                 ]);
             } else {
                 ConnexionUtilisateur::deconnecter();

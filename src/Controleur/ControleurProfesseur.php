@@ -39,13 +39,13 @@ class ControleurProfesseur extends ControleurGenerique
         try {
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
             if ($professeur == NULL) {
-//                self::afficherErreurProfesseur("Le professeur {$_GET['login']} n'existe pas");
+                self::afficherErreurProfesseur(" ");
                 MessageFlash::ajouter("error", "Le professeur {$_GET['login']} n'existe pas");
             } else {
                 self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Détail de {$professeur->getNom()}", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
             }
         } catch (TypeError $e) {
-//            self::afficherErreurProfesseur("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+            self::afficherErreurProfesseur(" ");
             MessageFlash::ajouter("warning", $e->getMessage());
         }
     }

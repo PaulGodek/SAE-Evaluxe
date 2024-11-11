@@ -61,8 +61,8 @@ class ControleurEcole extends ControleurGenerique
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         if ($ecole == NULL) {
-//            self::afficherErreurEcole("L'école {$_GET['login']} n'existe pas");
             MessageFlash::ajouter("error","L'école {$_GET['login']} n'existe pas");
+            self::afficherErreurEcole(" ");
             return;
         }
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
@@ -78,9 +78,9 @@ class ControleurEcole extends ControleurGenerique
     {
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], false);
         (new EcoleRepository)->ajouter($ecole);
-//        $ecoles = (new EcoleRepository)->recuperer();
-//        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
         MessageFlash::ajouter("success", "L'école a été créée avec succès.");
+        $ecoles = (new EcoleRepository)->recuperer();
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
     public static function afficherErreurEcole(string $messageErreur = ""): void
@@ -129,23 +129,22 @@ class ControleurEcole extends ControleurGenerique
             if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
                 $ecole->addFuturEtudiant($codeUnique);
             else {
-//                self::afficherErreurEcole("Ce code unique n'est associé à aucun étudiant.");
                 MessageFlash::ajouter("error", "Ce code unique n'est associé à aucun étudiant.");
+                self::afficherErreurEcole(" ");
                 return;
             }
 
             if ($ecole->saveFutursEtudiants()) {
                 MessageFlash::ajouter("success", "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.");
-
-//                self::afficherVue('vueGenerale.php', [
-//                    "titre" => "Ajout d'un étudiant",
-//                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
-//                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
-//                    "codeUnique" => $codeUnique
-//                ]);
+                self::afficherVue('vueGenerale.php', [
+                    "titre" => "Ajout d'un étudiant",
+                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
+                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
+                    "codeUnique" => $codeUnique
+                ]);
             } else {
-//                self::afficherErreurEcole("Erreur lors de l'ajout de l'étudiant.");
                 MessageFlash::ajouter("error","Erreur lors de l'ajout de l'étudiant");
+                self::afficherErreurEcole(" ");
             }
         } else {
 //             self::afficherErreurEcole("Vous n'avez pas l'autorisation de réaliser cette action.");
@@ -158,8 +157,8 @@ class ControleurEcole extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
         if (is_null($ecole)) {
-//            self::afficherErreurEcole("Cette école n'existe pas.");
             MessageFlash::ajouter("error", "Cette école n'existe pas.");
+            self::afficherErreurEcole(" ");
             return;
         }
 
@@ -167,7 +166,6 @@ class ControleurEcole extends ControleurGenerique
         MessageFlash::ajouter("success", "L'école a été validée avec succès.");
         (new EcoleRepository())->valider($ecole);
         $ecoles = (new EcoleRepository())->recuperer();
-
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
     }
