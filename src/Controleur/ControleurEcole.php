@@ -6,6 +6,7 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Lib\MessageFlash;
 
 class ControleurEcole extends ControleurGenerique
 {
@@ -13,7 +14,8 @@ class ControleurEcole extends ControleurGenerique
     {
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
 
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+//            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $loginEcole = "";
@@ -59,7 +61,8 @@ class ControleurEcole extends ControleurGenerique
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         if ($ecole == NULL) {
-            self::afficherErreurEcole("L'école {$_GET['login']} n'existe pas");
+//            self::afficherErreurEcole("L'école {$_GET['login']} n'existe pas");
+            MessageFlash::ajouter("error","L'école {$_GET['login']} n'existe pas");
             return;
         }
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
