@@ -176,7 +176,7 @@ class ControleurUtilisateur extends ControleurGenerique
             (new ProfesseurRepository)->ajouter($professeur);
             MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
             $professeurs = (new ProfesseurRepository)->recuperer();
-            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/professeurCree.php"]);
+            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
         }
     }
 
@@ -275,7 +275,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Etudiant connecté",
                 "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+                "cheminCorpsVue" => "etudiant/detailEtudiant.php"
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
@@ -298,7 +298,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Professeur connecté",
                 "professeur" => $professeur,
-                "cheminCorpsVue" => "professeur/professeurConnecte.php"
+                "cheminCorpsVue" => "professeur/detailProfesseur.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
             MessageFlash::ajouter("success","Administrateur connecté");
@@ -356,7 +356,7 @@ class ControleurUtilisateur extends ControleurGenerique
             "utilisateur" => $utilisateur,
             "titre" => "Etudiant connecté",
             "etudiant" => $etudiant,
-            "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
+            "cheminCorpsVue" => "etudiant/detailEtudiant.php"
         ]);
     }*/
 

@@ -95,7 +95,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->supprimer($login);
         MessageFlash::ajouter("success","L'école a été supprimée avec succès");
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleSupprime.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $login, "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
@@ -112,7 +112,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/ecoleMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
     public static function ajouterEtudiant(): void
     {

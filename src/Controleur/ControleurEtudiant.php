@@ -3,6 +3,7 @@
 namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -60,7 +61,10 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!isset($_GET["login"])) self::afficherErreurEtudiant("Le login n'est pas renseigné");
+        if (!isset($_GET["login"])) {
+            MessageFlash::ajouter("error","Le login n'est pas renseigné");
+//            self::afficherErreurEtudiant("Le login n'est pas renseigné");
+        }
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
@@ -69,17 +73,21 @@ class ControleurEtudiant extends ControleurGenerique
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
                 if ($etudiant == NULL) {
-                    self::afficherErreurEtudiant("L'étudiant  {$_GET['login']} n'existe pas");
+//                    self::afficherErreurEtudiant("L'étudiant  {$_GET['login']} n'existe pas");
+                    MessageFlash::ajouter("error","L'étudiant  {$_GET['login']} n'existe pas");
                 } else {
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
                     self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
-                self::afficherErreurEtudiant("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+                //self::afficherErreurEtudiant("Jsp ce qu'il s'est passé dsl, voilà l'erreur : {$e->getMessage()}");
+                MessageFlash::ajouter("error","Jsp ce qu'il s'est passé dsl");
+
             }
         } else {
-            self::afficherErreurEtudiant("Vous n'avez pas les autorisations pour réaliser cette action.");
+//            self::afficherErreurEtudiant("Vous n'avez pas les autorisations pour réaliser cette action.");
+            MessageFlash::ajouter("warning","Vous n'avez pas les autorisations pour réaliser cette action.");
         }
     }
 
@@ -87,7 +95,10 @@ class ControleurEtudiant extends ControleurGenerique
     {
         $peutChecker = false;
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (!isset($_GET["codeUnique"])) self::afficherErreurEtudiant("Le code unique n'est pas valide");
+        if (!isset($_GET["codeUnique"])) {
+            MessageFlash::ajouter("error","Le code unique n'est pas valide");
+            //self::afficherErreurEtudiant("Le code unique n'est pas valide");
+        }
         if (ConnexionUtilisateur::estEtudiant() && strcmp(EtudiantRepository::getCodeUniqueEtudiantConnecte(), $_GET["codeUnique"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estEcole() && in_array($_GET["codeUnique"], (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getFutursEtudiants())) $peutChecker = true;
         if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
@@ -95,18 +106,21 @@ class ControleurEtudiant extends ControleurGenerique
             try {
                 $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
                 if ($etudiant == NULL) {
-                    self::afficherErreurEtudiant("L'étudiant  {$_GET['codeUnique']} n'existe pas");
+                    MessageFlash::ajouter("error","L'étudiant  {$_GET['codeUnique']} n'existe pas");
+//                    self::afficherErreurEtudiant("L'étudiant  {$_GET['codeUnique']} n'existe pas");
                 } else {
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
                     self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
-                self::afficherErreurEtudiant("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
+                MessageFlash::ajouter("error","Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
+                //self::afficherErreurEtudiant("Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
             }
         }
         else {
-            self::afficherErreurEtudiant("Vous n'avez pas l'autorisation de réaliser cette action.");
+            MessageFlash::ajouter("warning","Vous n'avez pas l'autorisation de réaliser cette action.");
+            //self::afficherErreurEtudiant("Vous n'avez pas l'autorisation de réaliser cette action.");
         }
     }
 
@@ -126,8 +140,9 @@ class ControleurEtudiant extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $login = $_GET["login"];
         (new EtudiantRepository)->supprimer($login);
+        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($login)." a bien été supprimé");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantSupprime.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
@@ -145,7 +160,8 @@ class ControleurEtudiant extends ControleurGenerique
         if (!ControleurGenerique::verifierAdminConnecte()) return;
         $etudiant = new Etudiant($_GET["login"], $_GET["etudid"]);
         (new EtudiantRepository)->mettreAJour($etudiant);
+        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($etudiant->getLogin())." a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/etudiantMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 }
