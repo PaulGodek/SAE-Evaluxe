@@ -19,11 +19,6 @@ if (isset($_GET["controleur"])) {
 } else {
     $controleur = "utilisateur";
 }
-if ($controleur === 'Connexion' && isset($_GET['action']) && $_GET['action'] === 'deconnecter') {
-    $controleurConnexion = new ControleurConnexion();
-    $controleurConnexion->deconnecter();
-    exit;
-}
 
 $nomDeClasseControleur = "App\GenerateurAvis\Controleur\Controleur" . ucfirst($controleur);
 
