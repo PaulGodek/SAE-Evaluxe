@@ -24,9 +24,22 @@ class EcoleRepository extends AbstractRepository
     {
 
         $sql = "SELECT * FROM " . self::$tableEcole .
-            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
-        echo $sql;
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+            " WHERE login LIKE :rechercheTag1 
+            OR login LIKE :rechercheTag2 
+            OR login LIKE :rechercheTag3 
+            OR login = :rechercheTag4";
+
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+        $pdoStatement->execute($values);
 
         $tableauEcole = [];
         foreach ($pdoStatement as $ecoleFormatTableau) {
@@ -181,8 +194,22 @@ class EcoleRepository extends AbstractRepository
     {
 
         $sql="SELECT * FROM " . self::$tableEcole .
-            " WHERE nom LIKE '%".$recherche."' OR nom LIKE '%".$recherche."%' OR nom LIKE '".$recherche."%' OR nom='".$recherche."'";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+            " WHERE nom LIKE :rechercheTag1 
+            OR nom LIKE :rechercheTag2 
+            OR nom LIKE :rechercheTag3 
+            OR nom = :rechercheTag4";
+
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+        $pdoStatement->execute($values);
 
         $tableauEcole = [];
         foreach ($pdoStatement as $ecoleFormatTableau) {

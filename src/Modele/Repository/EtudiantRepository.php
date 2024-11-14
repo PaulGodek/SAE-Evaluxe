@@ -152,33 +152,63 @@ class EtudiantRepository extends AbstractRepository
         );
     }
 
-    public static function rechercherEtudiantParLogin(string $recherche): array
-    {
+public static function rechercherEtudiantParLogin(string $recherche): array
+{
+    // Construire correctement la requête avec des jokers
+    $sql = "SELECT * FROM " . self::$tableEtudiant . "
+            WHERE login LIKE :rechercheTag1 
+            OR login LIKE :rechercheTag2 
+            OR login LIKE :rechercheTag3 
+            OR login = :rechercheTag4";
 
-        $sql = "SELECT * FROM " . self::$tableEtudiant .
-            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+    // Préparer la requête
+    $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+    // Ajouter les jokers à la valeur de recherche
+    $values = [
+        "rechercheTag1" => '%' . $recherche,
+        "rechercheTag2" => '%' . $recherche . '%',
+        "rechercheTag3" => $recherche . '%',
+        "rechercheTag4" => $recherche
+    ];
 
-        $tableauEtudiant = [];
-        foreach ($pdoStatement as $etudiantFormatTableau) {
-            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
-        }
-        return $tableauEtudiant;
+    // Exécuter la requête
+    $pdoStatement->execute($values);
 
+    // Construire les objets étudiant à partir des résultats
+    $tableauEtudiant = [];
+    foreach ($pdoStatement as $etudiantFormatTableau) {
+        $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
     }
+
+    return $tableauEtudiant;
+}
 
     //Pour plus tard
     /*public static function rechercherEtudiant(string $recherche)
     {
 
         $sql = "SELECT * FROM " . self::$tableEtudiant .
-            " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
-            OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
-            OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
+            " WHERE nom LIKE :rechercheTag1
+            OR nom LIKE :rechercheTag2
+            OR nom LIKE :rechercheTag3
+            OR nom = :rechercheTag4
+            OR prenom LIKE :rechercheTag1
+            OR prenom LIKE :rechercheTag2
+            OR prenom LIKE :rechercheTag3
+            OR prenom = :rechercheTag4 ";
 
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+
+        $pdoStatement->execute($values);
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
             $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
