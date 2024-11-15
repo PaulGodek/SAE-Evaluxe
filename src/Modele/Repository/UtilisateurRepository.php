@@ -56,10 +56,24 @@ class UtilisateurRepository extends AbstractRepository
     {
 
         $sql = "SELECT * FROM " . self::$tableUtilisateur .
-            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
+            " WHERE login LIKE :rechercheTag1 
+            OR login LIKE :rechercheTag2 
+            OR login LIKE :rechercheTag3 
+            OR login = :rechercheTag4";
 
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+
+        // Exécuter la requête
+        $pdoStatement->execute($values);
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $utilisateurFormatTableau) {
             $tableauUtilisateur[] = (new UtilisateurRepository())->construireDepuisTableauSQL($utilisateurFormatTableau);
