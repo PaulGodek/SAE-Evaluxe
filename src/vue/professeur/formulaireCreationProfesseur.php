@@ -1,5 +1,6 @@
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="creerProfesseurDepuisFormulaire"/>
+    <input type="hidden" name="controleur" value="professeur"/>
     <fieldset>
         <legend>Formulaire de création de compte professeur:</legend>
 

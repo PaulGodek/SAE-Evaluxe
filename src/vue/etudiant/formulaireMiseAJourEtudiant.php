@@ -4,6 +4,7 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
 ?>
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="mettreAJour"/>
+    <input type="hidden" name="controleur" value="etudiant"/>
     <fieldset>
         <legend>Formulaire de mise à jour </legend>
         <p class="InputAddOn">

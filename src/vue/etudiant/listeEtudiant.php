@@ -1,5 +1,6 @@
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheEtudiant"/>
+    <input type="hidden" name="controleur" value="etudiant"/>
     <fieldset>
         <legend>Recherche :</legend>
         <p class="InputAddOn">

@@ -1,23 +1,15 @@
 <?php
 namespace App\GenerateurAvis\Controleur;
 
-class ControleurAccueil {
-    public static function afficher(): void
+class ControleurAccueil extends ControleurGenerique {
+    public static function afficherErreurAccueil(string $messageErreur = ""): void
     {
-        self::afficherVue('vueGenerale.php', [
-            'titre' => 'Accueil',
-            'cheminCorpsVue' => 'siteweb/accueil.php'
-        ]);
+        self::afficherErreur($messageErreur, "accueil");
     }
 
-    public static function afficherErreur(string $messageErreur = ""): void
+    public static function afficherAccueil(): void
     {
-        ControleurGenerique::afficherErreur($messageErreur, "accueil");
+        self::afficherVue('vueGenerale.php', ["titre" => "Accueil", "cheminCorpsVue" => "siteweb/accueil.php"]);
     }
 
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
-    {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
-    }
 }

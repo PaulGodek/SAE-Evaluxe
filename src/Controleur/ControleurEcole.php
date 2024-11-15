@@ -10,12 +10,17 @@ use App\GenerateurAvis\Lib\MessageFlash;
 
 class ControleurEcole extends ControleurGenerique
 {
+    public static function afficherErreurEcole(string $messageErreur = ""): void
+    {
+        self::afficherErreur($messageErreur, 'ecole');
+    }
+
     public static function afficherEcole(): void
     {
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
 
 //            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
             return;
         }
         $loginEcole = "";
@@ -35,21 +40,30 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherListe(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParNom(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParNom(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParVille(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
@@ -57,7 +71,10 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
 
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         if ($ecole == NULL) {
@@ -65,13 +82,26 @@ class ControleurEcole extends ControleurGenerique
             self::afficherErreurEcole(" ");
             return;
         }
-        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
     }
 
-
-    public static function afficherFormulaireCreation(): void
+    public static function creerEcoleDepuisFormulaire(): void
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte école", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        $mdp = $_GET['mdp'] ?? '';
+        $mdp2 = $_GET['mdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            self::redirectionVersURL("warning","Les mots de passes ne correspondent pas","afficherFormulaireCreation&controleur=ecole");
+//            self::afficherErreurUtilisateur("Mots de passe distincts");
+            return;
+        }
+
+        ControleurEcole::creerDepuisFormulaire();
     }
 
     public static function creerDepuisFormulaire(): void
@@ -83,14 +113,12 @@ class ControleurEcole extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
-    public static function afficherErreurEcole(string $messageErreur = ""): void
-    {
-        self::afficherErreur($messageErreur, 'ecole');
-    }
-
     public static function supprimer(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $login = $_GET["login"];
         (new EcoleRepository)->supprimer($login);
         MessageFlash::ajouter("success","L'école a été supprimée avec succès");
@@ -100,61 +128,70 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
         self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour de compte école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
     }
 
     public static function mettreAJour(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
         $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"]);
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
+
     public static function ajouterEtudiant(): void
     {
-        $peutChecker = false;
-        if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
-        if (ConnexionUtilisateur::estEcole()) $peutChecker = true;
-        if ($peutChecker) {
-            $login = $_GET['login'];
-            $codeUnique = $_GET['codeUnique'];
-            $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEcole()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
 
+        $login = $_GET['login'];
+        $codeUnique = $_GET['codeUnique'];
+        $ecole = (new EcoleRepository)->recupererParClePrimaire($login);
+
+        $ecole->addFuturEtudiant($codeUnique);
+
+        if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
             $ecole->addFuturEtudiant($codeUnique);
+        else {
+            MessageFlash::ajouter("error", "Ce code unique n'est associé à aucun étudiant.");
+            self::afficherErreurEcole(" ");
+            return;
+        }
 
-            if (!is_null(EtudiantRepository::recupererEtudiantParCodeUnique($codeUnique)))
-                $ecole->addFuturEtudiant($codeUnique);
-            else {
-                MessageFlash::ajouter("error", "Ce code unique n'est associé à aucun étudiant.");
-                self::afficherErreurEcole(" ");
-                return;
-            }
+        if ($ecole->saveFutursEtudiants()) {
 
-            if ($ecole->saveFutursEtudiants()) {
-                MessageFlash::ajouter("success", "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.");
-                self::afficherVue('vueGenerale.php', [
-                    "titre" => "Ajout d'un étudiant",
-                    "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
-                    "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
-                    "codeUnique" => $codeUnique
-                ]);
-            } else {
-                MessageFlash::ajouter("error","Erreur lors de l'ajout de l'étudiant");
-                self::afficherErreurEcole(" ");
-            }
+            self::afficherVue('vueGenerale.php', [
+                "titre" => "Ajout d'un étudiant",
+                "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
+                "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
+                "codeUnique" => $codeUnique
+            ]);
         } else {
-//             self::afficherErreurEcole("Vous n'avez pas l'autorisation de réaliser cette action.");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            MessageFlash::ajouter("error","Erreur lors de l'ajout de l'étudiant");
+            self::afficherErreurEcole(" ");
         }
     }
 
     public static function valider(): void
     {
-        if (!ControleurGenerique::verifierAdminConnecte()) return;
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
         if (is_null($ecole)) {
             MessageFlash::ajouter("error", "Cette école n'existe pas.");
@@ -166,7 +203,27 @@ class ControleurEcole extends ControleurGenerique
         MessageFlash::ajouter("success", "L'école a été validée avec succès.");
         (new EcoleRepository())->valider($ecole);
         $ecoles = (new EcoleRepository())->recuperer();
+
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
+    }
+
+    public static function afficherFormulaireCreation(): void
+    {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création d'ecole", "cheminCorpsVue" => "ecole/formulaireCreationEcole.php"]);
+    }
+
+    public static function afficherResultatRechercheEcole(): void
+    {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
+        self::afficherVue("vueGenerale.php", ["ecoles" => $ecoles, "titre" => "Résultat recherche école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Lib\MotDePasse;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 
 class ControleurGenerique
 {
@@ -13,7 +15,7 @@ class ControleurGenerique
         require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
     }
 
-    public static function afficherErreur(string $messageErreur = "", string $controleur = "site web"): void
+    public static function afficherErreur(string $messageErreur = "", string $controleur = ""): void
     {
         self::afficherVue('vueGenerale.php', ['messageErreur' => $messageErreur, 'controleur' => $controleur, 'titre' => "Erreur", 'cheminCorpsVue' => 'erreur.php']);
     }
@@ -28,7 +30,7 @@ class ControleurGenerique
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
 //            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=accueil");
             return false;
         }
         return true;
@@ -44,7 +46,7 @@ class ControleurGenerique
 
         if (!ConnexionUtilisateur::estEtudiant()) {
 //            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=accueil");
             return false;
         }
         return true;
@@ -61,7 +63,7 @@ class ControleurGenerique
 
         if (!ConnexionUtilisateur::estProfesseur()) {
 //            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=accueil");
             return false;
         }
         return true;
@@ -77,15 +79,23 @@ class ControleurGenerique
 
         if (!ConnexionUtilisateur::estEcole()) {
 //            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=accueil");
             return false;
         }
         return true;
     }
 
-    public static function home(): void
+
+
+    public static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur
     {
-        self::afficherVue('vueGenerale.php', ["titre" => "Accueil", "cheminCorpsVue" => "siteweb/accueil.php"]);
+        $mdpHache = MotDePasse::hacher($tableauDonneesFormulaire['mdp']);
+        $utilisateur = new Utilisateur(
+            $tableauDonneesFormulaire['login'],
+            $tableauDonneesFormulaire['type'],
+            $mdpHache
+        );
+        return $utilisateur;
     }
 
     public static function redirectionVersURL(string $type, string $message, string $url): void

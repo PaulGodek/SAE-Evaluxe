@@ -4,6 +4,7 @@ use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 ?>
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="mettreAJour"/>
+    <input type="hidden" name="controleur" value="utilisateur"/>
     <fieldset>
         <legend>Mon formulaire :</legend>
         <p class="InputAddOn">
