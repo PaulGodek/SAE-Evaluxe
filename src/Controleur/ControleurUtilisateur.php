@@ -2,9 +2,7 @@
 
 namespace App\GenerateurAvis\Controleur;
 
-use PHPMailer\PHPMailer\PHPMailer;
-
-//require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 use Shuchkin\SimpleXLSX;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
@@ -422,35 +420,60 @@ class ControleurUtilisateur extends ControleurGenerique
         if (isset($_FILES['excelFile']) && $_FILES['excelFile']['error'] == UPLOAD_ERR_OK) {
             $filePath = $_FILES['excelFile']['tmp_name'];
 
-            // Use SimpleXLSX to read the Excel file
+            $fileName = pathinfo($_FILES['excelFile']['name'], PATHINFO_FILENAME);
+
+            $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $fileName);
+
             if ($xlsx = SimpleXLSX::parse($filePath)) {
                 $sheetData = $xlsx->rows();
 
                 if (!empty($sheetData)) {
-                    $tableName = 'new_table_' . time();
-                    $columns = array_shift($sheetData); // First row contains column names
+                    $columns = array_shift($sheetData);
 
-                    // Create the table dynamically
-                    $createTableQuery = "CREATE TABLE `$tableName` (" . implode(' VARCHAR(255),', $columns) . " VARCHAR(255))";
-                    $pdo = new PDO(
-                        "mysql:host=" . ConfigurationBaseDeDonnees::getNomHote() .
-                        ";dbname=" . ConfigurationBaseDeDonnees::getNomBaseDeDonnees() .
-                        ";port=" . ConfigurationBaseDeDonnees::getPort(),
-                        ConfigurationBaseDeDonnees::getLogin(),
-                        ConfigurationBaseDeDonnees::getMotDePasse()
-                    );
+                    $columns = array_map(function ($col, $index) {
+                        $col = preg_replace('/[^a-zA-Z0-9_]/', '_', $col);
+                        return $col ?: "column_$index";
+                    }, $columns, array_keys($columns));
+
+                    $uniqueColumns = [];
+                    foreach ($columns as $col) {
+                        $baseCol = $col;
+                        $i = 1;
+                        while (in_array($col, $uniqueColumns)) {
+                            $col = $baseCol . '_' . $i++;
+                        }
+                        $uniqueColumns[] = $col;
+                    }
+                    $columns = $uniqueColumns;
+
+                    $columnDefinitions = [];
+                    foreach ($columns as $col) {
+                        if (str_contains(strtolower($col), 'description') || strlen($col) > 50) {
+                            $columnDefinitions[] = "`$col` BLOB";
+                        } else {
+                            // Use VARCHAR(255) for other smaller fields
+                            $columnDefinitions[] = "`$col` VARCHAR(255)";
+                        }
+                    }
+
+                    $createTableQuery = "CREATE TABLE `$tableName` (" . implode(',', $columnDefinitions) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC";
+                    $pdo = ConnexionBaseDeDonnees::getPdo();
                     $pdo->exec($createTableQuery);
 
-                    // Prepare the insert query
                     $insertQuery = "INSERT INTO `$tableName` (" . implode(',', $columns) . ") VALUES (" . str_repeat('?,', count($columns) - 1) . "?)";
                     $stmt = $pdo->prepare($insertQuery);
 
-                    // Insert each row
                     foreach ($sheetData as $row) {
-                        $stmt->execute($row);
+                        $data = array_slice($row, 0, count($columns));
+                        foreach ($data as &$value) {
+                            if (is_string($value)) {
+                                $value = utf8_encode($value);
+                            }
+                        }
+                        $stmt->execute($data);
                     }
 
-                    MessageFlash::ajouter('success', "Excel file successfully imported into table $tableName.");
+                    MessageFlash::ajouter('success', "Excel file successfully imported into table `$tableName`.");
                 } else {
                     MessageFlash::ajouter('error', "The Excel file is empty.");
                 }
