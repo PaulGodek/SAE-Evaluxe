@@ -2,6 +2,11 @@
 
 namespace App\GenerateurAvis\Controleur;
 
+use PHPMailer\PHPMailer\PHPMailer;
+
+//require __DIR__ . '/../../bootstrap.php';
+
+use Shuchkin\SimpleXLSX;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
@@ -49,12 +54,12 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         if (!ConnexionUtilisateur::estConnecte()) {
             //self::afficherErreur("Veuillez vous connecter d'abord.");
-            self::redirectionVersURL("warning","Veuillez vous connecter d'abord","afficherPreference&controleur=Connexion");
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            if(!ConnexionUtilisateur::estProfesseur()){
+            if (!ConnexionUtilisateur::estProfesseur()) {
 //                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
                 self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
                 return;
@@ -68,7 +73,7 @@ class ControleurUtilisateur extends ControleurGenerique
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
 
             if ($utilisateur == NULL) {
-                MessageFlash::ajouter("warning","L'utilisateur de login {$_GET['login']} n'existe pas");
+                MessageFlash::ajouter("warning", "L'utilisateur de login {$_GET['login']} n'existe pas");
                 self::afficherErreurUtilisateur(" ");
             } else {
                 if ($utilisateur->getType() == "etudiant") {
@@ -121,7 +126,7 @@ class ControleurUtilisateur extends ControleurGenerique
         }
         $login = $_GET["login"];
         (new UtilisateurRepository)->supprimer($login);
-        MessageFlash::ajouter("success","L'utilisateur de login ".htmlspecialchars($login)." a bien été supprimé");
+        MessageFlash::ajouter("success", "L'utilisateur de login " . htmlspecialchars($login) . " a bien été supprimé");
         $utilisateurs = (new UtilisateurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "login" => $login, "titre" => "Suppression d'utilisateur", "cheminCorpsVue" => "utilisateur/utilisateurSupprime.php"]);
 
@@ -155,26 +160,26 @@ class ControleurUtilisateur extends ControleurGenerique
         $mdpL = $_GET["password"] ?? "";
 
         if (empty($login) || empty($mdpL)) {
-            MessageFlash::ajouter("warning","Login et/ou mot de passe manquant");
+            MessageFlash::ajouter("warning", "Login et/ou mot de passe manquant");
             self::afficherErreurUtilisateur("");
             return;
         }
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
 
         if (empty($utilisateur)) {
-            MessageFlash::ajouter("warning","Login incorrect");
+            MessageFlash::ajouter("warning", "Login incorrect");
             self::afficherErreurUtilisateur(" ");
             return;
         }
 
         if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
-            MessageFlash::ajouter("warning","Mot de passe incorrect");
+            MessageFlash::ajouter("warning", "Mot de passe incorrect");
             self::afficherErreurUtilisateur(" ");
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
         if ($utilisateur->getType() == "etudiant") {
-            MessageFlash::ajouter("success","Etudiant connecté");
+            MessageFlash::ajouter("success", "Etudiant connecté");
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -185,7 +190,7 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
-                MessageFlash::ajouter("success","Ecole connecté");
+                MessageFlash::ajouter("success", "Ecole connecté");
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
@@ -197,7 +202,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherErreurUtilisateur("Ce compte n'a pas été validé par l'administrateur ");
             };
         } else if ($utilisateur->getType() == "professeur") {
-            MessageFlash::ajouter("success","Professeur connecté");
+            MessageFlash::ajouter("success", "Professeur connecté");
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -206,7 +211,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "cheminCorpsVue" => "professeur/detailProfesseur.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
-            MessageFlash::ajouter("success","Administrateur connecté");
+            MessageFlash::ajouter("success", "Administrateur connecté");
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,

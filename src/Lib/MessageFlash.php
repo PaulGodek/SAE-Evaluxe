@@ -14,6 +14,7 @@ class MessageFlash
      * @var string La clé associée aux messages flash en session.
      */
     private static string $cleFlash = "_messagesFlash";
+    private static $supprimer;
 
     /**
      * Ajoute un message flash de type spécifié.
@@ -83,9 +84,10 @@ class MessageFlash
     public static function lireTousMessages(): array
     {
         $session = Session::getInstance();
+        self::$supprimer = $session->supprimer(self::$cleFlash);
         if ($session->contient(self::$cleFlash)) {
             $array = $session->lire(self::$cleFlash);
-            $session->supprimer(self::$cleFlash);
+            self::$supprimer;
             return $array;
         }
         return array();
