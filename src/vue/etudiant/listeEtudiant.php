@@ -19,6 +19,7 @@
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
@@ -39,7 +40,11 @@ foreach ($etudiants as $etudiant) {
     }
 
     $loginURL = rawurlencode($etudiant->getLogin());
-    echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
+    if (ConnexionUtilisateur::estEcole()) {
+        echo '<li><p> L\'étudiant' . $nomHTML . '&nbsp;' . $prenomHTML . '</p></li>';
+    } else {
+        echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
+    }
 }
 
 echo "</ul>";

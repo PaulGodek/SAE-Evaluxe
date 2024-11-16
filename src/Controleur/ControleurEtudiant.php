@@ -19,7 +19,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListe(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -32,7 +32,7 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -42,7 +42,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -52,7 +52,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -178,7 +178,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherResultatRechercheEtudiant(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }

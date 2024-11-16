@@ -11,6 +11,7 @@ class Etudiant extends AbstractDataObject
     private string $codeUnique;
     private int $idEtudiant;
     private static array $codesUniquesUtilisees = [];
+    private array $demandes;
 
     /**
      * @throws RandomException
@@ -21,6 +22,7 @@ class Etudiant extends AbstractDataObject
         $this->idEtudiant = $idEtudiant;
         $this->codeUnique = $this->genererCodeUnique();
         self::$codesUniquesUtilisees[] = $this->codeUnique;
+        $this->demandes = [];
     }
 
     public function getLogin(): string
@@ -59,4 +61,17 @@ class Etudiant extends AbstractDataObject
     {
         $this->idEtudiant = $idEtudiant;
     }
+
+    public function getDemandes(): array
+    {
+        return $this->demandes;
+    }
+
+    public function setDemandes(array $demandes): void
+    {
+        $this->demandes = $demandes;
+    }
+
+
+
 }
