@@ -449,7 +449,8 @@ class ControleurUtilisateur extends ControleurGenerique
         self::insertDataIntoTable($tableName, $columns, $sheetData);
 
         MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
-        self::afficherListe();
+        echo '<script type="text/javascript">window.location.href = "controleurFrontal.php?controleur=utilisateur&action=afficherListe";</script>';
+        exit;
     }
 
 
