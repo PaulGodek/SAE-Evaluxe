@@ -4,6 +4,8 @@ namespace App\GenerateurAvis\Controleur;
 
 require __DIR__ . '/../../bootstrap.php';
 
+use Exception;
+use PDOException;
 use Shuchkin\SimpleXLSX;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
@@ -50,7 +52,7 @@ class ControleurUtilisateur extends ControleurGenerique
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            if(!ConnexionUtilisateur::estProfesseur()){
+            if (!ConnexionUtilisateur::estProfesseur()) {
                 self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
                 return;
             }
@@ -99,8 +101,8 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function afficherResultatRechercheEtudiant(): void
     {
         $avoirDroits = false;
-        if(ConnexionUtilisateur::estAdministrateur()) $avoirDroits = true;
-        if(ConnexionUtilisateur::estProfesseur()) $avoirDroits = true;
+        if (ConnexionUtilisateur::estAdministrateur()) $avoirDroits = true;
+        if (ConnexionUtilisateur::estProfesseur()) $avoirDroits = true;
         if ($avoirDroits) {
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
@@ -264,7 +266,7 @@ class ControleurUtilisateur extends ControleurGenerique
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
         if ($utilisateur->getType() == "etudiant") {
-            MessageFlash::ajouter("success","Etudiant connecté");
+            MessageFlash::ajouter("success", "Etudiant connecté");
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -275,7 +277,7 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
-                MessageFlash::ajouter("success","Ecole connecté");
+                MessageFlash::ajouter("success", "Ecole connecté");
                 ControleurUtilisateur::afficherVue('vueGenerale.php', [
                     "utilisateur" => $utilisateur,
                     "titre" => "Ecole connecté",
@@ -287,7 +289,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherErreurUtilisateur("Ce compte n'a pas été validé par l'administrateur ");
             };
         } else if ($utilisateur->getType() == "professeur") {
-            MessageFlash::ajouter("success","Professeur connecté");
+            MessageFlash::ajouter("success", "Professeur connecté");
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -296,7 +298,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
-            MessageFlash::ajouter("success","Administrateur connecté");
+            MessageFlash::ajouter("success", "Administrateur connecté");
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             ControleurUtilisateur::afficherVue('vueGenerale.php', [
                 "utilisateur" => $utilisateur,
@@ -417,75 +419,120 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function importerExcel(): void
     {
-        if (isset($_FILES['excelFile']) && $_FILES['excelFile']['error'] == UPLOAD_ERR_OK) {
+        try {
+            if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Failed to upload the Excel file.");
+            }
+
             $filePath = $_FILES['excelFile']['tmp_name'];
-
             $fileName = pathinfo($_FILES['excelFile']['name'], PATHINFO_FILENAME);
-
             $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $fileName);
 
-            if ($xlsx = SimpleXLSX::parse($filePath)) {
-                $sheetData = $xlsx->rows();
+            echo "<pre>Debug: Processing file `$fileName` for table `$tableName`...</pre>";
 
-                if (!empty($sheetData)) {
-                    $columns = array_shift($sheetData);
+            $sheetData = self::parseExcelFile($filePath);
+            echo "<pre>Debug: Parsed sheet data: " . print_r(array_slice($sheetData, 0, 3), true) . "</pre>";
 
-                    $columns = array_map(function ($col, $index) {
-                        $col = preg_replace('/[^a-zA-Z0-9_]/', '_', $col);
-                        return $col ?: "column_$index";
-                    }, $columns, array_keys($columns));
-
-                    $uniqueColumns = [];
-                    foreach ($columns as $col) {
-                        $baseCol = $col;
-                        $i = 1;
-                        while (in_array($col, $uniqueColumns)) {
-                            $col = $baseCol . '_' . $i++;
-                        }
-                        $uniqueColumns[] = $col;
-                    }
-                    $columns = $uniqueColumns;
-
-                    $columnDefinitions = [];
-                    foreach ($columns as $col) {
-                        if (str_contains(strtolower($col), 'description') || strlen($col) > 50) {
-                            $columnDefinitions[] = "`$col` BLOB";
-                        } else {
-                            // Use VARCHAR(255) for other smaller fields
-                            $columnDefinitions[] = "`$col` VARCHAR(255)";
-                        }
-                    }
-
-                    $createTableQuery = "CREATE TABLE `$tableName` (" . implode(',', $columnDefinitions) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC";
-                    $pdo = ConnexionBaseDeDonnees::getPdo();
-                    $pdo->exec($createTableQuery);
-
-                    $insertQuery = "INSERT INTO `$tableName` (" . implode(',', $columns) . ") VALUES (" . str_repeat('?,', count($columns) - 1) . "?)";
-                    $stmt = $pdo->prepare($insertQuery);
-
-                    foreach ($sheetData as $row) {
-                        $data = array_slice($row, 0, count($columns));
-                        foreach ($data as &$value) {
-                            if (is_string($value)) {
-                                $value = utf8_encode($value);
-                            }
-                        }
-                        $stmt->execute($data);
-                    }
-
-                    MessageFlash::ajouter('success', "Excel file successfully imported into table `$tableName`.");
-                } else {
-                    MessageFlash::ajouter('error', "The Excel file is empty.");
-                }
-            } else {
-                MessageFlash::ajouter('error', "Failed to parse the Excel file. Error: " . SimpleXLSX::parseError());
+            if (empty($sheetData)) {
+                throw new Exception("The Excel file is empty.");
             }
-        } else {
-            MessageFlash::ajouter('error', "Failed to upload the Excel file.");
+
+            $columns = self::extractColumns(array_shift($sheetData));
+            echo "<pre>Debug: Extracted columns: " . print_r($columns, true) . "</pre>";
+
+            self::createDatabaseTable($tableName, $columns);
+            echo "<pre>Debug: Table `$tableName` created successfully.</pre>";
+
+            self::insertDataIntoTable($tableName, $columns, $sheetData);
+            echo "<pre>Debug: Data inserted successfully into `$tableName`.</pre>";
+
+            MessageFlash::ajouter('success', "Excel file successfully imported into table `$tableName`.");
+        } catch (Exception $e) {
+            echo "<pre>Error: " . $e->getMessage() . "</pre>";
+            MessageFlash::ajouter('error', $e->getMessage());
         }
 
-        header('Location: controleurFrontal.php?controleur=Accueil&action=afficher');
+        echo "<pre>Redirecting to accueil...</pre>";
+        header('Location: controleurFrontal.php?controleur=Accueil&action=afficherAccueil');
+        exit;
     }
+
+
+    /**
+     * @throws Exception
+     */
+    private static function parseExcelFile(string $filePath): array
+    {
+        if ($xlsx = SimpleXLSX::parse($filePath)) {
+            return $xlsx->rows();
+        }
+        throw new Exception("Échec de l'analyse du fichier Excel. Erreur : " . SimpleXLSX::parseError());
+    }
+
+    private static function extractColumns(array $row): array
+    {
+        $columns = [];
+        $usedColumns = [];
+
+        $nom = 0;
+        foreach ($row as $index => $col) {
+            $col = trim($col);
+            if (in_array($col, $usedColumns)) {
+                $counter = 1;
+                $originalCol = $col;
+                while (in_array($col, $usedColumns)) {
+                    $col = $originalCol . "_" . $counter;
+                    $counter++;
+                }
+            }
+
+            $usedColumns[] = $col;
+
+            $columns[] = $col ?: "column_$index";
+        }
+        return $columns;
+    }
+
+    private static function createDatabaseTable(string $tableName, array $columns): void
+    {
+        $columnDefinitions = [];
+        foreach ($columns as $index => $col) {
+            if ($index === 0) {
+                $columnDefinitions[] = "`$col` INT";
+            } else {
+                $columnDefinitions[] = "`$col` TEXT";
+            }
+        }
+
+        $createTableQuery = "CREATE TABLE IF NOT EXISTS `$tableName` (" . implode(',', $columnDefinitions) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC";
+
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $pdo->exec($createTableQuery);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function insertDataIntoTable(string $tableName, array $columns, array $data): void
+    {
+        $sanitizedColumns = array_map(fn($col) => "`$col`", $columns);
+
+        $insertQuery = "INSERT INTO `$tableName` (" . implode(',', $sanitizedColumns) . ") VALUES (" . str_repeat('?,', count($columns) - 1) . "?)";
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $stmt = $pdo->prepare($insertQuery);
+
+        foreach ($data as $rowIndex => $row) {
+            $row = array_slice($row, 0, count($columns));
+            $row = array_map(fn($value) => is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value, $row);
+
+            try {
+                $stmt->execute($row);
+            } catch (PDOException $e) {
+                throw new Exception("Erreur d'insertion d'une ligne #$rowIndex: " . $e->getMessage());
+            }
+        }
+    }
+
 
     public static function setCookieBanner(): void
     {
