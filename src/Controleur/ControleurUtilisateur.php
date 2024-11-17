@@ -417,43 +417,39 @@ class ControleurUtilisateur extends ControleurGenerique
             "cheminCorpsVue" => $cheminCorpsVue]);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function importerExcel(): void
     {
-        try {
-            if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
-                throw new Exception("Échec du téléchargement du fichier Excel.");
-            }
-
-            $filePath = $_FILES['excelFile']['tmp_name'];
-            $fileName = pathinfo($_FILES['excelFile']['name'], PATHINFO_FILENAME);
-            if (preg_match('/semestre[-_](\d{1,2})[-_](\d{4})/', $fileName, $matches)) {
-                $semesterYear = 'semestre' . $matches[1] . '_' . $matches[2];
-            } else {
-                $semesterYear = $fileName;
-            }
-
-            $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $semesterYear);
-
-            $sheetData = self::parseExcelFile($filePath);
-
-            if (empty($sheetData)) {
-                throw new Exception("The Excel file is empty.");
-            }
-
-            $columns = self::extractColumns(array_shift($sheetData));
-
-            self::createDatabaseTable($tableName, $columns);
-
-            self::insertDataIntoTable($tableName, $columns, $sheetData);
-
-            MessageFlash::ajouter('success', "Excel file successfully imported into table `$tableName`.");
-        } catch (Exception $e) {
-            echo "<pre>Error: " . $e->getMessage() . "</pre>";
-            MessageFlash::ajouter('error', $e->getMessage());
+        if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception("Échec du téléchargement du fichier Excel.");
         }
 
-        header('Location: controleurFrontal.php?controleur=utilisateur&action=afficherListe');
-        exit;
+        $filePath = $_FILES['excelFile']['tmp_name'];
+        $fileName = pathinfo($_FILES['excelFile']['name'], PATHINFO_FILENAME);
+        if (preg_match('/semestre[-_](\d{1,2})[-_](\d{4})/', $fileName, $matches)) {
+            $semesterYear = 'semestre' . $matches[1] . '_' . $matches[2];
+        } else {
+            $semesterYear = $fileName;
+        }
+
+        $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $semesterYear);
+
+        $sheetData = self::parseExcelFile($filePath);
+
+        if (empty($sheetData)) {
+            throw new Exception("Le fichier Excel est vide.");
+        }
+
+        $columns = self::extractColumns(array_shift($sheetData));
+
+        self::createDatabaseTable($tableName, $columns);
+
+        self::insertDataIntoTable($tableName, $columns, $sheetData);
+
+        MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
+        self::afficherListe();
     }
 
 
