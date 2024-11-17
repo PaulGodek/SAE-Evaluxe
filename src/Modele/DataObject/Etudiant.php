@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Modele\DataObject;
 
+use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use Random\RandomException;
 
@@ -90,5 +91,9 @@ class Etudiant extends AbstractDataObject
        return  in_array($nom, $this->demandes);
     }
 
+    public function removeDemande($nom): void{
+        $this->demandes = array_diff($this->demandes, [$nom]);
+
+    }
 
 }
