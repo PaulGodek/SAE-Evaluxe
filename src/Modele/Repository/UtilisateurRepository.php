@@ -59,7 +59,8 @@ class UtilisateurRepository extends AbstractRepository
             " WHERE login LIKE :rechercheTag1 
             OR login LIKE :rechercheTag2 
             OR login LIKE :rechercheTag3 
-            OR login = :rechercheTag4";
+            OR login = :rechercheTag4
+            oreder by type";
 
         // Préparer la requête
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
