@@ -421,30 +421,30 @@ class ControleurUtilisateur extends ControleurGenerique
     {
         try {
             if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
-                throw new Exception("Failed to upload the Excel file.");
+                throw new Exception("Échec du téléchargement du fichier Excel.");
             }
 
             $filePath = $_FILES['excelFile']['tmp_name'];
             $fileName = pathinfo($_FILES['excelFile']['name'], PATHINFO_FILENAME);
-            $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $fileName);
+            if (preg_match('/semestre[-_](\d{1,2})[-_](\d{4})/', $fileName, $matches)) {
+                $semesterYear = 'semestre' . $matches[1] . '_' . $matches[2];
+            } else {
+                $semesterYear = $fileName;
+            }
 
-            echo "<pre>Debug: Processing file `$fileName` for table `$tableName`...</pre>";
+            $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $semesterYear);
 
             $sheetData = self::parseExcelFile($filePath);
-            echo "<pre>Debug: Parsed sheet data: " . print_r(array_slice($sheetData, 0, 3), true) . "</pre>";
 
             if (empty($sheetData)) {
                 throw new Exception("The Excel file is empty.");
             }
 
             $columns = self::extractColumns(array_shift($sheetData));
-            echo "<pre>Debug: Extracted columns: " . print_r($columns, true) . "</pre>";
 
             self::createDatabaseTable($tableName, $columns);
-            echo "<pre>Debug: Table `$tableName` created successfully.</pre>";
 
             self::insertDataIntoTable($tableName, $columns, $sheetData);
-            echo "<pre>Debug: Data inserted successfully into `$tableName`.</pre>";
 
             MessageFlash::ajouter('success', "Excel file successfully imported into table `$tableName`.");
         } catch (Exception $e) {
@@ -452,8 +452,7 @@ class ControleurUtilisateur extends ControleurGenerique
             MessageFlash::ajouter('error', $e->getMessage());
         }
 
-        echo "<pre>Redirecting to accueil...</pre>";
-        header('Location: controleurFrontal.php?controleur=Accueil&action=afficherAccueil');
+        header('Location: controleurFrontal.php?controleur=utilisateur&action=afficherListe');
         exit;
     }
 
@@ -498,7 +497,7 @@ class ControleurUtilisateur extends ControleurGenerique
         $columnDefinitions = [];
         foreach ($columns as $index => $col) {
             if ($index === 0) {
-                $columnDefinitions[] = "`$col` INT";
+                $columnDefinitions[] = "`$col` INT PRIMARY KEY";
             } else {
                 $columnDefinitions[] = "`$col` TEXT";
             }
@@ -523,6 +522,11 @@ class ControleurUtilisateur extends ControleurGenerique
 
         foreach ($data as $rowIndex => $row) {
             $row = array_slice($row, 0, count($columns));
+            $etudidIndex = array_search('etudid', $columns);
+            if ($etudidIndex !== false && empty($row[$etudidIndex])) {
+                return;
+            }
+
             $row = array_map(fn($value) => is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value, $row);
 
             try {
