@@ -108,6 +108,7 @@ switch ($type) {
         } else {
             echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
         }
+        var_dump($etudiant->getDemandes());
         break;
 }
 ?>

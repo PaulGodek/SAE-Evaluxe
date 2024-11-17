@@ -119,6 +119,8 @@ class EcoleRepository extends AbstractRepository
         return $tableauEcole;
     }
 
+
+
     public static function mettreAJourFutursEtudiants(Ecole $ecole): bool
     {
         $sql = "UPDATE " . self::$tableEcole . " 

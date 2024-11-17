@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -184,5 +185,36 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+    }
+
+
+
+    public static function demander(){
+        if (!ConnexionUtilisateur::estEcole()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET["login"]);
+        $nom=(new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
+
+
+        if (is_null($etudiant)) {
+            MessageFlash::ajouter("error", "Cette etudiant n'existe pas.");
+            self::afficherErreurEtudiant(" ");
+            return;
+        }
+
+        $etudiant->addDemande($nom);
+
+
+        if( $etudiant->faireDemande()){
+
+           MessageFlash::ajouter("success", "La demande d'accès a bien été envoyée.");
+        }
+
+        $etudiants = (new EtudiantRepository())->recuperer();
+
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 }

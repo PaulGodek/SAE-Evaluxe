@@ -77,8 +77,11 @@ class EtudiantRepository extends AbstractRepository
      */
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
+
+
         return new Etudiant($etudiantFormatTableau['login'],
-            $etudiantFormatTableau['idEtudiant']);
+            $etudiantFormatTableau['idEtudiant'],
+           json_decode($etudiantFormatTableau['demandes']));
     }
 
     /**
@@ -127,6 +130,9 @@ class EtudiantRepository extends AbstractRepository
 
         return (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
     }
+
+
+
 
     protected function getNomTable(): string
     {
@@ -360,4 +366,29 @@ public static function rechercherEtudiantParLogin(string $recherche): array
     public static function getCodeUniqueEtudiantConnecte(): string{
         return (new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique();
     }
+
+    public static function demander($etudiant) : bool{
+
+        $sql = "UPDATE " . self::$tableEtudiant. " 
+            SET demandes = :demandeTag 
+            WHERE login = :loginTag;";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $demandesSTR=json_encode($etudiant->getDemandes());
+
+        $values = [
+            "loginTag" => $etudiant->getLogin(),
+            "demandeTag" => $demandesSTR
+        ];
+
+
+        return $pdoStatement->execute($values);
+
+    }
+
+
+
+
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\GenerateurAvis\Modele\DataObject;
 
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use Random\RandomException;
 
 class Etudiant extends AbstractDataObject
@@ -16,13 +17,15 @@ class Etudiant extends AbstractDataObject
     /**
      * @throws RandomException
      */
-    public function __construct(string $login, int $idEtudiant)
+    public function __construct(string $login, int $idEtudiant,? array $demandes)
     {
         $this->login = substr($login, 0, 64);
         $this->idEtudiant = $idEtudiant;
         $this->codeUnique = $this->genererCodeUnique();
         self::$codesUniquesUtilisees[] = $this->codeUnique;
-        $this->demandes = [];
+
+        $this->demandes = $demandes;
+
     }
 
     public function getLogin(): string
@@ -67,11 +70,25 @@ class Etudiant extends AbstractDataObject
         return $this->demandes;
     }
 
-    public function setDemandes(array $demandes): void
+    public function addDemande(string $nom): void
     {
-        $this->demandes = $demandes;
+        if (!in_array($nom, $this->demandes)) {
+
+            $this->demandes[] = $nom;
+        }
     }
 
+    public function faireDemande(){
+
+
+        return EtudiantRepository::demander($this);
+    }
+
+
+    public function dejaDemande($nom){
+
+       return  in_array($nom, $this->demandes);
+    }
 
 
 }
