@@ -95,6 +95,11 @@ class Ecole extends AbstractDataObject
         }
     }
 
+    public function setFutursEtudiants(): void
+    {
+        $this->futursEtudiants = [];
+    }
+
     public function getFutursEtudiants(): array
     {
         return $this->futursEtudiants;

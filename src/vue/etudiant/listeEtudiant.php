@@ -19,7 +19,9 @@
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 echo "<h2>Liste des étudiants</h2> 
@@ -28,6 +30,7 @@ echo "<h2>Liste des étudiants</h2>
     
 <ul>";
 foreach ($etudiants as $etudiant) {
+
     $idEtudiant = $etudiant->getIdEtudiant();
     $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
 
@@ -39,7 +42,22 @@ foreach ($etudiants as $etudiant) {
     }
 
     $loginURL = rawurlencode($etudiant->getLogin());
-    echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
+    if (ConnexionUtilisateur::estEcole()) {
+
+        $ecole=(new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+        $loginEcoleURL= rawurlencode($ecole->getLogin());
+
+        if(!$etudiant->dejaDemande($ecole->getNom())){
+
+            echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';
+        }
+        else{
+            echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp;  </p></li>';
+
+        }
+    } else {
+        echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
+    }
 }
 
 echo "</ul>";

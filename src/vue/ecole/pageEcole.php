@@ -19,8 +19,9 @@ use \App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 <h2>Étudiants Associés</h2>
 <ul>
-    <?php foreach ($ecole->getFutursEtudiants() as $code): ?>
-        <?php $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($code);
+    <?php foreach ($ecole->getFutursEtudiants() as $code):
+
+        $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($code);
         $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
         if ($nomPrenom) {
             $nomHTML = htmlspecialchars($nomPrenom['Nom']);

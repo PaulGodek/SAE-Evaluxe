@@ -19,7 +19,7 @@ class EtudiantRepository extends AbstractRepository
      */
     public static function recupererEtudiantsOrdonneParNom(): array
     {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
             " e 
         JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
         JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
@@ -38,7 +38,7 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
     {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
             " e 
         JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
         JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
@@ -56,7 +56,7 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParParcours(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct login,codeUnique,idEtudiant FROM " . self::$tableEtudiant .
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
             " e 
         JOIN semestre1_2024 s1 on s1.etudid=e.idEtudiant
         JOIN semestre2_2024 s2 on s2.etudid=e.idEtudiant
@@ -77,8 +77,11 @@ class EtudiantRepository extends AbstractRepository
      */
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
+
+
         return new Etudiant($etudiantFormatTableau['login'],
-            $etudiantFormatTableau['idEtudiant']);
+            $etudiantFormatTableau['idEtudiant'],
+           json_decode($etudiantFormatTableau['demandes']));
     }
 
     /**
@@ -128,6 +131,9 @@ class EtudiantRepository extends AbstractRepository
         return (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
     }
 
+
+
+
     protected function getNomTable(): string
     {
         return "EtudiantTest";
@@ -140,7 +146,7 @@ class EtudiantRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "codeUnique", "idEtudiant"];
+        return ["login", "codeUnique", "idEtudiant","demandes"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
@@ -148,7 +154,7 @@ class EtudiantRepository extends AbstractRepository
         return array(
             "loginTag" => $etudiant->getLogin(),
             "codeUniqueTag" => $etudiant->getCodeUnique(),
-            "idEtudiantTag" => $etudiant->getIdEtudiant()
+            "idEtudiantTag" => $etudiant->getIdEtudiant(),
         );
     }
 
@@ -360,4 +366,29 @@ public static function rechercherEtudiantParLogin(string $recherche): array
     public static function getCodeUniqueEtudiantConnecte(): string{
         return (new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique();
     }
+
+    public static function demander($etudiant) : bool{
+
+        $sql = "UPDATE " . self::$tableEtudiant. " 
+            SET demandes = :demandeTag 
+            WHERE login = :loginTag;";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $demandesSTR=json_encode($etudiant->getDemandes());
+
+        $values = [
+            "loginTag" => $etudiant->getLogin(),
+            "demandeTag" => $demandesSTR
+        ];
+
+
+        return $pdoStatement->execute($values);
+
+    }
+
+
+
+
+
 }
