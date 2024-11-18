@@ -174,13 +174,7 @@ class ControleurEcole extends ControleurGenerique
         }
 
         if ($ecole->saveFutursEtudiants()) {
-
-            self::afficherVue('vueGenerale.php', [
-                "titre" => "Ajout d'un étudiant",
-                "message" => "L'étudiant avec le code {$codeUnique} a été ajouté avec succès.",
-                "cheminCorpsVue" => "ecole/ecoleEtudiantAjoute.php",
-                "codeUnique" => $codeUnique
-            ]);
+            self::redirectionVersURL("success", "L'étudiant a bien été ajouté", "afficherEcole&controleur=ecole");
         } else {
             MessageFlash::ajouter("error","Erreur lors de l'ajout de l'étudiant");
             self::afficherErreurEcole(" ");
