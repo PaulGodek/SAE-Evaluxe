@@ -520,8 +520,12 @@ class ControleurUtilisateur extends ControleurGenerique
         foreach ($data as $rowIndex => $row) {
             $row = array_slice($row, 0, count($columns));
             $etudidIndex = array_search('etudid', $columns);
-            if ($etudidIndex !== false && empty($row[$etudidIndex])) {
-                return;
+            if ($etudidIndex !== false) {
+                $etudidValue = $row[$etudidIndex] ?? null;
+
+                if (!is_numeric($etudidValue)) {
+                    return;
+                }
             }
 
             $row = array_map(fn($value) => is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value, $row);
