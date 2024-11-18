@@ -18,15 +18,18 @@ class Etudiant extends AbstractDataObject
     /**
      * @throws RandomException
      */
-    public function __construct(string $login, int $idEtudiant,? array $demandes)
+    public function __construct(string $login, int $idEtudiant, ?array $demandes, ?string $codeUnique = null)
     {
         $this->login = substr($login, 0, 64);
         $this->idEtudiant = $idEtudiant;
-        $this->codeUnique = $this->genererCodeUnique();
-        self::$codesUniquesUtilisees[] = $this->codeUnique;
+
+        if ($codeUnique !== null) {
+            $this->codeUnique = $codeUnique;
+        } else {
+            $this->codeUnique = $this->genererCodeUnique();
+        }
 
         $this->demandes = $demandes;
-
     }
 
     public function getLogin(): string
@@ -79,19 +82,19 @@ class Etudiant extends AbstractDataObject
         }
     }
 
-    public function faireDemande(){
-
-
+    public function faireDemande(): bool
+    {
         return EtudiantRepository::demander($this);
     }
 
 
-    public function dejaDemande($nom){
-
-       return  in_array($nom, $this->demandes);
+    public function dejaDemande($nom): bool
+    {
+        return in_array($nom, $this->demandes);
     }
 
-    public function removeDemande($nom): void{
+    public function removeDemande($nom): void
+    {
         $this->demandes = array_diff($this->demandes, [$nom]);
 
     }

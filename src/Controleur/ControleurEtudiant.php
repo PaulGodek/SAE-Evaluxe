@@ -170,7 +170,7 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        $etudiant = new Etudiant($_GET["login"], $_GET["etudid"]);
+        $etudiant = new Etudiant($_GET["login"], $_GET["etudid"], $_GET['demandes'], $_GET['codeUnique']);
         (new EtudiantRepository)->mettreAJour($etudiant);
         MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($etudiant->getLogin())." a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();

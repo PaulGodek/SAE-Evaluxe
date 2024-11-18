@@ -260,13 +260,13 @@ class ControleurEcole extends ControleurGenerique
 
     }
 
-    public static function refuserDemande(){
+    public static function refuserDemande(): void
+    {
 
         if (!ConnexionUtilisateur::estEtudiant()) {
             self::afficherErreurEcole("Vous n'avez pas le droit à cette action");
             return;
         }
-
 
         $ecole = (new EcoleRepository())->recupererParClePrimaire($_GET["login"]);
         if (is_null($ecole)) {
