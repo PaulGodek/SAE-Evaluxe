@@ -84,10 +84,8 @@ class MessageFlash
     public static function lireTousMessages(): array
     {
         $session = Session::getInstance();
-        self::$supprimer = $session->supprimer(self::$cleFlash);
         if ($session->contient(self::$cleFlash)) {
             $array = $session->lire(self::$cleFlash);
-            self::$supprimer;
             return $array;
         }
         return array();

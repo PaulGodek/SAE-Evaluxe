@@ -61,13 +61,13 @@ foreach ($ecoles as $ecole) {
 
     }
 
-    /*else {
-        if ($etudiant->dejaDemande($ecole->getNom())){
+    else {
+        if ($etudiant->dejaDemande($ecole->getNom()) && !in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())){
 
             echo '<li><p>L\'école ' . $nomHTML . ' demande l\'accès à vos notes <a href="controleurFrontal.php?controleur=ecole&action=accepterDemande&login=' . $loginURL . '&loginEtudiant='.$loginEtudiantURL.'"> Accepter</a> &nbsp; <a href="controleurFrontal.php?controleur=ecole&action=refuserDemande&login=' . $loginURL . '&loginEtudiant='.$loginEtudiantURL.'"> Refuser</a></p></li>';
 
         }
-    }*/
+    }
 }
 
 echo "</ul>";
