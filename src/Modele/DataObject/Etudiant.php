@@ -30,6 +30,8 @@ class Etudiant extends AbstractDataObject
         }
 
         $this->demandes = $demandes;
+        var_dump($this->codeUnique);
+        var_dump($this->getCodeUnique());
     }
 
     public function getLogin(): string
