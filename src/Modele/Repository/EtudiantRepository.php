@@ -77,11 +77,10 @@ class EtudiantRepository extends AbstractRepository
      */
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
-
-
         return new Etudiant($etudiantFormatTableau['login'],
             $etudiantFormatTableau['idEtudiant'],
-           json_decode($etudiantFormatTableau['demandes']));
+            json_decode($etudiantFormatTableau['demandes']),
+            $etudiantFormatTableau['codeUnique']);
     }
 
     /**
@@ -94,7 +93,6 @@ class EtudiantRepository extends AbstractRepository
 
         $values = array(
             "nomTag" => $nom,
-
         );
 
         $pdoStatement->execute($values);
@@ -132,8 +130,6 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-
-
     protected function getNomTable(): string
     {
         return "EtudiantTest";
@@ -146,7 +142,7 @@ class EtudiantRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "codeUnique", "idEtudiant","demandes"];
+        return ["login", "codeUnique", "idEtudiant", "demandes"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
@@ -158,37 +154,37 @@ class EtudiantRepository extends AbstractRepository
         );
     }
 
-public static function rechercherEtudiantParLogin(string $recherche): array
-{
-    // Construire correctement la requête avec des jokers
-    $sql = "SELECT * FROM " . self::$tableEtudiant . "
+    public static function rechercherEtudiantParLogin(string $recherche): array
+    {
+        // Construire correctement la requête avec des jokers
+        $sql = "SELECT * FROM " . self::$tableEtudiant . "
             WHERE login LIKE :rechercheTag1 
             OR login LIKE :rechercheTag2 
             OR login LIKE :rechercheTag3 
             OR login = :rechercheTag4";
 
-    // Préparer la requête
-    $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-    // Ajouter les jokers à la valeur de recherche
-    $values = [
-        "rechercheTag1" => '%' . $recherche,
-        "rechercheTag2" => '%' . $recherche . '%',
-        "rechercheTag3" => $recherche . '%',
-        "rechercheTag4" => $recherche
-    ];
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
 
-    // Exécuter la requête
-    $pdoStatement->execute($values);
+        // Exécuter la requête
+        $pdoStatement->execute($values);
 
-    // Construire les objets étudiant à partir des résultats
-    $tableauEtudiant = [];
-    foreach ($pdoStatement as $etudiantFormatTableau) {
-        $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
+        // Construire les objets étudiant à partir des résultats
+        $tableauEtudiant = [];
+        foreach ($pdoStatement as $etudiantFormatTableau) {
+            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
+        }
+
+        return $tableauEtudiant;
     }
-
-    return $tableauEtudiant;
-}
 
     //Pour plus tard
     /*public static function rechercherEtudiant(string $recherche)
@@ -363,18 +359,20 @@ public static function rechercherEtudiantParLogin(string $recherche): array
         return (bool)$stmt->fetchColumn();
     }
 
-    public static function getCodeUniqueEtudiantConnecte(): string{
+    public static function getCodeUniqueEtudiantConnecte(): string
+    {
         return (new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte())->getCodeUnique();
     }
 
-    public static function demander($etudiant) : bool{
-        $sql = "UPDATE " . self::$tableEtudiant. " 
+    public static function demander($etudiant): bool
+    {
+        $sql = "UPDATE " . self::$tableEtudiant . " 
             SET demandes = :demandeTag 
             WHERE login = :loginTag;";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-        $demandesSTR=json_encode($etudiant->getDemandes());
+        $demandesSTR = json_encode($etudiant->getDemandes());
 
         $values = [
             "loginTag" => $etudiant->getLogin(),
