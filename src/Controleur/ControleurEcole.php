@@ -269,7 +269,9 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $etudiant=(new EtudiantRepository)->recupererParClePrimaire($_GET["loginEtudiant"]);
+
         $etudiant->removeDemande($ecole->getNom());
+
 
         $ecoles=(new EcoleRepository())->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);

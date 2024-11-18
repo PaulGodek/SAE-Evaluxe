@@ -51,8 +51,13 @@ foreach ($etudiants as $etudiant) {
 
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';
         }
-        else{
-            echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp;  </p></li>';
+        else if(!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& !$etudiant->dejaDemande($ecole->getNom())){
+            echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande déjà evoyée et acceptée)&emsp;  </p></li>';
+        }
+        else if (!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& $etudiant->dejaDemande($ecole->getNom())){
+            echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande en attente de réponse)&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=supprimerDemande&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Supprimer la demande  </a> </p></li>';
+
+        }else{
 
         }
     } else {

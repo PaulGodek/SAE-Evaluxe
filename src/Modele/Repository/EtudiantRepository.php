@@ -383,4 +383,23 @@ class EtudiantRepository extends AbstractRepository
 
     }
 
+
+    public static function mettreAJourDemandes(Etudiant $etudiant): bool
+    {
+        $sql = "UPDATE " . self::$tableEtudiant . " 
+            SET demandes = :demandes 
+            WHERE login = :loginTag;";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $demandesSTR = json_encode($etudiant->getDemandes());
+
+        $values = [
+            "loginTag" => $etudiant->getLogin(),
+            "demandes" => $demandesSTR
+        ];
+
+        return $pdoStatement->execute($values);
+    }
+
 }

@@ -209,8 +209,29 @@ class ControleurEtudiant extends ControleurGenerique
 
 
         if( $etudiant->faireDemande()){
-
            MessageFlash::ajouter("success", "La demande d'accès a bien été envoyée.");
+        }
+
+        $etudiants = (new EtudiantRepository())->recuperer();
+
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+    }
+
+    public static function supprimerDemande(){
+        if (!ConnexionUtilisateur::estEcole()) {
+            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET["login"]);
+        $nom=(new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
+        if (is_null($etudiant)) {
+            MessageFlash::ajouter("error", "Cette etudiant n'existe pas.");
+            self::afficherErreurEtudiant(" ");
+            return;
+        }
+
+        if($etudiant->removeDemande($nom)){
+            MessageFlash::ajouter("success", "La demande a bien été supprimée.");
         }
 
         $etudiants = (new EtudiantRepository())->recuperer();
