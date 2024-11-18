@@ -291,10 +291,11 @@ class ControleurUtilisateur extends ControleurGenerique
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
                 MessageFlash::ajouter("success", "Ecole connecté");
-                ControleurUtilisateur::afficherVue('vueGenerale.php', [
-                    "utilisateur" => $utilisateur,
-                    "titre" => "Ecole connecté",
+                $futursEtudiants = (new EcoleRepository)::getFutursEtudiantsListe($login);
+                self::afficherVue('vueGenerale.php', [
                     "ecole" => $ecole,
+                    "futursEtudiants" => $futursEtudiants,
+                    "titre" => "École connectée",
                     "cheminCorpsVue" => "ecole/pageEcole.php"
                 ]);
             } else {

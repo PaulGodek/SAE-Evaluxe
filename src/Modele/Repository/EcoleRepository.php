@@ -52,7 +52,7 @@ class EcoleRepository extends AbstractRepository
     public function recuperer(): array
     {
         $objets = [];
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM ".$this->getNomTable().' ORDER BY  valide,nom ');
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . $this->getNomTable() . ' ORDER BY  valide,nom ');
 
 
         foreach ($pdoStatement as $objetFormatTableau) {
@@ -120,7 +120,6 @@ class EcoleRepository extends AbstractRepository
     }
 
 
-
     public static function mettreAJourFutursEtudiants(Ecole $ecole): bool
     {
         $sql = "UPDATE " . self::$tableEcole . " 
@@ -152,15 +151,15 @@ class EcoleRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "adresse","ville", "futursEtudiants","valide"];
+        return ["login", "nom", "adresse", "ville", "futursEtudiants", "valide"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
     {
-        if($ecole->isEstValide()){
-            $valide="1";
-        }else{
-            $valide="0";
+        if ($ecole->isEstValide()) {
+            $valide = "1";
+        } else {
+            $valide = "0";
         }
         if (!empty($ecole->getFutursEtudiants())) {
             $futursEtudiantsEncode = json_encode($ecole->getFutursEtudiants());
@@ -171,9 +170,9 @@ class EcoleRepository extends AbstractRepository
             "loginTag" => $ecole->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
-            "villeTag"=>$ecole->getVille(),
-            "futursEtudiantsTag"=> $futursEtudiantsEncode,
-            "valideTag"=>$valide
+            "villeTag" => $ecole->getVille(),
+            "futursEtudiantsTag" => $futursEtudiantsEncode,
+            "valideTag" => $valide
         );
     }
 
@@ -195,7 +194,7 @@ class EcoleRepository extends AbstractRepository
     public static function rechercherEcole(string $recherche): array
     {
 
-        $sql="SELECT * FROM " . self::$tableEcole .
+        $sql = "SELECT * FROM " . self::$tableEcole .
             " WHERE nom LIKE :rechercheTag1 
             OR nom LIKE :rechercheTag2 
             OR nom LIKE :rechercheTag3 
@@ -218,5 +217,27 @@ class EcoleRepository extends AbstractRepository
             $tableauEcole[] = (new EcoleRepository())->construireDepuisTableauSQL($ecoleFormatTableau);
         }
         return $tableauEcole;
+    }
+
+    public static function getFutursEtudiantsListe(string $loginEcole): array
+    {
+        $ecoleRepository = new EcoleRepository();
+        $etudiantRepository = new EtudiantRepository();
+
+        $ecole = $ecoleRepository->recupererParClePrimaire($loginEcole);
+
+        $futursEtudiants = [];
+        foreach ($ecole->getFutursEtudiants() as $code) {
+            $etudiant = $etudiantRepository->recupererEtudiantParCodeUnique($code);
+            if ($etudiant) {
+                $nomPrenom = $etudiantRepository->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $futursEtudiants[] = [
+                    'codeUnique' => $code,
+                    'nom' => $nomPrenom['Nom'],
+                    'prenom' => $nomPrenom['Prenom'],
+                ];
+            }
+        }
+        return $futursEtudiants;
     }
 }
