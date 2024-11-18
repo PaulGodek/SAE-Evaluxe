@@ -84,7 +84,9 @@ class ControleurEcole extends ControleurGenerique
             self::afficherErreurEcole(" ");
             return;
         }
-        self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Détail de l'école {$ecole->getNom()}", "cheminCorpsVue" => "ecole/detailEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecole" => $ecole,
+            "titre" => "Détail de l'école {$ecole->getNom()}",
+            "cheminCorpsVue" => "ecole/detailEcole.php"]);
     }
 
     public static function creerEcoleDepuisFormulaire(): void
