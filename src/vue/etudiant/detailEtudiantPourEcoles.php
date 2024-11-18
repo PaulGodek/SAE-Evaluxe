@@ -1,54 +1,47 @@
 <?php
-/** @var string|null $codeUnique */
+/** @var Etudiant $etudiant */
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
 /** @var string $idEtudiant */
 
+/** @var string|null $codeUnique */
+
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
+
 if ($informationsPersonelles) {
     echo '<div class="etudiant-details">';
     echo "<h2>Détails de l'étudiant</h2>";
-    echo "<h3>Code unique: {$codeUnique}</h3>";
     echo "<p>Nom: {$informationsPersonelles['nom']}</p>";
     echo "<p>Prénom: {$informationsPersonelles['prenom']}</p>";
-    echo "<p>Id étudiant: {$informationsPersonelles['etudid']}</p>";
-    echo "<p>Code nip: {$informationsPersonelles['codenip']}</p>";
-    echo "<p>Civilité: {$informationsPersonelles['civ']}</p>";
-    if ($informationsPersonelles['bac'] !== 'N/A') {
-        echo "<p>Bac: {$informationsPersonelles['bac']}</p>";
-    }
-    if ($informationsPersonelles['specialite'] !== 'N/A') {
-        echo "<p>Spécialité: {$informationsPersonelles['specialite']}</p>";
-    }
-    if ($informationsPersonelles['typeAdm'] !== 'N/A') {
-        echo "<p>Type d'admission: {$informationsPersonelles['typeAdm']}</p>";
-    }
-    if ($informationsPersonelles['rgAdm'] !== 'N/A') {
-        echo "<p>Rg. Adm.: {$informationsPersonelles['rgAdm']}</p>";
-    }
 
     foreach ($informationsParSemestre as $table => $details) {
         preg_match('/semestre(\d+)_\d+/', $table, $matches);
-        $semesterNumber = $matches[1] ?? 'Inconnu';
+        $semesterNumber = $matches[1];
         echo '<div class="semester-details">';
-        echo "<h3>Semestre: {$semesterNumber}</h3>";
+        echo "<h3>Semestre: {$semesterNumber} </h3>";
+        echo "<p>Absences non justifiées: " . max(0, $details['abs'] - $details['just1']) . "</p>";
+        echo "<p>Moyenne: {$details['moyenne']}</p>";
+        if ($details['parcours'] !== '-') {
+            echo "<p>Parcours: {$details['parcours']}</p>";
+        }
+        foreach ($details['ue_details'] as $ueDetail) {
 
-        foreach ($details as $column => $value) {
-            if ($column == 'abs' && isset($details['just1'])) {
-                echo "<p>Absences non justifiées: " . max(0, $value - $details['just1']) . "</p>";
-            } elseif ($column == 'just1') {
-                continue;
-            } elseif ($value !== '') {
-                echo "<p>" . ucfirst(str_replace('_', ' ', $column)) . ": $value</p>";
+            if ($ueDetail['moy'] !== 'N/A') {
+                echo '<div class="ue-detail">';
+                echo "<h4>{$ueDetail['ue']}</h4>";
+                echo "<p>Moyenne: " . ($ueDetail['moy']) . "</p>";
+                echo '</div>';
             }
         }
+
         echo '</div>';
     }
 
     echo '</div>';
 } else {
     echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
-} ?>
-
+}
+?>
 
 <!-- CSS embedded within the PHP file to apply to only this page -->
 <style>
@@ -123,6 +116,5 @@ if ($informationsPersonelles) {
         background-color: #f1f1f1;
     }
 </style>
-
 
 

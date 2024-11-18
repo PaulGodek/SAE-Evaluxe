@@ -20,7 +20,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListe(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -33,7 +33,7 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -43,7 +43,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -53,7 +53,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -65,7 +65,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherDetail(): void
     {
         if (!isset($_GET["login"])) {
-            MessageFlash::ajouter("error","Le login n'est pas renseigné");
+            MessageFlash::ajouter("error", "Le login n'est pas renseigné");
             self::afficherErreurEtudiant(" ");
         }
         $peutChecker = false;
@@ -77,27 +77,40 @@ class ControleurEtudiant extends ControleurGenerique
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
                 if ($etudiant == NULL) {
                     self::afficherErreurEtudiant(" ");
-                    MessageFlash::ajouter("error","L'étudiant  {$_GET['login']} n'existe pas");
+                    MessageFlash::ajouter("error", "L'étudiant  {$_GET['login']} n'existe pas");
                 } else {
-                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                    $idEtudiant = $etudiant->getIdEtudiant();
+                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
-                    self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($idEtudiant);
+
+                    $etudiantInfo = $result['info'];
+                    $etudiantDetailsPerSemester = $result['details'];
+
+                    self::afficherVue('vueGenerale.php', [
+                        "etudiant" => $etudiant,
+                        "titre" => "Détail de $nomPrenom",
+                        "informationsPersonelles" => $etudiantInfo,
+                        "informationsParSemestre" => $etudiantDetailsPerSemester,
+                        "idEtudiant" => $idEtudiant,
+                        "codeUnique" => $etudiant->getCodeUnique(),
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
                 self::afficherErreurEtudiant(" ");
-                MessageFlash::ajouter("error","Jsp ce qu'il s'est passé dsl");
+                MessageFlash::ajouter("error", "Jsp ce qu'il s'est passé dsl");
 
             }
         } else {
             self::afficherErreurEtudiant(" ");
-            MessageFlash::ajouter("warning","Vous n'avez pas les autorisations pour réaliser cette action.");
+            MessageFlash::ajouter("warning", "Vous n'avez pas les autorisations pour réaliser cette action.");
         }
     }
 
     public static function afficherDetailEtudiantParCodeUnique(): void
     {
         if (!isset($_GET["codeUnique"])) {
-            MessageFlash::ajouter("error","Le code unique n'est pas valide");
+            MessageFlash::ajouter("error", "Le code unique n'est pas valide");
             self::afficherErreurEtudiant(" ");
             return;
         }
@@ -111,20 +124,32 @@ class ControleurEtudiant extends ControleurGenerique
             try {
                 $etudiant = EtudiantRepository::recupererEtudiantParCodeUnique($_GET['codeUnique']);
                 if ($etudiant == NULL) {
-                    MessageFlash::ajouter("error","L'étudiant  {$_GET['codeUnique']} n'existe pas");
+                    MessageFlash::ajouter("error", "L'étudiant  {$_GET['codeUnique']} n'existe pas");
                     self::afficherErreurEtudiant(" ");
                 } else {
-                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                    $idEtudiant = $etudiant->getIdEtudiant();
+                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
-                    self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Détail de $nomPrenom", "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                    $result = EtudiantRepository::recupererDetailsEtudiantParId($idEtudiant);
+
+                    $etudiantInfo = $result['info'];
+                    $etudiantDetailsPerSemester = $result['details'];
+
+                    self::afficherVue('vueGenerale.php', [
+                        "etudiant" => $etudiant,
+                        "titre" => "Détail de $nomPrenom",
+                        "informationsPersonelles" => $etudiantInfo,
+                        "informationsParSemestre" => $etudiantDetailsPerSemester,
+                        "idEtudiant" => $idEtudiant,
+                        "codeUnique" => $etudiant->getCodeUnique(),
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
-                MessageFlash::ajouter("error","Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
+                MessageFlash::ajouter("error", "Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
                 self::afficherErreurEtudiant(" ");
             }
-        }
-        else {
-            MessageFlash::ajouter("warning","Vous n'avez pas l'autorisation de réaliser cette action.");
+        } else {
+            MessageFlash::ajouter("warning", "Vous n'avez pas l'autorisation de réaliser cette action.");
             self::afficherErreurEtudiant(" ");
         }
     }
@@ -146,7 +171,7 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $login = $_GET["login"];
         (new EtudiantRepository)->supprimer($login);
-        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($login)." a bien été supprimé");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été supprimé");
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
@@ -172,14 +197,14 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiant = new Etudiant($_GET["login"], $_GET["etudid"], $_GET['demandes'], $_GET['codeUnique']);
         (new EtudiantRepository)->mettreAJour($etudiant);
-        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($etudiant->getLogin())." a bien été mis à jour");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getLogin()) . " a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherResultatRechercheEtudiant(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()&&!ConnexionUtilisateur::estEcole()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
@@ -188,15 +213,15 @@ class ControleurEtudiant extends ControleurGenerique
     }
 
 
-
-    public static function demander(){
+    public static function demander()
+    {
         if (!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
         $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET["login"]);
-        $nom=(new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
+        $nom = (new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
 
 
         if (is_null($etudiant)) {
@@ -208,8 +233,8 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiant->addDemande($nom);
 
 
-        if( $etudiant->faireDemande()){
-           MessageFlash::ajouter("success", "La demande d'accès a bien été envoyée.");
+        if ($etudiant->faireDemande()) {
+            MessageFlash::ajouter("success", "La demande d'accès a bien été envoyée.");
         }
 
         $etudiants = (new EtudiantRepository())->recuperer();
@@ -217,20 +242,21 @@ class ControleurEtudiant extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
-    public static function supprimerDemande(){
+    public static function supprimerDemande()
+    {
         if (!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET["login"]);
-        $nom=(new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
+        $nom = (new EcoleRepository())->recupererParClePrimaire($_GET["demandeur"])->getNom();
         if (is_null($etudiant)) {
             MessageFlash::ajouter("error", "Cette etudiant n'existe pas.");
             self::afficherErreurEtudiant(" ");
             return;
         }
 
-        if($etudiant->removeDemande($nom)){
+        if ($etudiant->removeDemande($nom)) {
             MessageFlash::ajouter("success", "La demande a bien été supprimée.");
         }
 

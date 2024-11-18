@@ -67,14 +67,11 @@ class ControleurUtilisateur extends ControleurGenerique
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
-                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                    $idEtudiant = $etudiant->getIdEtudiant();
+                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($idEtudiant);
 
-                    if ($nomPrenom) {
-                        $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
-                    } else {
-                        $titre = "Détail de l'étudiant (Nom et prénom non trouvés)";
-                    }
-                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($etudiant->getIdEtudiant());
+                    $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
+                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($idEtudiant);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
@@ -82,10 +79,12 @@ class ControleurUtilisateur extends ControleurGenerique
                     self::afficherVue('vueGenerale.php', [
                         "etudiant" => $etudiant,
                         "titre" => $titre,
-                        "cheminCorpsVue" => "etudiant/detailEtudiant.php",
                         "nomPrenom" => $nomPrenom,
                         "informationsPersonelles" => $etudiantInfo,
-                        "informationsParSemestre" => $etudiantDetailsPerSemester
+                        "informationsParSemestre" => $etudiantDetailsPerSemester,
+                        "idEtudiant" => $idEtudiant,
+                        "codeUnique" => $etudiant->getCodeUnique(),
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"
                     ]);
                 } else if ($utilisateur->getType() == "universite") {
                     if (!ControleurGenerique::verifierAdminConnecte()) return;
@@ -286,7 +285,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Etudiant connecté",
                 "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/detailEtudiant.php"
+                "cheminCorpsVue" => "etudiant/pageEtudiant.php"
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);

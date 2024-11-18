@@ -3,6 +3,7 @@
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\HTTP\Cookie;
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -37,7 +38,8 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                class="item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="item">Utilisateurs</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"
+                   class="item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
@@ -77,17 +79,22 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                class="nav-item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
-                <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=utilisateur" class="nav-item">Importer les fichiers Excel</a>
+                <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=utilisateur" class="nav-item">Importer
+                    les fichiers Excel</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="nav-item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=professeur"
+                   class="nav-item">Professeurs</a>
             <?php endif; ?>
 
-            <?php if (ConnexionUtilisateur::estEtudiant()): ?>
+            <?php if (ConnexionUtilisateur::estEtudiant()):
+                $login = ConnexionUtilisateur::getLoginUtilisateurConnecte(); ?>
+                <a href="controleurFrontal.php?action=afficherDetail&controleur=etudiant&login=<?= urlencode($login) ?>"
+                   class="nav-item">Notes</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
             <?php endif; ?>
-            <?php if (ConnexionUtilisateur::estProfesseur()|| ConnexionUtilisateur::estEcole()): ?>
+            <?php if (ConnexionUtilisateur::estProfesseur() || ConnexionUtilisateur::estEcole()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
             <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">Déconnexion</a>
@@ -107,8 +114,14 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
 
     <?php if (!Cookie::contient("bannerClosed")): ?>
         <div id="cookie-banner"><h2>Politique de confidentialité</h2>
-            <p> Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits fichiers de données enregistrés sur votre ordinateur ou appareil mobile lors de votre visite. Ils nous permettent de recueillir des informations sur votre comportement de navigation, telles que les pages que vous consultez et les services que vous utilisez.
-                Ces informations nous aident à personnaliser votre expérience, à mieux comprendre l'utilisation de notre site et à améliorer nos services. En poursuivant votre navigation sur notre site, vous consentez à notre utilisation des cookies. Pour en savoir plus sur notre politique d'utilisation des cookies et sur les moyens de les contrôler, veuillez consulter notre politique de confidentialité..</p>
+            <p> Nous utilisons des cookies pour améliorer votre expérience sur notre site. Les cookies sont de petits
+                fichiers de données enregistrés sur votre ordinateur ou appareil mobile lors de votre visite. Ils nous
+                permettent de recueillir des informations sur votre comportement de navigation, telles que les pages que
+                vous consultez et les services que vous utilisez.
+                Ces informations nous aident à personnaliser votre expérience, à mieux comprendre l'utilisation de notre
+                site et à améliorer nos services. En poursuivant votre navigation sur notre site, vous consentez à notre
+                utilisation des cookies. Pour en savoir plus sur notre politique d'utilisation des cookies et sur les
+                moyens de les contrôler, veuillez consulter notre politique de confidentialité..</p>
             <a href="controleurFrontal.php?controleur=utilisateur&action=setCookieBanner" class="close-button">✖</a>
         </div>
     <?php endif; ?>
@@ -124,8 +137,8 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <p>34090 Montpellier</p>
             </div>
             <div class="HBox" id="footer-logo">
-                <img id="logoIUT"  src="../ressources/images/Logo_IUT.png" alt="Logo">
-                <img id="logoUM"  src="../ressources/images/logo_um.png" alt="Logo">
+                <img id="logoIUT" src="../ressources/images/Logo_IUT.png" alt="Logo">
+                <img id="logoUM" src="../ressources/images/logo_um.png" alt="Logo">
             </div>
         </div>
         <div class="VBox">
