@@ -25,6 +25,22 @@ use TypeError;
 
 class ControleurUtilisateur extends ControleurGenerique
 {
+    public static function afficherListe(): void
+    {
+        if (self::verifierAdminConnecte()) {
+            $utilisateurs = (new UtilisateurRepository)->recupererOrdonneParType(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => 'utilisateur/liste.php']);  //"redirige" vers la vue
+        }
+    }
+
+    public static function afficherListeUtilisateurOrdonneParLogin(): void
+    {
+        if (self::verifierAdminConnecte()) {
+            $utilisateurs = UtilisateurRepository::recupererUtilisateurOrdonneParLogin(); //appel au modèle pour gérer la BD
+            self::afficherVue('vueGenerale.php', ["utilisateurs" => $utilisateurs, "titre" => "Liste des utilisateurs", "cheminCorpsVue" => "utilisateur/liste.php"]);  //"redirige" vers la vue
+        }
+    }
+
 
     public static function afficherDetail(): void
     {
