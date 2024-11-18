@@ -19,7 +19,6 @@ use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
-use JetBrains\PhpStorm\NoReturn;
 use PDO;
 use Random\RandomException;
 use TypeError;

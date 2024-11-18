@@ -355,7 +355,7 @@ public static function rechercherEtudiantParLogin(string $recherche): array
     }
 
 
-    private static function columnExists($pdo, $table, $column)
+    private static function columnExists($pdo, $table, $column): bool
     {
         $query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :table AND COLUMN_NAME = :column";
         $stmt = $pdo->prepare($query);
@@ -368,7 +368,6 @@ public static function rechercherEtudiantParLogin(string $recherche): array
     }
 
     public static function demander($etudiant) : bool{
-
         $sql = "UPDATE " . self::$tableEtudiant. " 
             SET demandes = :demandeTag 
             WHERE login = :loginTag;";
@@ -382,13 +381,8 @@ public static function rechercherEtudiantParLogin(string $recherche): array
             "demandeTag" => $demandesSTR
         ];
 
-
         return $pdoStatement->execute($values);
 
     }
-
-
-
-
 
 }
