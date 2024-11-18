@@ -19,25 +19,28 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherEcole(): void
     {
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
-
-//            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
             return;
         }
-        $loginEcole = "";
-        if (ConnexionUtilisateur::estEcole())
-            $loginEcole = ConnexionUtilisateur::getLoginUtilisateurConnecte();
-        else if (ConnexionUtilisateur::estAdministrateur() && isset($_GET["loginEcole"]))
-            $loginEcole = $_GET["loginEcole"];
 
-        $ecole = (new EcoleRepository)->recupererParClePrimaire($loginEcole);
+        $loginEcole = "";
+        if (ConnexionUtilisateur::estEcole()) {
+            $loginEcole = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        } else if (ConnexionUtilisateur::estAdministrateur() && isset($_GET["loginEcole"])) {
+            $loginEcole = $_GET["loginEcole"];
+        }
+
+        $ecoleRepository = new EcoleRepository();
+        $ecole = $ecoleRepository->recupererParClePrimaire($loginEcole);
+
+        $futursEtudiants = $ecoleRepository::getFutursEtudiantsListe($loginEcole);
         self::afficherVue('vueGenerale.php', [
             "ecole" => $ecole,
+            "futursEtudiants" => $futursEtudiants,
             "titre" => "Gestion de l'École : {$ecole->getNom()}",
             "cheminCorpsVue" => "ecole/pageEcole.php"
         ]);
     }
-
 
     public static function afficherListe(): void
     {
@@ -226,7 +229,9 @@ class ControleurEcole extends ControleurGenerique
     }
 
 
-    public static function accepterDemande(){
+    public static function accepterDemande(): void
+    {
+
 
         if (!ConnexionUtilisateur::estEtudiant()) {
             self::afficherErreurEcole("Vous n'avez pas le droit à cette action");
