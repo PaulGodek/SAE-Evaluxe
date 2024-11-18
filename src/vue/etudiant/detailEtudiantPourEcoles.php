@@ -42,7 +42,8 @@ if ($informationsPersonelles) {
     echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
 }
 ?>
-
+<a href="controleurFrontal.php?action=afficherEcole&controleur=ecole&"
+   class="nav-item">Retour</a>
 <!-- CSS embedded within the PHP file to apply to only this page -->
 <style>
     /* Page Specific Styles */

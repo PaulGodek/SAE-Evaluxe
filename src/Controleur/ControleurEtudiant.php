@@ -142,7 +142,7 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "idEtudiant" => $idEtudiant,
                         "codeUnique" => $etudiant->getCodeUnique(),
-                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+                        "cheminCorpsVue" => "etudiant/detailEtudiantPourEcoles.php"]);
                 }
             } catch (TypeError $e) {
                 MessageFlash::ajouter("error", "Quelque chose ne marche pas, voila l'erreur : {$e->getMessage()}");
