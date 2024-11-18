@@ -82,11 +82,11 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="nav-item">Professeurs</a>
-            <?php endif; /*?>
+            <?php endif; ?>
 
             <?php if (ConnexionUtilisateur::estEtudiant()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
-            <?php endif; */?>
+            <?php endif; ?>
             <?php if (ConnexionUtilisateur::estProfesseur()|| ConnexionUtilisateur::estEcole()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
