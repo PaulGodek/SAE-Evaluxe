@@ -74,12 +74,18 @@ class ControleurUtilisateur extends ControleurGenerique
                     } else {
                         $titre = "Détail de l'étudiant (Nom et prénom non trouvés)";
                     }
+                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($etudiant->getIdEtudiant());
+
+                    $etudiantInfo = $result['info'];
+                    $etudiantDetailsPerSemester = $result['details'];
 
                     self::afficherVue('vueGenerale.php', [
                         "etudiant" => $etudiant,
                         "titre" => $titre,
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php",
-                        "nomPrenom" => $nomPrenom
+                        "nomPrenom" => $nomPrenom,
+                        "informationsPersonelles" => $etudiantInfo,
+                        "informationsParSemestre" => $etudiantDetailsPerSemester
                     ]);
                 } else if ($utilisateur->getType() == "universite") {
                     if (!ControleurGenerique::verifierAdminConnecte()) return;
