@@ -93,14 +93,10 @@ class Etudiant extends AbstractDataObject
         return in_array($nom, $this->demandes);
     }
 
-    public function removeDemande($nom)
+    public function removeDemande($nom): bool
     {
-
-
             $this->demandes = array_diff($this->demandes, [$nom]);
             return (new EtudiantRepository())->mettreAJourDemandes($this);
-
-
     }
 
 }

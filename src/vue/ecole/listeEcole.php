@@ -36,15 +36,10 @@ if(ConnexionUtilisateur::estEtudiant()) {
     }
 }
 
-
-
 foreach ($ecoles as $ecole) {
 
     $nomHTML = htmlspecialchars($ecole->getNom());
     $loginURL = rawurlencode($ecole->getLogin());
-
-
-
 
     if(ConnexionUtilisateur::estAdministrateur()){
         if (!$ecole->isEstValide()) {
@@ -53,19 +48,11 @@ foreach ($ecoles as $ecole) {
         } else {
             echo '<li><p>L\'école <a href="controleurFrontal.php?controleur=ecole&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a></p></li>';
         }
-
-
-
-
-
-
     }
 
     else {
         if ($etudiant->dejaDemande($ecole->getNom()) && !in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())){
-
             echo '<li><p>L\'école ' . $nomHTML . ' demande l\'accès à vos notes <a href="controleurFrontal.php?controleur=ecole&action=accepterDemande&login=' . $loginURL . '&loginEtudiant='.$loginEtudiantURL.'"> Accepter</a> &nbsp; <a href="controleurFrontal.php?controleur=ecole&action=refuserDemande&login=' . $loginURL . '&loginEtudiant='.$loginEtudiantURL.'"> Refuser</a></p></li>';
-
         }
     }
 }

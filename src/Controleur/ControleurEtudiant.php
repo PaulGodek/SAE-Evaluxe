@@ -213,7 +213,7 @@ class ControleurEtudiant extends ControleurGenerique
     }
 
 
-    public static function demander()
+    public static function demander(): void
     {
         if (!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
@@ -242,7 +242,7 @@ class ControleurEtudiant extends ControleurGenerique
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
-    public static function supprimerDemande()
+    public static function supprimerDemande(): void
     {
         if (!ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
