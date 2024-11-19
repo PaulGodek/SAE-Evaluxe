@@ -4,20 +4,26 @@ namespace App\Modele\DataObject;
 
 class Agregation
 {
-    private ?int $id;
+    private ?string $id;
     private string $nom;
-    private string $semestre;
-    private string $expression;
+    private string $parcours;
+    private string $login;
 
-    public function __construct(?int $id, string $nom, string $semestre, string $expression)
+    /**
+     * @param string $nom
+     * @param string $parcours
+     * @param string $login
+     * @param ?string $id
+     */
+    public function __construct(string $nom, string $parcours, string $login, string $id = null)
     {
-        $this->id = $id;
         $this->nom = $nom;
-        $this->semestre = $semestre;
-        $this->expression = $expression;
+        $this->id = $id;
+        $this->parcours = $parcours;
+        $this->login = $login;
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -27,13 +33,13 @@ class Agregation
         return $this->nom;
     }
 
-    public function getSemestre(): string
+    public function getParcours(): string
     {
-        return $this->semestre;
+        return $this->parcours;
     }
 
-    public function getExpression(): string
+    public function getLogin(): string
     {
-        return $this->expression;
+        return $this->login;
     }
 }

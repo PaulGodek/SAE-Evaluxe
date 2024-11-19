@@ -2,44 +2,58 @@
 
 namespace App\Modele\Repository;
 
+use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\Modele\DataObject\Agregation;
-use PDO;
+use App\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
-    protected function getTableName(): string
+    protected function getNomTable(): string
     {
         return 'agregations';
     }
 
-    protected function construireDepuisTableau(array $row): Agregation
+
+    protected function getNomClePrimaire(): string
+    {
+        return 'id';
+    }
+
+    protected function construireDepuisTableauSQL(array $row): Agregation
     {
         return new Agregation(
-            $row['id'] ?? null,
-            $row['nom'],
-            $row['semestre'],
-            $row['expression']
+            $row['nom_agregation'],
+            $row['parcours'],
+            $row['login'],
+            $row['id'] ?? null
         );
     }
 
-    public function enregistrerAgregation(Agregation $agregation): void
+    protected function getNomsColonnes(): array
     {
-        $sql = "INSERT INTO agregations (nom, semestre, expression) VALUES (:nom, :semestre, :expression)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':nom' => $agregation->getNom(),
-            ':semestre' => $agregation->getSemestre(),
-            ':expression' => $agregation->getExpression(),
-        ]);
+        return ['nom_agregation', 'parcours', 'login'];
     }
 
-    public function recupererAgregationsParSemestre(string $semestre): array
+    protected function formatTableauSQL(Agregation $agregation): array
     {
-        $sql = "SELECT * FROM agregations WHERE semestre = :semestre";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':semestre' => $semestre]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map([$this, 'construireDepuisTableau'], $rows);
+        return [
+            'nom_agregation' => $agregation->getNom(),
+            'parcours' => $agregation->getParcours(),
+            'login' => $agregation->getLogin(),
+        ];
     }
+
+    public function recuperer(): array
+    {
+        $objets = [];
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . $this->getNomTable());
+
+
+        foreach ($pdoStatement as $objetFormatTableau) {
+            $objet = $this->construireDepuisTableauSQL($objetFormatTableau);
+            $objets[] = $objet;
+        }
+        return $objets;
+    }
+
 }
