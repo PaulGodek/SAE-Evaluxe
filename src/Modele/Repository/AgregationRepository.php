@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Modele\Repository;
+namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
-use App\Modele\DataObject\Agregation;
-use App\Modele\Repository\AbstractRepository;
+use App\GenerateurAvis\Modele\DataObject\Agregation;
+use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
@@ -21,12 +22,14 @@ class AgregationRepository extends AbstractRepository
 
     protected function construireDepuisTableauSQL(array $row): Agregation
     {
-        return new Agregation(
+        $agregation = new Agregation(
             $row['nom_agregation'],
-            $row['parcours'],
+            $row['parcours'] ?? '',
             $row['login'],
             $row['id'] ?? null
         );
+
+        return $agregation;
     }
 
     protected function getNomsColonnes(): array
@@ -34,14 +37,9 @@ class AgregationRepository extends AbstractRepository
         return ['nom_agregation', 'parcours', 'login'];
     }
 
-    protected function formatTableauSQL(Agregation $agregation): array
-    {
-        return [
-            'nom_agregation' => $agregation->getNom(),
-            'parcours' => $agregation->getParcours(),
-            'login' => $agregation->getLogin(),
-        ];
-    }
+
+
+
 
     public function recuperer(): array
     {
@@ -57,7 +55,7 @@ class AgregationRepository extends AbstractRepository
     }
 
 
-    public function ajouter(Agregation $agregation): bool
+    public function ajouterAgregation(Agregation $agregation): bool
     {
         $sql = "CALL insert_agregation(:nomTag, :parcoursTag, :loginTag)";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -71,6 +69,16 @@ class AgregationRepository extends AbstractRepository
         } catch (\PDOException $e) {
             return false;
         }
+    }
+
+    protected function formatTableauSQL(AbstractDataObject $agregation): array
+    {
+        return [
+            'nom_agregation' => $agregation->getNom(),
+            'parcours' => $agregation->getParcours(),
+            'login' => $agregation->getLogin(),
+        ];
+
     }
 
 }

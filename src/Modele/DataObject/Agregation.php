@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Modele\DataObject;
+namespace App\GenerateurAvis\Modele\DataObject;
 
-class Agregation
+use App\GenerateurAvis\Modele\Repository\AbstractRepository;
+
+class Agregation extends AbstractDataObject
 {
     private ?string $id;
     private string $nom;

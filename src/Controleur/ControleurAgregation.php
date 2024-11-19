@@ -4,8 +4,8 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
-use App\Modele\DataObject\Agregation;
-use App\Modele\Repository\AgregationRepository;
+use App\GenerateurAvis\Modele\DataObject\Agregation;
+use App\GenerateurAvis\Modele\Repository\AgregationRepository;
 
 class ControleurAgregation extends ControleurGenerique
 {
@@ -36,13 +36,9 @@ class ControleurAgregation extends ControleurGenerique
             self::redirectionVersURL("error", "Un paramètre est manquant", "creerAgregation&controleur=agregation");
         }
 
-        $agregation = new Agregation(
-            $_GET["nom"],
-            "",
-            ConnexionUtilisateur::getLoginUtilisateurConnecte()
-        );
+        $agregation = new Agregation( $_GET["nom"], "", ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
-        $res = (new AgregationRepository())->ajouter($agregation);
+        $res = (new AgregationRepository())->ajouterAgregation($agregation);
         if (!$res) {
             self::redirectionVersURL("error", "L'agrégation n'a pas pu être créée","creerAgregation&controleur=agregation");
         }
