@@ -18,9 +18,9 @@
 
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
-/**@var Ecole $ecole*/
-/**@var array $listeNomPrenom*/
+/**@var Ecole $ecole */
 
+/**@var array $listeNomPrenom */
 
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
@@ -32,11 +32,10 @@ echo "<h2>Liste des étudiants</h2>
     <p><a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParNom'>Trier par nom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParPrenom'>Trier par prenom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParParcours'>Trier par parcours</a></p> 
     
 <ul>";
-$i=0;
+$i = 0;
 foreach ($etudiants as $etudiant) {
 
     $idEtudiant = $etudiant->getIdEtudiant();
-
 
     if ($listeNomPrenom[$i]) {
         $nomHTML = htmlspecialchars($listeNomPrenom[$i]['Nom']);
@@ -48,20 +47,17 @@ foreach ($etudiants as $etudiant) {
     $loginURL = rawurlencode($etudiant->getLogin());
     if (ConnexionUtilisateur::estEcole()) {
 
+        $loginEcoleURL = rawurlencode($ecole->getLogin());
 
-        $loginEcoleURL= rawurlencode($ecole->getLogin());
-
-        if(!$etudiant->dejaDemande($ecole->getNom())){
+        if (!$etudiant->dejaDemande($ecole->getNom())) {
 
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';
-        }
-        else if(!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& !$etudiant->dejaDemande($ecole->getNom())){
+        } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && !$etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande déjà evoyée et acceptée)&emsp;  </p></li>';
-        }
-        else if (!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& $etudiant->dejaDemande($ecole->getNom())){
+        } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && $etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande en attente de réponse)&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=supprimerDemande&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Supprimer la demande  </a> </p></li>';
 
-        }else{
+        } else {
 
         }
     } else {
