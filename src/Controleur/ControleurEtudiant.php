@@ -26,7 +26,12 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
         $ecole= (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole"=>$ecole, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[]=$nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole"=>$ecole,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     /**

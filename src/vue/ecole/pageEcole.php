@@ -1,7 +1,6 @@
 <?php
 
 use App\GenerateurAvis\Modele\DataObject\Ecole;
-use \App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 /** @var Ecole $ecole */
 /** @var array<array{codeUnique: string, nom: string, prenom: string}> $futursEtudiants */

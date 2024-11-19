@@ -19,25 +19,28 @@
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
 /**@var Ecole $ecole*/
+/**@var array $listeNomPrenom*/
+
+
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 echo "<h2>Liste des étudiants</h2> 
         
     <p><a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParNom'>Trier par nom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParPrenom'>Trier par prenom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParParcours'>Trier par parcours</a></p> 
     
 <ul>";
+$i=0;
 foreach ($etudiants as $etudiant) {
 
     $idEtudiant = $etudiant->getIdEtudiant();
-    $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
 
-    if ($nomPrenom) {
-        $nomHTML = htmlspecialchars($nomPrenom['Nom']);
-        $prenomHTML = htmlspecialchars($nomPrenom['Prenom']);
+
+    if ($listeNomPrenom[$i]) {
+        $nomHTML = htmlspecialchars($listeNomPrenom[$i]['Nom']);
+        $prenomHTML = htmlspecialchars($listeNomPrenom[$i]['Prenom']);
     } else {
         $nomHTML = $prenomHTML = 'Nom inconnu';
     }
@@ -64,6 +67,7 @@ foreach ($etudiants as $etudiant) {
     } else {
         echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
     }
+    $i++;
 }
 
 echo "</ul>";
