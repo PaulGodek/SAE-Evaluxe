@@ -54,10 +54,6 @@ class UtilisateurRepository extends AbstractRepository
 
     public static function rechercherUtilisateurParLogin(string $recherche): array
     {
-
-        $spreadsheet = SimpleXLSX::parse($filePath) ;
-        $rows = $spreadsheet->rows();
-
         $sql = "SELECT * FROM " . self::$tableUtilisateur .
             " WHERE login LIKE :rechercheTag1 
             OR login LIKE :rechercheTag2 
