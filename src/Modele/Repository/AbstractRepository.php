@@ -28,8 +28,6 @@ abstract class AbstractRepository
     public function ajouter(AbstractDataObject $objet): bool
     {
 
-
-
         // SOLUTION TEMPORAIRE, pour pouvoir ajouter correctement il faut d'abord l'utilisateur, il faudra utiliser des Triggers
         if ($objet instanceof Ecole) {
             $type = "universite";

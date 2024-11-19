@@ -56,4 +56,21 @@ class AgregationRepository extends AbstractRepository
         return $objets;
     }
 
+
+    public function ajouter(Agregation $agregation): bool
+    {
+        $sql = "CALL insert_agregation(:nomTag, :parcoursTag, :loginTag)";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        echo $agregation->getNom() . " " . $agregation->getParcours() . " " . $agregation->getLogin();
+        try {
+            return $pdoStatement->execute(
+                [
+                    ":nomTag" => $agregation->getNom(),
+                    ":parcoursTag" => $agregation->getParcours(),
+                    ":loginTag" => $agregation->getLogin()]);
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
 }
