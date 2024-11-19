@@ -18,10 +18,11 @@
 
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
+/**@var Ecole $ecole*/
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
-use App\GenerateurAvis\Modele\Repository\EcoleRepository;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 
 echo "<h2>Liste des étudiants</h2> 
@@ -44,7 +45,7 @@ foreach ($etudiants as $etudiant) {
     $loginURL = rawurlencode($etudiant->getLogin());
     if (ConnexionUtilisateur::estEcole()) {
 
-        $ecole=(new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
         $loginEcoleURL= rawurlencode($ecole->getLogin());
 
         if(!$etudiant->dejaDemande($ecole->getNom())){

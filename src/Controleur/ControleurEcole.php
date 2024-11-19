@@ -50,7 +50,8 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+        $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant"=>$etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParNom(): void

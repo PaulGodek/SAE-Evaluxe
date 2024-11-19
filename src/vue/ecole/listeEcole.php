@@ -20,7 +20,7 @@
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
 
 echo "<h2>Liste des écoles</h2> 
     <p><a href='controleurFrontal.php?controleur=ecole&action=afficherListe'>  Trier par validation  </a>&emsp; 
@@ -29,9 +29,10 @@ echo "<h2>Liste des écoles</h2>
 <ul>";
 
 /** @var Ecole[] $ecoles */
+/** @var Etudiant $etudiant */
+
 if(ConnexionUtilisateur::estEtudiant()) {
     if (ConnexionUtilisateur::estEtudiant()) {
-        $etudiant = (new EtudiantRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
         $loginEtudiantURL = urlencode($etudiant->getLogin());
     }
 }
