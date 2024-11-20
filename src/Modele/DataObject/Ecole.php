@@ -1,12 +1,13 @@
 <?php
 
 namespace App\GenerateurAvis\Modele\DataObject;
+
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 
 class Ecole extends AbstractDataObject
 {
 
-    private string $login;
+    private Utilisateur $ecole;
     private string $nom;
     private string $adresse;
     private string $ville;
@@ -14,9 +15,9 @@ class Ecole extends AbstractDataObject
 
     private bool $estValide;
 
-    public function __construct(string $login, string $nom, string $adresse, string $ville,string $estValide)
+    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, string $estValide)
     {
-        $this->login = substr($login, 0, 64);
+        $this->ecole = $ecole;
         $this->nom = $nom;
         $this->adresse = $adresse;
         $this->ville = $ville;
@@ -35,14 +36,14 @@ class Ecole extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getLogin(): string
+    public function getEcole(): Utilisateur
     {
-        return $this->login;
+        return $this->ecole;
     }
 
-    public function setLogin(string $login): void
+    public function setEcole(Utilisateur $ecole): void
     {
-        $this->login = substr($login, 0, 64);
+        $this->ecole = $ecole;
     }
 
     public function getAdresse(): string
@@ -74,9 +75,6 @@ class Ecole extends AbstractDataObject
     {
         $this->estValide = $estValide;
     }
-
-
-
 
 
     public function addFuturEtudiant(string $code): void

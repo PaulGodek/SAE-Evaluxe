@@ -32,13 +32,13 @@ echo "<h2>Liste des écoles</h2>
 /** @var Etudiant $etudiant */
 
 if (ConnexionUtilisateur::estEtudiant()) {
-    $loginEtudiantURL = urlencode($etudiant->getLogin());
+    $loginEtudiantURL = urlencode($etudiant->getEtudiant()->getLogin());
 }
 
 foreach ($ecoles as $ecole) {
 
     $nomHTML = htmlspecialchars($ecole->getNom());
-    $loginURL = rawurlencode($ecole->getLogin());
+    $loginURL = rawurlencode($ecole->getEcole()->getLogin());
 
     if (ConnexionUtilisateur::estAdministrateur()) {
         if (!$ecole->isEstValide()) {

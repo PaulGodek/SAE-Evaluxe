@@ -44,10 +44,10 @@ foreach ($etudiants as $etudiant) {
         $nomHTML = $prenomHTML = 'Nom inconnu';
     }
 
-    $loginURL = rawurlencode($etudiant->getLogin());
+    $loginURL = rawurlencode($etudiant->getEtudiant()->getLogin());
     if (ConnexionUtilisateur::estEcole()) {
 
-        $loginEcoleURL = rawurlencode($ecole->getLogin());
+        $loginEcoleURL = rawurlencode($ecole->getEcole()->getLogin());
 
         if (!$etudiant->dejaDemande($ecole->getNom())) {
 

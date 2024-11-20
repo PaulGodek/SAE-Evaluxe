@@ -9,7 +9,7 @@ use Random\RandomException;
 class Etudiant extends AbstractDataObject
 {
 
-    private string $login;
+    private Utilisateur $etudiant;
     private string $codeUnique;
     private int $idEtudiant;
     private static array $codesUniquesUtilisees = [];
@@ -18,9 +18,9 @@ class Etudiant extends AbstractDataObject
     /**
      * @throws RandomException
      */
-    public function __construct(string $login, int $idEtudiant, ?array $demandes, ?string $codeUnique = null)
+    public function __construct(Utilisateur $etudiant, int $idEtudiant, ?array $demandes, ?string $codeUnique = null)
     {
-        $this->login = substr($login, 0, 64);
+        $this->etudiant = $etudiant;
         $this->idEtudiant = $idEtudiant;
 
         if ($codeUnique !== null) {
@@ -32,15 +32,17 @@ class Etudiant extends AbstractDataObject
         $this->demandes = $demandes;
     }
 
-    public function getLogin(): string
+    public function getEtudiant(): Utilisateur
     {
-        return $this->login;
+        return $this->etudiant;
     }
 
-    public function setLogin(string $login): void
+    public function setEtudiant(Utilisateur $etudiant): void
     {
-        $this->login = substr($login, 0, 64);
+        $this->etudiant = $etudiant;
     }
+
+
 
     /**
      * @throws RandomException

@@ -77,7 +77,7 @@ class EcoleRepository extends AbstractRepository
     protected function construireDepuisTableauSQL(array $ecoleFormatTableau): Ecole
     {
         $ecole = new Ecole(
-            $ecoleFormatTableau['login'],
+            (new UtilisateurRepository())->recupererParClePrimaire($ecoleFormatTableau["login"]),
             $ecoleFormatTableau['nom'],
             $ecoleFormatTableau['adresse'],
             $ecoleFormatTableau['ville'],
@@ -131,7 +131,7 @@ class EcoleRepository extends AbstractRepository
         $futursEtudiantsStr = json_encode($ecole->getFutursEtudiants());
 
         $values = [
-            "loginTag" => $ecole->getLogin(),
+            "loginTag" => $ecole->getEcole()->getLogin(),
             "futursEtudiants" => $futursEtudiantsStr
         ];
 
@@ -167,7 +167,7 @@ class EcoleRepository extends AbstractRepository
             $futursEtudiantsEncode = NULL;
         }
         return array(
-            "loginTag" => $ecole->getLogin(),
+            "loginTag" => $ecole->getEcole()->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
             "villeTag" => $ecole->getVille(),
@@ -185,7 +185,7 @@ class EcoleRepository extends AbstractRepository
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = [
-            "loginTag" => $ecole->getLogin(),
+            "loginTag" => $ecole->getEcole()->getLogin(),
         ];
 
         return $pdoStatement->execute($values);

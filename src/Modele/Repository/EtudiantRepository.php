@@ -77,7 +77,7 @@ class EtudiantRepository extends AbstractRepository
      */
     protected function construireDepuisTableauSQL(array $etudiantFormatTableau): Etudiant
     {
-        return new Etudiant($etudiantFormatTableau['login'],
+        return new Etudiant((new UtilisateurRepository())->recupererParClePrimaire($etudiantFormatTableau['login']),
             $etudiantFormatTableau['idEtudiant'],
             json_decode($etudiantFormatTableau['demandes']),
             $etudiantFormatTableau['codeUnique']);
@@ -148,7 +148,7 @@ class EtudiantRepository extends AbstractRepository
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
     {
         return array(
-            "loginTag" => $etudiant->getLogin(),
+            "loginTag" => $etudiant->getEtudiant()->getLogin(),
             "codeUniqueTag" => $etudiant->getCodeUnique(),
             "idEtudiantTag" => $etudiant->getIdEtudiant(),
         );
@@ -336,7 +336,7 @@ class EtudiantRepository extends AbstractRepository
                     ];
                 }
 
-                unset($details['Nom'], $details['Prénom'], $details['nom_et_prénom'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.']);
+                unset($details['Nom'], $details['Prénom'], $details['nom_et_prénom'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.'], $details['Type Adm.']);
 
                 $etudiantDetailsPerSemester[$table] = array_map(function ($value) {
                     return htmlspecialchars($value ?? '');
@@ -375,7 +375,7 @@ class EtudiantRepository extends AbstractRepository
         $demandesSTR = json_encode($etudiant->getDemandes());
 
         $values = [
-            "loginTag" => $etudiant->getLogin(),
+            "loginTag" => $etudiant->getEtudiant()->getLogin(),
             "demandeTag" => $demandesSTR
         ];
 
@@ -395,7 +395,7 @@ class EtudiantRepository extends AbstractRepository
         $demandesSTR = json_encode($etudiant->getDemandes());
 
         $values = [
-            "loginTag" => $etudiant->getLogin(),
+            "loginTag" => $etudiant->getEtudiant()->getLogin(),
             "demandes" => $demandesSTR
         ];
 
