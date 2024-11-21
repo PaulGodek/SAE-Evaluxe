@@ -24,7 +24,7 @@
                     <td><?= htmlspecialchars($agregation->getLogin()) ?></td>
                     <td>
                         <a href="controleurFrontal.php?action=modifierAgregation&id=<?= urlencode($agregation->getId()) ?>">Modifier</a>
-                        <a href="controleurFrontal.php?action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a>
+                        <a href="controleurFrontal.php?controleur=agregation&action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a>
                     </td>
                     <td>
                         <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Afficher Détails</a>

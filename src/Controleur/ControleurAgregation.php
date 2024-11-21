@@ -110,6 +110,19 @@ class ControleurAgregation extends ControleurGenerique
         ]);
     }
 
+    public static function supprimerAgregation(): void
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
+            return;
+        }
+        $id = $_GET["id"];
+        (new AgregationRepository())->supprimer($id);
+        self::redirectionVersURL("success","L'agrégation a bien été supprimée.", "afficherListe&controleur=agregation");
+    }
+
+
+
 
 
 
