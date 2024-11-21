@@ -8,6 +8,7 @@ use App\GenerateurAvis\Modele\DataObject\Agregation;
 use App\GenerateurAvis\Modele\DataObject\Matiere;
 use App\GenerateurAvis\Modele\Repository\AgregationMatiereRepository;
 use App\GenerateurAvis\Modele\Repository\AgregationRepository;
+use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\RessourceRepository;
 
 class ControleurAgregation extends ControleurGenerique
@@ -119,6 +120,63 @@ class ControleurAgregation extends ControleurGenerique
         $id = $_GET["id"];
         (new AgregationRepository())->supprimer($id);
         self::redirectionVersURL("success","L'agrégation a bien été supprimée.", "afficherListe&controleur=agregation");
+    }
+
+
+    public static function modifierAgregationDepuisFormulaire(): void {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
+            return;
+        }
+
+        $id = $_GET['id'];
+        $coefficientsExistants = $_GET['coefficientsExistants'] ?? [];
+        $matieresASupprimer = $_GET['matieresASupprimer'] ?? [];
+        $matieresNouvelles = $_GET['matieresNouvelles'] ?? [];
+        $coefficientsNouveaux = $_GET['coefficientsNouveaux'] ?? [];
+
+        $agregationRepository = new AgregationRepository();
+        $matiereRepository = new AgregationMatiereRepository();
+
+        foreach ($matieresASupprimer as $matiereId) {
+            $matiereRepository->supprimerMatierePourAgregation($id, $matiereId);
+        }
+
+        // Cập nhật coefficients
+        foreach ($coefficientsExistants as $matiereId => $coefficient) {
+            $matiereRepository->mettreAJourCoefficientPourAgregation($id, $matiereId, $coefficient);
+        }
+
+        foreach ($matieresNouvelles as $index => $matiereId) {
+            if (!empty($matiereId)) {
+                $coefficient = $coefficientsNouveaux[$index] ?? 1; // Mặc định coefficient = 1
+                $matiereRepository->ajouterMatierePourAgregation($id, new Matiere($matiereId, $coefficient));
+            }
+        }
+
+        self::redirectionVersURL("success", "L'agrégation a bien été modifiée", "afficherListe&controleur=agregation");
+    }
+
+    public static function afficherFormulaireMiseAJour(): void
+    {
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
+            return;
+        }
+
+        $idAgregation = $_GET['id'];
+        $agregationRepository = new AgregationRepository();
+        $agregation = $agregationRepository->recupererParClePrimaire($idAgregation);
+
+        $matiereRepository = new AgregationMatiereRepository();
+        $matiereAgregations = $matiereRepository->recupererParAgregation($idAgregation);
+
+        self::afficherVue('vueGenerale.php', [
+            "agregation" => $agregation,
+            "matiereAgregations" => $matiereAgregations,
+            "titre" => "Formulaire de mise à jour d'une agrégation",
+            "cheminCorpsVue" => "agregation/modifierAgregation.php"
+        ]);
     }
 
 

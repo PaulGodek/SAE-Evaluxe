@@ -7,9 +7,9 @@
         <table>
             <thead>
             <tr>
-                <th>ID</th>
+<!--                <th>ID</th>-->
                 <th>Nom</th>
-                <th>Parcours</th>
+<!--                <th>Parcours</th>-->
                 <th>Login</th>
                 <th>Actions</th>
                 <th>Details</th>
@@ -18,16 +18,16 @@
             <tbody>
             <?php foreach ($agre as $agregation): ?>
                 <tr>
-                    <td><?= htmlspecialchars($agregation->getId()) ?></td>
+<!--                    <td>--><?php //= htmlspecialchars($agregation->getId()) ?><!--</td>-->
                     <td><?= htmlspecialchars($agregation->getNom()) ?></td>
-                    <td><?= htmlspecialchars($agregation->getParcours()) ?></td>
+<!--                    <td>--><?php //= htmlspecialchars($agregation->getParcours()) ?><!--</td>-->
                     <td><?= htmlspecialchars($agregation->getLogin()) ?></td>
                     <td>
-                        <a href="controleurFrontal.php?action=modifierAgregation&id=<?= urlencode($agregation->getId()) ?>">Modifier</a>
+<!--                        <a href="controleurFrontal.php?controleur=agregation&action=afficherFormulaireMiseAJour&id=--><?php //= urlencode($agregation->getId()) ?><!--">Modifier</a>-->
                         <a href="controleurFrontal.php?controleur=agregation&action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a>
                     </td>
                     <td>
-                        <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Afficher Détails</a>
+                        <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Détails</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -55,4 +55,45 @@ class AgregationMatiereRepository extends AbstractRepository
         ];
     }
 
+    public function supprimerMatierePourAgregation(int $idAgregation, int $idMatiere): bool {
+        $sql = "DELETE FROM agregation_matiere WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $stmt->bindValue(':idAgregation', $idAgregation, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
+        $stmt->bindValue(':idMatiere', $idMatiere, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function mettreAJourCoefficientPourAgregation(int $idAgregation, int $idMatiere, float $coefficient): bool {
+        $sql = "UPDATE agregation_matiere SET coefficient = :coefficient WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $stmt->bindValue(':idAgregation', $idAgregation, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
+        $stmt->bindValue(':idMatiere', $idMatiere, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
+        $stmt->bindValue(':coefficient', $coefficient, ConnexionBaseDeDonnees::getPdo()::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function recupererParAgregation(int $idAgregation): array
+    {
+        $sql = "SELECT am.id_ressource, am.coefficient 
+            FROM agregation_matiere am
+            WHERE am.id_agregation = :idAgregation";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $pdoStatement->bindValue(':idAgregation', $idAgregation, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
+        $pdoStatement->execute();
+
+        $matiereAgregations = [];
+        while ($row = $pdoStatement->fetch()) {
+            // Tạo đối tượng Matiere từ kết quả truy vấn
+            $matiereAgregation = new Matiere(
+                $row['id_ressource'],
+                (float)$row['coefficient']
+            );
+            $matiereAgregations[] = $matiereAgregation;
+        }
+
+        return $matiereAgregations;
+    }
+
+
 }

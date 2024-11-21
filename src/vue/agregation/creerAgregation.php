@@ -6,9 +6,6 @@
         <label for="nom">Nom de l'agrégation:</label>
         <input type="text" id="nom" name="nom" required>
 
-        <label for="parcours">Parcours:</label>
-        <input type="text" id="parcours" name="parcours" required>
-
         <h2>Sélectionnez les matières et leurs coefficients:</h2>
         <div id="matieres">
             <div class="matiere">
@@ -16,9 +13,8 @@
                 <select name="matieres[]" required>
                     <option value="">-- Sélectionnez une matière --</option>
                     <?php foreach ($ressources as $ressource): ?>
-                        <!-- Sử dụng id_ressource làm giá trị của option -->
                         <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
-                            <?= htmlspecialchars($ressource->getId_ressource()) ?> <!-- Hiển thị id_ressource -->
+                            <?= htmlspecialchars($ressource->getId_ressource()) ?> <!-- Hiển thị ID của matière -->
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -44,7 +40,7 @@
                     <option value="">-- Sélectionnez une matière --</option>
                     <?php foreach ($ressources as $ressource): ?>
                         <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
-                            <?= htmlspecialchars($ressource->getId_ressource()) ?>
+                            <?= htmlspecialchars($ressource->getId_ressource()) ?> <!-- Hiển thị ID của matière -->
                         </option>
                     <?php endforeach; ?>
                 </select>
