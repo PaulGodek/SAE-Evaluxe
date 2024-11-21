@@ -57,16 +57,20 @@ class AgregationRepository extends AbstractRepository
 
     public function ajouterAgregation(Agregation $agregation): bool
     {
-        $sql = "CALL insert_agregation(:nomTag, :parcoursTag, :loginTag)";
+        $sql = "CALL insert_agregations(:nomTag, :parcoursTag, :loginTag)";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-        echo $agregation->getNom() . " " . $agregation->getParcours() . " " . $agregation->getLogin();
         try {
-            return $pdoStatement->execute(
-                [
-                    ":nomTag" => $agregation->getNom(),
-                    ":parcoursTag" => $agregation->getParcours(),
-                    ":loginTag" => $agregation->getLogin()]);
+            $success = $pdoStatement->execute([
+                ":nomTag" => $agregation->getNom(),
+                ":parcoursTag" => $agregation->getParcours(),
+                ":loginTag" => $agregation->getLogin()
+            ]);
+            if (!$success) {
+                error_log("Failed to execute stored procedure: " . implode(", ", $pdoStatement->errorInfo()));
+            }
+            return $success;
         } catch (\PDOException $e) {
+            error_log("PDOException: " . $e->getMessage());
             return false;
         }
     }

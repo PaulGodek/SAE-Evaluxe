@@ -22,10 +22,10 @@ class ControleurAgregation extends ControleurGenerique
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
-        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => "agregation/creerAgregation"]);
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => "agregation/creerAgregation.php"]);
     }
 
-    public static function creerDepuisFormulaire(): void
+    public static function creerAgregationDepuisFormulaire(): void
     {
         if(!ConnexionUtilisateur::estConnecte()) {
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
@@ -40,7 +40,7 @@ class ControleurAgregation extends ControleurGenerique
 
         $res = (new AgregationRepository())->ajouterAgregation($agregation);
         if (!$res) {
-            self::redirectionVersURL("error", "L'agrégation n'a pas pu être créée","creerAgregation&controleur=agregation");
+            self::redirectionVersURL("error", "L'agrégation n'a pas pu être créée","afficherCreerAgregation&controleur=agregation");
         }
 
         self::redirectionVersURL("success", "L'agrégation a bien été créée","afficherListe&controleur=agregation");
