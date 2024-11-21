@@ -14,7 +14,6 @@ class AgregationRepository extends AbstractRepository
         return 'agregations';
     }
 
-
     protected function getNomClePrimaire(): string
     {
         return 'id';
@@ -37,7 +36,6 @@ class AgregationRepository extends AbstractRepository
         return ['nom_agregation', 'parcours', 'login'];
     }
 
-
     public function recuperer(): array
     {
         $objets = [];
@@ -50,32 +48,24 @@ class AgregationRepository extends AbstractRepository
         return $objets;
     }
 
-
     public function ajouterAgregation(Agregation $agregation): ?int
     {
-        // Chuẩn bị câu lệnh SQL để thêm vào cơ sở dữ liệu
         $sql = "INSERT INTO agregations (nom_agregation, parcours, login) 
             VALUES (:nom_agregation, :parcours, :login)";
 
-        // Chuẩn bị statement PDO
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-        // Tạo mảng các giá trị cần liên kết với các tham số trong câu lệnh SQL
         $values = array(
             "nom_agregation" => $agregation->getNom(),
             "parcours" => $agregation->getParcours(),
             "login" => $agregation->getLogin()
         );
 
-        // Thực thi câu lệnh SQL với các tham số
         if ($pdoStatement->execute($values)) {
-            // Nếu insert thành công, trả về ID mới được tạo
             return ConnexionBaseDeDonnees::getPdo()->lastInsertId();
         }
-
-        return null; // Nếu không thành công, trả về null
+        return null;
     }
-
 
     protected function formatTableauSQL(AbstractDataObject $agregation): array
     {
@@ -84,7 +74,43 @@ class AgregationRepository extends AbstractRepository
             'parcours' => $agregation->getParcours(),
             'login' => $agregation->getLogin(),
         ];
+    }
+    public function getAgregationDetailsById(int $idAgregation): array
+    {
+        $sql = "SELECT * FROM agregations WHERE id = :id_agregation";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
+        $values = ['id_agregation' => $idAgregation];
+
+        $stmt->execute($values);
+
+        $agregation = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
+
+        if (!$agregation) {
+            return [];
+        }
+
+        $matieres = $this->getMatieresForAgregation($idAgregation);
+
+        return [
+            'nom_agregation' => $agregation['nom_agregation'],
+            'parcours' => $agregation['parcours'],
+            'matieres' => $matieres
+        ];
     }
 
+    private function getMatieresForAgregation(int $idAgregation): array
+    {
+        $sql = "SELECT m.nom AS matiere, am.coefficient
+                FROM agregation_matiere am
+                JOIN ressources m ON am.id_ressource = m.id_ressource
+                WHERE am.id_agregation = :id_agregation";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $values = ['id_agregation' => $idAgregation];
+        $stmt->execute($values);
+
+        $matieres = $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
+
+        return $matieres;
+    }
 }

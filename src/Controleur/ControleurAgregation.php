@@ -36,28 +36,21 @@ class ControleurAgregation extends ControleurGenerique
 
     public static function creerAgregationDepuisFormulaire(): void
     {
-        // Kiểm tra người dùng đã đăng nhập chưa
         if (!ConnexionUtilisateur::estConnecte()) {
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
-        // Kiểm tra các tham số từ form
         if (!isset($_GET["nom"]) || !isset($_GET["matieres"]) || !isset($_GET["coefficients"])) {
             self::redirectionVersURL("error", "Un paramètre est manquant", "afficherCreerAgregation&controleur=agregation");
             return;
         }
-
-        // Lấy tên của agrégation
         $nomAgregation = $_GET["nom"];
-        // Lấy các môn học và hệ số từ form
         $matieres = $_GET["matieres"];
         $coefficients = $_GET["coefficients"];
 
-        // Tạo đối tượng Agrégation
         $agregation = new Agregation($nomAgregation, "", ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
-        // Lưu agrégation vào cơ sở dữ liệu
         $agregationRepository = new AgregationRepository();
         $agregationId = $agregationRepository->ajouterAgregation($agregation);
 
@@ -66,14 +59,12 @@ class ControleurAgregation extends ControleurGenerique
             return;
         }
 
-        // Duyệt qua các môn học và hệ số để thêm vào cơ sở dữ liệu
         foreach ($matieres as $index => $matiereId) {
             $coefficient = $coefficients[$index];
 
             // Tạo đối tượng Matiere
             $matiere = new Matiere($matiereId, $coefficient);
 
-            // Thêm môn học vào agrégation
             $matiereRepository = new AgregationMatiereRepository();
             $res = $matiereRepository->ajouterMatierePourAgregation($agregationId, $matiere);
 
@@ -83,9 +74,42 @@ class ControleurAgregation extends ControleurGenerique
             }
         }
 
-        // Chuyển hướng sau khi thành công
         self::redirectionVersURL("success", "L'agrégation a bien été créée", "afficherListe&controleur=agregation");
     }
+
+    public static function afficherDetailAgregation(): void {
+        // Kiểm tra kết nối của người dùng, nếu không đăng nhập thì chuyển hướng
+        if (!ConnexionUtilisateur::estConnecte()) {
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
+            return;
+        }
+
+        // Kiểm tra nếu tham số 'id' có trong URL
+        if (!isset($_GET['id'])) {
+            self::redirectionVersURL("error", "L'ID de l'agrégation est manquant", "afficherListeAgregations&controleur=agregation");
+            return;
+        }
+
+        // Lấy giá trị id từ tham số GET
+        $idAgregation = (int)$_GET['id'];
+
+        // Lấy chi tiết agrégation từ repository
+        $agregationRepository = new AgregationRepository();
+        $agregationDetails = $agregationRepository->getAgregationDetailsById($idAgregation);
+
+        // Kiểm tra nếu không tìm thấy agrégation
+        if (empty($agregationDetails)) {
+            self::redirectionVersURL("error", "Agrégation non trouvée", "afficherListeAgregations&controleur=agregation");
+            return;
+        }
+
+        // Hiển thị view với dữ liệu chi tiết
+        self::afficherVue('vueGenerale.php', [
+            "cheminCorpsVue" => "agregation/detailAgregation.php",
+            "agregationDetails" => $agregationDetails
+        ]);
+    }
+
 
 
 
