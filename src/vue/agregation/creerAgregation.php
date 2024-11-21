@@ -16,8 +16,9 @@
                 <select name="matieres[]" required>
                     <option value="">-- Sélectionnez une matière --</option>
                     <?php foreach ($ressources as $ressource): ?>
+                        <!-- Sử dụng id_ressource làm giá trị của option -->
                         <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
-                            <?= htmlspecialchars($ressource->getNom()) ?>
+                            <?= htmlspecialchars($ressource->getId_ressource()) ?> <!-- Hiển thị id_ressource -->
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -42,8 +43,8 @@
                 <select name="matieres[]" required>
                     <option value="">-- Sélectionnez une matière --</option>
                     <?php foreach ($ressources as $ressource): ?>
-                        <option value="<?= htmlspecialchars($ressource->getId()) ?>">
-                            <?= htmlspecialchars($ressource->getNom()) ?>
+                        <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
+                            <?= htmlspecialchars($ressource->getId_ressource()) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

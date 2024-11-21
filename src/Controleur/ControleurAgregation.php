@@ -44,7 +44,7 @@ class ControleurAgregation extends ControleurGenerique
 
         // Kiểm tra các tham số từ form
         if (!isset($_GET["nom"]) || !isset($_GET["matieres"]) || !isset($_GET["coefficients"])) {
-            self::redirectionVersURL("error", "Un paramètre est manquant", "affichercreerAgregation&controleur=agregation");
+            self::redirectionVersURL("error", "Un paramètre est manquant", "afficherCreerAgregation&controleur=agregation");
             return;
         }
 
@@ -58,14 +58,13 @@ class ControleurAgregation extends ControleurGenerique
         $agregation = new Agregation($nomAgregation, "", ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
         // Lưu agrégation vào cơ sở dữ liệu
-        $res = (new AgregationRepository())->ajouterAgregation($agregation);
-        if (!$res) {
+        $agregationRepository = new AgregationRepository();
+        $agregationId = $agregationRepository->ajouterAgregation($agregation);
+
+        if (!$agregationId) {
             self::redirectionVersURL("error", "L'agrégation n'a pas pu être créée", "afficherCreerAgregation&controleur=agregation");
             return;
         }
-
-        // Lấy ID của agrégation vừa tạo
-        $agregationId = $agregation->getId();
 
         // Duyệt qua các môn học và hệ số để thêm vào cơ sở dữ liệu
         foreach ($matieres as $index => $matiereId) {
@@ -87,6 +86,7 @@ class ControleurAgregation extends ControleurGenerique
         // Chuyển hướng sau khi thành công
         self::redirectionVersURL("success", "L'agrégation a bien été créée", "afficherListe&controleur=agregation");
     }
+
 
 
 }

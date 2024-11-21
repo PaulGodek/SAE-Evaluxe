@@ -6,7 +6,7 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class Agregation extends AbstractDataObject
 {
-    private ?string $id;
+    private ?int $id;
     private string $nom;
     private string $parcours;
     private string $login;
@@ -15,9 +15,9 @@ class Agregation extends AbstractDataObject
      * @param string $nom
      * @param string $parcours
      * @param string $login
-     * @param ?string $id
+     * @param ?int $id
      */
-    public function __construct(string $nom, string $parcours, string $login, string $id = null)
+    public function __construct(string $nom, string $parcours, string $login, int $id = null)
     {
         $this->nom = $nom;
         $this->id = $id;
@@ -25,7 +25,7 @@ class Agregation extends AbstractDataObject
         $this->login = $login;
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

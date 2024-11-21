@@ -16,7 +16,7 @@ class AgregationMatiereRepository extends AbstractRepository
 
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->bindValue(":id_agregation", $id_agregation, \PDO::PARAM_INT);
-        $stmt->bindValue(":id_ressource", $matiere->getId_ressource(), \PDO::PARAM_INT);
+        $stmt->bindValue(":id_ressource", $matiere->getId_ressource(), \PDO::PARAM_STR);
         $stmt->bindValue(":coefficient", $matiere->getCoefficient(), \PDO::PARAM_STR);
 
         return $stmt->execute();

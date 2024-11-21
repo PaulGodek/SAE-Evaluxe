@@ -51,25 +51,31 @@ class AgregationRepository extends AbstractRepository
     }
 
 
-    public function ajouterAgregation(Agregation $agregation): bool
+    public function ajouterAgregation(Agregation $agregation): ?int
     {
-        $sql = "CALL insert_agregations(:nomTag, :parcoursTag, :loginTag)";
+        // Chuẩn bị câu lệnh SQL để thêm vào cơ sở dữ liệu
+        $sql = "INSERT INTO agregations (nom_agregation, parcours, login) 
+            VALUES (:nom_agregation, :parcours, :login)";
+
+        // Chuẩn bị statement PDO
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-        try {
-            $success = $pdoStatement->execute([
-                ":nomTag" => $agregation->getNom(),
-                ":parcoursTag" => $agregation->getParcours(),
-                ":loginTag" => $agregation->getLogin()
-            ]);
-            if (!$success) {
-                error_log("Failed to execute stored procedure: " . implode(", ", $pdoStatement->errorInfo()));
-            }
-            return $success;
-        } catch (\PDOException $e) {
-            error_log("PDOException: " . $e->getMessage());
-            return false;
+
+        // Tạo mảng các giá trị cần liên kết với các tham số trong câu lệnh SQL
+        $values = array(
+            "nom_agregation" => $agregation->getNom(),
+            "parcours" => $agregation->getParcours(),
+            "login" => $agregation->getLogin()
+        );
+
+        // Thực thi câu lệnh SQL với các tham số
+        if ($pdoStatement->execute($values)) {
+            // Nếu insert thành công, trả về ID mới được tạo
+            return ConnexionBaseDeDonnees::getPdo()->lastInsertId();
         }
+
+        return null; // Nếu không thành công, trả về null
     }
+
 
     protected function formatTableauSQL(AbstractDataObject $agregation): array
     {
