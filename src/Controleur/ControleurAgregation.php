@@ -15,7 +15,11 @@ class ControleurAgregation extends ControleurGenerique
             return;
         }
         $agre = (new AgregationRepository())->recuperer();
-        self::afficherVue('vueGenerale.php', ["titre" => "Liste des agregations","cheminCorpsVue" => "agregation/listeAgregation.php, agregations => $agre"]);
+        self::afficherVue('vueGenerale.php', [
+            "titre" => "Liste des agregations",
+            "cheminCorpsVue" => "agregation/listeAgregation.php",
+            "agre" => $agre
+        ]);
     }
     public static function afficherCreerAgregation(): void {
         if (!ConnexionUtilisateur::estConnecte()) {

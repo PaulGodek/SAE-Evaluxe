@@ -32,6 +32,6 @@
     <?php endif; ?>
 
     <p>
-        <a href="controleurFrontal.php?action=creerAgregation&controleur=agregation" class="button">Ajouter une nouvelle agrégation</a>
+        <a href="controleurFrontal.php?action=afficherCreerAgregation&controleur=agregation" class="button">Ajouter une nouvelle agrégation</a>
     </p>
 </section>

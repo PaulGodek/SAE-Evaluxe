@@ -38,14 +38,10 @@ class AgregationRepository extends AbstractRepository
     }
 
 
-
-
-
     public function recuperer(): array
     {
         $objets = [];
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT * FROM " . $this->getNomTable());
-
 
         foreach ($pdoStatement as $objetFormatTableau) {
             $objet = $this->construireDepuisTableauSQL($objetFormatTableau);
