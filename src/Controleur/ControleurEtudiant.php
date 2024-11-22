@@ -203,9 +203,9 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiant = new Etudiant($_GET["login"], $_GET["etudid"], $_GET['demandes'], $_GET['codeUnique']);
         (new EtudiantRepository)->mettreAJour($etudiant);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getEtudiant()->getLogin()) . " a bien été mis à jour");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getEtudiant()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherResultatRechercheEtudiant(): void

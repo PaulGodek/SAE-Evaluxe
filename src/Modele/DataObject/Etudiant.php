@@ -32,12 +32,12 @@ class Etudiant extends AbstractDataObject
         $this->demandes = $demandes;
     }
 
-    public function getEtudiant(): Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->etudiant;
     }
 
-    public function setEtudiant(Utilisateur $etudiant): void
+    public function setUtilisateur(Utilisateur $etudiant): void
     {
         $this->etudiant = $etudiant;
     }
