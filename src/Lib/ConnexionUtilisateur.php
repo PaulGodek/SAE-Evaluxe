@@ -43,6 +43,9 @@ class ConnexionUtilisateur
     public static function estTypeUtilisateur(string $type): bool
     {
         $login = self::getLoginUtilisateurConnecte();
+        if ($login === null) {
+            return false;
+        }
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
         return $utilisateur !== null && ($utilisateur->getType() === $type);
     }

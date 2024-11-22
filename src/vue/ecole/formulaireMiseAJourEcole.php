@@ -16,7 +16,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
             <input class="InputAddOn-field" type="text" name="login" id="login_id"
-                   value="<?= htmlspecialchars($ecole->getEcole()->getLogin()) ?>" readonly>
+                   value="<?= htmlspecialchars($ecole->getUtilisateur()->getLogin()) ?>" readonly>
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="nom_id">Nom&#42;</label>

@@ -21,7 +21,6 @@ class UtilisateurRepository extends AbstractRepository
     }
 
 
-
     protected function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
     {
         return new Utilisateur($utilisateurFormatTableau['login'],
@@ -80,5 +79,14 @@ class UtilisateurRepository extends AbstractRepository
         }
         return $tableauUtilisateur;
 
+    }
+
+    public function existeUtilisateurParLogin(string $login): bool
+    {
+        $sql = "SELECT 1 FROM Utilisateur WHERE login = :loginTag LIMIT 1";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $pdoStatement->execute(['loginTag' => $login]);
+
+        return (bool)$pdoStatement->fetch();
     }
 }

@@ -45,10 +45,10 @@ foreach ($etudiants as $etudiant) {
         $nomHTML = $prenomHTML = 'Nom inconnu';
     }
 
-    $loginURL = rawurlencode($etudiant->getEtudiant()->getLogin());
+    $loginURL = rawurlencode($etudiant->getUtilisateur()->getLogin());
     if (ConnexionUtilisateur::estEcole()) {
 
-        $loginEcoleURL = rawurlencode($ecole->getEcole()->getLogin());
+        $loginEcoleURL = rawurlencode($ecole->getUtilisateur()->getLogin());
 
         if(!$etudiant->dejaDemande($ecole->getNom())){
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';

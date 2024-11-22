@@ -25,12 +25,12 @@ class Professeur extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getProfesseur(): Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->professeur;
     }
 
-    public function setProfesseur(Utilisateur $professeur): void
+    public function setUtilisateur(Utilisateur $professeur): void
     {
         $this->professeur = $professeur;
     }

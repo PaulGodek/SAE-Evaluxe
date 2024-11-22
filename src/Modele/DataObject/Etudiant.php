@@ -14,7 +14,7 @@ class Etudiant extends AbstractDataObject
     private string $codeUnique;
     private int $idEtudiant;
     private static array $codesUniquesUtilisees = [];
-    private array $demandes;
+    private array $demandes = [];
 
     /**
      * @throws RandomException
@@ -30,19 +30,18 @@ class Etudiant extends AbstractDataObject
             $this->codeUnique = $this->genererCodeUnique();
         }
 
-        $this->demandes = $demandes;
+        $this->demandes = $demandes ?? [];
     }
 
-    public function getEtudiant(): Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->etudiant;
     }
 
-    public function setEtudiant(Utilisateur $etudiant): void
+    public function setUtilisateur(Utilisateur $etudiant): void
     {
         $this->etudiant = $etudiant;
     }
-
 
 
     /**
@@ -74,7 +73,7 @@ class Etudiant extends AbstractDataObject
 
     public function getDemandes(): array
     {
-        return $this->demandes;
+        return $this->demandes ?? [];
     }
 
     public function addDemande(string $nom): void
@@ -98,8 +97,8 @@ class Etudiant extends AbstractDataObject
 
     public function removeDemande($nom): bool
     {
-            $this->demandes = array_diff($this->demandes, [$nom]);
-            return (new EtudiantRepository())->mettreAJourDemandes($this);
+        $this->demandes = array_diff($this->demandes, [$nom]);
+        return (new EtudiantRepository())->mettreAJourDemandes($this);
     }
 
     public function getAvisProfesseur(string $loginProfesseur) : string {

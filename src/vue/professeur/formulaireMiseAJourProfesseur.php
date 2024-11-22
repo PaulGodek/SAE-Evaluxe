@@ -13,7 +13,7 @@ use App\GenerateurAvis\Modele\DataObject\Professeur;
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
-            <input class="InputAddOn-field" type="text"  name="login" id="login_id" value="<?= htmlspecialchars($professeur->getProfesseur()->getLogin())?>" readonly>
+            <input class="InputAddOn-field" type="text" name="login" id="login_id" value="<?= htmlspecialchars($professeur->getUtilisateur()->getLogin())?>" readonly>
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="nom_id">Nom&#42;</label>

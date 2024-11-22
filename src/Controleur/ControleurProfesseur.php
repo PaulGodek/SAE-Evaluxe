@@ -20,7 +20,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = (new ProfesseurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -30,7 +30,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
@@ -51,12 +51,12 @@ class ControleurProfesseur extends ControleurGenerique
     {
         if (!ConnexionUtilisateur::estConnecte()) {
             //self::afficherErreur("Veuillez vous connecter d'abord.");
-            self::redirectionVersURL("warning","Veuillez vous connecter d'abord","afficherPreference&controleur=Connexion");
+            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            if(!ConnexionUtilisateur::estProfesseur()){
+            if (!ConnexionUtilisateur::estProfesseur()) {
 //                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
                 self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
                 return;
@@ -104,7 +104,7 @@ class ControleurProfesseur extends ControleurGenerique
         }
         $professeur = new professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->ajouter($professeur);
-        MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
+        MessageFlash::ajouter("success", "Le compte professeur a bien été créé !");
         $professeurs = (new ProfesseurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création de compte professeur", "cheminCorpsVue" => "professeur/detailProfesseur.php"]);
     }
@@ -116,12 +116,12 @@ class ControleurProfesseur extends ControleurGenerique
             return;
         }
         if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Le login n'est pas renseigné");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $login = $_GET["login"];
         (new ProfesseurRepository)->supprimer($login);
-        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($login)." a bien été supprimé");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été supprimé");
         $professeurs = (new ProfesseurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $login, "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurSupprime.php"]);
     }
@@ -157,11 +157,14 @@ class ControleurProfesseur extends ControleurGenerique
             self::afficherErreurProfesseur("Le prénom n'est pas renseigné");
             return;
         }
-        $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
+        $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        $professeurExistant = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
+        $professeur = new Professeur($user, $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->mettreAJour($professeur);
-        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($professeur->getProfesseur()->getLogin())." a bien été mis à jour");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($professeur->getUtilisateur()->getLogin()) . " a bien été mis à jour");
         $professeurs = (new ProfesseurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getProfesseur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeurExistant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+        //self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getUtilisateur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
     }
 
     public static function creerProfesseurDepuisFormulaire(): void
@@ -175,7 +178,7 @@ class ControleurProfesseur extends ControleurGenerique
         $mdp2 = $_GET['mdp2'] ?? '';
 
         if ($mdp !== $mdp2) {
-            MessageFlash::ajouter("warning","Les mots de passes ne correspondent pas");
+            MessageFlash::ajouter("warning", "Les mots de passes ne correspondent pas");
             self::afficherErreurProfesseur(" ");
             return;
         }
@@ -185,7 +188,7 @@ class ControleurProfesseur extends ControleurGenerique
 
         $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->ajouter($professeur);
-        MessageFlash::ajouter("success","Le compte professeur a bien été créé !");
+        MessageFlash::ajouter("success", "Le compte professeur a bien été créé !");
         $professeurs = (new ProfesseurRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Création du professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
     }

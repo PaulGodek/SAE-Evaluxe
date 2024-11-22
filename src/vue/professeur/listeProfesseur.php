@@ -29,7 +29,7 @@ echo "<h2>Liste des professeurs</h2>
 foreach ($professeurs as $professeur) {
     $nomHTML = htmlspecialchars($professeur->getNom());
     $prenomHTML = htmlspecialchars($professeur->getPrenom());
-    $loginURL = rawurlencode($professeur->getProfesseur()->getLogin());
+    $loginURL = rawurlencode($professeur->getUtilisateur()->getLogin());
     echo '<li><p> Le professeur <a href="controleurFrontal.php?controleur=professeur&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;'.$prenomHTML .'</a></p></li>';
 }
 
