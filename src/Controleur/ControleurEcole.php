@@ -142,15 +142,16 @@ class ControleurEcole extends ControleurGenerique
 
     private static function sendEmailToAdmin(array $data): void{
         $mail = new PHPMailer(true);
+        //app password: wxkp ming dado mmya
         try{
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
             $mail->Host = "smtp.gmail.com";
             $mail->SMTPAuth = true;
             $mail->Username="evaluxe.iutmontpellier@gmail.com";
-            $mail->Password="ButInformatique";
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port = 465;
+            $mail->Password="wxkpmingdadommya";
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
 
             $mail->setFrom("evaluxe.iutmontpellier@gmail.com", "No Reply");
             $mail->addAddress("evaluxe2024@gmail.com");
