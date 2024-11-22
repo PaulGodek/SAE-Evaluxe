@@ -151,6 +151,7 @@ class EtudiantRepository extends AbstractRepository
             "loginTag" => $etudiant->getUtilisateur()->getLogin(),
             "codeUniqueTag" => $etudiant->getCodeUnique(),
             "idEtudiantTag" => $etudiant->getIdEtudiant(),
+            "demandesTag" => $etudiant->getDemandes(),
         );
     }
 

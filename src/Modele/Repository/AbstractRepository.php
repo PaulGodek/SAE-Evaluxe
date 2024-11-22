@@ -13,17 +13,22 @@ abstract class AbstractRepository
 {
     public function mettreAJour(AbstractDataObject $objet): void
     {
-
+        $leSet = [];
         foreach ($this->getNomsColonnes() as $attribut) {
-            $leSet[$attribut] = $attribut . '= :' . $attribut;
-
+            $leSet[] = $attribut . '= :' . $attribut . 'Tag';
         }
-        $sql = 'UPDATE ' . $this->getNomTable() . ' SET ' . join('Tag, ', $leSet) . 'Tag WHERE ' . $this->getNomClePrimaire() . '= :' . $this->getNomClePrimaire() . 'Tag';
+
+        $sql = 'UPDATE ' . $this->getNomTable() .
+            ' SET ' . join(', ', $leSet) .
+            ' WHERE ' . $this->getNomClePrimaire() . '= :' . $this->getNomClePrimaire() . 'Tag';
+
+        //var_dump($sql);
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $values = $this->formatTableauSQL($objet);
         $pdoStatement->execute($values);
     }
+
 
     /*public function ajouter(AbstractDataObject $objet): bool
     {

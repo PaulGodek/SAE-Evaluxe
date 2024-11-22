@@ -8,6 +8,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Random\RandomException;
 use TypeError;
 
@@ -44,7 +45,8 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,
+            "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
@@ -201,11 +203,19 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        $etudiant = new Etudiant($_GET["login"], $_GET["etudid"], $_GET['demandes'], $_GET['codeUnique']);
-        (new EtudiantRepository)->mettreAJour($etudiant);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
+        $login = $_GET["login"];
+        $repository = new EtudiantRepository();
+        $etudiantExistant = $repository->recupererParClePrimaire($login);
+        if (isset($_GET["etudid"])) {
+            $etudiantExistant->setIdEtudiant($_GET["etudid"]);
+        }
+        //$etudiantChangee = new Etudiant($user, $_GET["etudid"], $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
+        //var_dump($etudiantExistant);
+
+        $repository->mettreAJour($etudiantExistant);
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiantExistant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiantExistant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherResultatRechercheEtudiant(): void
