@@ -158,16 +158,17 @@ class ControleurEcole extends ControleurGenerique
             $mail->Subject = "Création de compte école";
 
 
-            $mailContent ="
-        <h2>A new Ecole account was created:</h2>
-            <p><strong>Ecole Name:</strong> {$data['nom']}</p>
-            <p><strong>Login:</strong> {$data['login']}</p>
-            <p><strong>Address:</strong> {$data['adresse']}</p>
-            <p><strong>City:</strong> {$data['ville']}</p>
-            <p><strong>Created on:</strong> " . date('Y-m-d H:i:s') . "</p>
-        
-        ";
-            $mail->Body = $mailContent;
+            ob_start();
+            extract([
+                "nom"=>$data["nom"],
+                "adresse"=>$data["adresse"],
+                "ville"=>$data["ville"],
+                "login"=>$data["login"],
+                "dateCreation"=>date('Y-m-d H:i:s')
+            ]);
+            include __DIR__ . '/../vue/ecole/emailEcole.php';
+
+            $mail->Body = ob_get_clean();
             $mail->send();
             MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
         }catch (Exception $e) {
