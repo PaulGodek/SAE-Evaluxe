@@ -156,11 +156,14 @@ class ControleurProfesseur extends ControleurGenerique
             self::afficherErreurProfesseur("Le prénom n'est pas renseigné");
             return;
         }
-        $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
+        $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        $professeurExistant = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
+        $professeur = new Professeur($user, $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->mettreAJour($professeur);
         MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($professeur->getUtilisateur()->getLogin()) . " a bien été mis à jour");
         $professeurs = (new ProfesseurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getUtilisateur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeurExistant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+        //self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getUtilisateur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
     }
 
     public static function creerProfesseurDepuisFormulaire(): void

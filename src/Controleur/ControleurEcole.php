@@ -225,7 +225,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getUtilisateur()->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getUtilisateur()->getLogin(), "titre" => "Mise à jour de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
     /**
