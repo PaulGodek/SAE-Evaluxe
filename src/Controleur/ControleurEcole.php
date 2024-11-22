@@ -119,9 +119,6 @@ class ControleurEcole extends ControleurGenerique
         ControleurEcole::creerDepuisFormulaire();
     }
 
-    /**
-     * @throws Exception
-     */
     public static function creerDepuisFormulaire(): void
     {
         $utilisateur = new Utilisateur($_GET["login"], "universite", $_GET['mdp']);
@@ -156,7 +153,10 @@ class ControleurEcole extends ControleurGenerique
             $mail->setFrom("evaluxe.iutmontpellier@gmail.com", "No Reply");
             $mail->addAddress("evaluxe2024@gmail.com");
             $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->setLanguage('fr');
             $mail->Subject = "Création de compte école";
+
 
             $mailContent ="
         <h2>A new Ecole account was created:</h2>
@@ -169,9 +169,10 @@ class ControleurEcole extends ControleurGenerique
         ";
             $mail->Body = $mailContent;
             $mail->send();
-            echo 'Message has been sent';
+            MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
         }catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            MessageFlash::ajouter("warning", "Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+            self::afficherErreurEcole("");
         }
 
     }
