@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Modele\DataObject;
 
 use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use Random\RandomException;
 
 class Etudiant extends AbstractDataObject
@@ -99,6 +100,10 @@ class Etudiant extends AbstractDataObject
     {
             $this->demandes = array_diff($this->demandes, [$nom]);
             return (new EtudiantRepository())->mettreAJourDemandes($this);
+    }
+
+    public function getAvisProfesseur(string $loginProfesseur) : string {
+        return ProfesseurRepository::getAvis($this->getEtudiant()->getLogin(), $loginProfesseur);
     }
 
 }
