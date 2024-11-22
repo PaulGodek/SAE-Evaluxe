@@ -33,7 +33,7 @@ class ProfesseurRepository extends AbstractRepository
     protected function formatTableauSQL(AbstractDataObject $professeur): array
     {
         return array(
-            "loginTag" => $professeur->getProfesseur()->getLogin(),
+            "loginTag" => $professeur->getUtilisateur()->getLogin(),
             "nomTag" => $professeur->getNom(),
             "prenomTag" => $professeur->getPrenom()
         );

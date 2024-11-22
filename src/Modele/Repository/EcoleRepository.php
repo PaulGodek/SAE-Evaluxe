@@ -82,6 +82,7 @@ class EcoleRepository extends AbstractRepository
             $ecoleFormatTableau['adresse'],
             $ecoleFormatTableau['ville'],
             $ecoleFormatTableau['valide'],
+            isset($data['futursEtudiants']) ? json_decode($data['futursEtudiants'], true) : []
 
         );
 
@@ -131,7 +132,7 @@ class EcoleRepository extends AbstractRepository
         $futursEtudiantsStr = json_encode($ecole->getFutursEtudiants());
 
         $values = [
-            "loginTag" => $ecole->getEcole()->getLogin(),
+            "loginTag" => $ecole->getUtilisateur()->getLogin(),
             "futursEtudiants" => $futursEtudiantsStr
         ];
 
@@ -167,7 +168,7 @@ class EcoleRepository extends AbstractRepository
             $futursEtudiantsEncode = NULL;
         }
         return array(
-            "loginTag" => $ecole->getEcole()->getLogin(),
+            "loginTag" => $ecole->getUtilisateur()->getLogin(),
             "nomTag" => $ecole->getNom(),
             "adresseTag" => $ecole->getAdresse(),
             "villeTag" => $ecole->getVille(),
@@ -185,7 +186,7 @@ class EcoleRepository extends AbstractRepository
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = [
-            "loginTag" => $ecole->getEcole()->getLogin(),
+            "loginTag" => $ecole->getUtilisateur()->getLogin(),
         ];
 
         return $pdoStatement->execute($values);

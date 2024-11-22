@@ -148,9 +148,10 @@ class EtudiantRepository extends AbstractRepository
     protected function formatTableauSQL(AbstractDataObject $etudiant): array
     {
         return array(
-            "loginTag" => $etudiant->getEtudiant()->getLogin(),
+            "loginTag" => $etudiant->getUtilisateur()->getLogin(),
             "codeUniqueTag" => $etudiant->getCodeUnique(),
             "idEtudiantTag" => $etudiant->getIdEtudiant(),
+            "demandesTag" => $etudiant->getDemandes(),
         );
     }
 
@@ -395,7 +396,7 @@ class EtudiantRepository extends AbstractRepository
         $demandesSTR = json_encode($etudiant->getDemandes());
 
         $values = [
-            "loginTag" => $etudiant->getEtudiant()->getLogin(),
+            "loginTag" => $etudiant->getUtilisateur()->getLogin(),
             "demandes" => $demandesSTR
         ];
 

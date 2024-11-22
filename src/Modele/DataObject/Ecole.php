@@ -11,19 +11,18 @@ class Ecole extends AbstractDataObject
     private string $nom;
     private string $adresse;
     private string $ville;
-    private array $futursEtudiants;
+    private array $futursEtudiants = [];
 
     private bool $estValide;
 
-    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, string $estValide)
+    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, bool $estValide, ?array $futursEtudiants)
     {
         $this->ecole = $ecole;
         $this->nom = $nom;
         $this->adresse = $adresse;
         $this->ville = $ville;
-        $this->futursEtudiants = [];
+        $this->futursEtudiants = $futursEtudiants ?? [];
         $this->estValide = $estValide;
-
     }
 
     public function getNom(): string
@@ -36,12 +35,12 @@ class Ecole extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getEcole(): Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->ecole;
     }
 
-    public function setEcole(Utilisateur $ecole): void
+    public function setUtilisateur(Utilisateur $ecole): void
     {
         $this->ecole = $ecole;
     }
