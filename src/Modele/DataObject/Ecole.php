@@ -36,12 +36,12 @@ class Ecole extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getEcole(): Utilisateur
+    public function getUtilisateur(): Utilisateur
     {
         return $this->ecole;
     }
 
-    public function setEcole(Utilisateur $ecole): void
+    public function setUtilisateur(Utilisateur $ecole): void
     {
         $this->ecole = $ecole;
     }

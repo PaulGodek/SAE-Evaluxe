@@ -120,7 +120,7 @@ class ControleurEcole extends ControleurGenerique
         $utilisateur = new Utilisateur($_GET["login"], "universite", $_GET['mdp']);
         (new UtilisateurRepository)->ajouter($utilisateur);
         $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], false);
-        //(new EcoleRepository)->ajouter($ecole);
+        (new EcoleRepository)->ajouter($ecole);
         MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
@@ -160,7 +160,7 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getEcole()->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getUtilisateur()->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
     /**
