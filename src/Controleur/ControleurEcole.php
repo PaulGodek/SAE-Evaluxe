@@ -133,7 +133,7 @@ class ControleurEcole extends ControleurGenerique
     {
         $utilisateur = new Utilisateur($_GET["login"], "universite", $_GET['mdp']);
         (new UtilisateurRepository)->ajouter($utilisateur);
-        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], false);
+        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], false, []);
         (new EcoleRepository)->ajouter($ecole);
         MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
@@ -219,7 +219,9 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
 
-        $ecole = new Ecole($_GET["login"], $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"]);
+        $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        $ecoleExistant = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
+        $ecole = new Ecole($user, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"], $ecoleExistant->getFutursEtudiants());
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();

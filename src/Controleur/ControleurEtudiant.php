@@ -197,7 +197,7 @@ class ControleurEtudiant extends ControleurGenerique
     /**
      * @throws RandomException
      */
-    public static function mettreAJour(): void
+    public static function mettreAJour(): void //definetely not the best but works for now
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
