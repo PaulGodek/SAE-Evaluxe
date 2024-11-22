@@ -115,6 +115,13 @@ class ControleurEcole extends ControleurGenerique
 //            self::afficherErreurUtilisateur("Mots de passe distincts");
             return;
         }
+        $login = $_GET["login"];
+        $existingUser = (new UtilisateurRepository)->existeUtilisateurParLogin($login);
+
+        if ($existingUser) {
+            self::redirectionVersURL("warning", "Le login existe déjà. Veuillez en choisir un autre", "afficherFormulaireCreation&controleur=ecole");
+            return;
+        }
 
         ControleurEcole::creerDepuisFormulaire();
     }
@@ -128,25 +135,26 @@ class ControleurEcole extends ControleurGenerique
         MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         $data = [
-            "nom"=>$ecole->getNom(),
-            "adresse"=>$ecole->getAdresse(),
-            "ville"=>$ecole->getVille(),
-            "login"=>$utilisateur->getLogin(),
+            "nom" => $ecole->getNom(),
+            "adresse" => $ecole->getAdresse(),
+            "ville" => $ecole->getVille(),
+            "login" => $utilisateur->getLogin(),
         ];
         self::sendEmailToAdmin($data);
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
-    private static function sendEmailToAdmin(array $data): void{
+    private static function sendEmailToAdmin(array $data): void
+    {
         $mail = new PHPMailer(true);
         //app password: wxkp ming dado mmya
-        try{
+        try {
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
             $mail->Host = "smtp.gmail.com";
             $mail->SMTPAuth = true;
-            $mail->Username="evaluxe.iutmontpellier@gmail.com";
-            $mail->Password="wxkpmingdadommya";
+            $mail->Username = "evaluxe.iutmontpellier@gmail.com";
+            $mail->Password = "wxkpmingdadommya";
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -160,18 +168,18 @@ class ControleurEcole extends ControleurGenerique
 
             ob_start();
             extract([
-                "nom"=>$data["nom"],
-                "adresse"=>$data["adresse"],
-                "ville"=>$data["ville"],
-                "login"=>$data["login"],
-                "dateCreation"=>date('Y-m-d H:i:s')
+                "nom" => $data["nom"],
+                "adresse" => $data["adresse"],
+                "ville" => $data["ville"],
+                "login" => $data["login"],
+                "dateCreation" => date('Y-m-d H:i:s')
             ]);
             include __DIR__ . '/../vue/ecole/emailEcole.php';
 
             $mail->Body = ob_get_clean();
             $mail->send();
             MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             MessageFlash::ajouter("warning", "Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
             self::afficherErreurEcole("");
         }
