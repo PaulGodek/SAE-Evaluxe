@@ -6,7 +6,7 @@
 /** @var string $dateCreation */
 
 ?>
-<h2>Un nouveau compte Ecole a été créé :</h2>
+<h2>Un nouveau compte École a été créé :</h2>
 <p><strong>Nom:</strong> <?= htmlspecialchars($nom) ?></p>
 <p><strong>Login:</strong> <?= htmlspecialchars($login) ?></p>
 <p><strong>Addresse:</strong> <?= htmlspecialchars($adresse) ?></p>

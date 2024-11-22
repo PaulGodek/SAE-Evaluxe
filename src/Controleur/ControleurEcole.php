@@ -141,7 +141,7 @@ class ControleurEcole extends ControleurGenerique
         $mail = new PHPMailer(true);
         //app password: wxkp ming dado mmya
         try{
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
             $mail->Host = "smtp.gmail.com";
             $mail->SMTPAuth = true;
