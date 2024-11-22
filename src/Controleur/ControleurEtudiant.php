@@ -46,10 +46,10 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
         foreach ($etudiants as $etudiant) {
-            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
-            $listeNomPrenom[]=$nomPrenom;
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
@@ -60,10 +60,10 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
         foreach ($etudiants as $etudiant) {
-            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
-            $listeNomPrenom[]=$nomPrenom;
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
@@ -75,10 +75,10 @@ class ControleurEtudiant extends ControleurGenerique
 
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
         foreach ($etudiants as $etudiant) {
-            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
-            $listeNomPrenom[]=$nomPrenom;
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
@@ -225,8 +225,18 @@ class ControleurEtudiant extends ControleurGenerique
 
         $repository->mettreAJour($etudiantExistant);
         MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiantExistant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
-        $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiantExistant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        //$etudiants = (new EtudiantRepository)->recuperer();
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php',
+            ["etudiants" => $etudiants,
+                "listeNomPrenom" => $listeNomPrenom,
+                "titre" => "Liste des etudiants",
+                "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+
     }
 
     public static function afficherResultatRechercheEtudiant(): void
