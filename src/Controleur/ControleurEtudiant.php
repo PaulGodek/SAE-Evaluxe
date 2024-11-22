@@ -25,7 +25,13 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $ecole= (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[]=$nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole"=>$ecole,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     /**
@@ -38,7 +44,11 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[]=$nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
@@ -48,7 +58,11 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[]=$nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
@@ -59,7 +73,11 @@ class ControleurEtudiant extends ControleurGenerique
         }
 
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom=EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[]=$nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
@@ -197,9 +215,9 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $etudiant = new Etudiant($_GET["login"], $_GET["etudid"], $_GET['demandes'], $_GET['codeUnique']);
         (new EtudiantRepository)->mettreAJour($etudiant);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getLogin()) . " a bien été mis à jour");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiant->getEtudiant()->getLogin()) . " a bien été mis à jour");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $etudiant->getEtudiant()->getLogin(), "titre" => "Mise a jour de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherResultatRechercheEtudiant(): void

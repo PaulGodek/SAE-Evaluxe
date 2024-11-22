@@ -20,7 +20,7 @@ class ProfesseurRepository extends AbstractRepository
 
     protected function construireDepuisTableauSQL(array $professeurFormatTableau): AbstractDataObject
     {
-        return new Professeur($professeurFormatTableau['login'],
+        return new Professeur((new UtilisateurRepository())->recupererParClePrimaire($professeurFormatTableau['login']),
             $professeurFormatTableau['nom'],
             $professeurFormatTableau['prenom']);
     }
@@ -33,7 +33,7 @@ class ProfesseurRepository extends AbstractRepository
     protected function formatTableauSQL(AbstractDataObject $professeur): array
     {
         return array(
-            "loginTag" => $professeur->getLogin(),
+            "loginTag" => $professeur->getProfesseur()->getLogin(),
             "nomTag" => $professeur->getNom(),
             "prenomTag" => $professeur->getPrenom()
         );

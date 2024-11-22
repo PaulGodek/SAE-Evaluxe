@@ -8,6 +8,7 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Lib\MessageFlash;
+use Random\RandomException;
 
 class ControleurEcole extends ControleurGenerique
 {
@@ -50,7 +51,8 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+        $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant"=>$etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParNom(): void
@@ -154,9 +156,12 @@ class ControleurEcole extends ControleurGenerique
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getEcole()->getLogin(), "titre" => "Suppression de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function ajouterEtudiant(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEcole()&&!ConnexionUtilisateur::estEtudiant()) {

@@ -18,43 +18,42 @@
 
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
+/**@var Ecole $ecole */
+
+/**@var array $listeNomPrenom */
+
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
-use App\GenerateurAvis\Modele\Repository\EcoleRepository;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
-use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
 
 echo "<h2>Liste des étudiants</h2> 
         
     <p><a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParNom'>Trier par nom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParPrenom'>Trier par prenom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParParcours'>Trier par parcours</a></p> 
     
 <ul>";
+$i = 0;
 foreach ($etudiants as $etudiant) {
 
     $idEtudiant = $etudiant->getIdEtudiant();
-    $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
 
-    if ($nomPrenom) {
-        $nomHTML = htmlspecialchars($nomPrenom['Nom']);
-        $prenomHTML = htmlspecialchars($nomPrenom['Prenom']);
+    if ($listeNomPrenom[$i]) {
+        $nomHTML = htmlspecialchars($listeNomPrenom[$i]['Nom']);
+        $prenomHTML = htmlspecialchars($listeNomPrenom[$i]['Prenom']);
     } else {
         $nomHTML = $prenomHTML = 'Nom inconnu';
     }
 
-    $loginURL = rawurlencode($etudiant->getLogin());
+    $loginURL = rawurlencode($etudiant->getEtudiant()->getLogin());
     if (ConnexionUtilisateur::estEcole()) {
 
-        $ecole=(new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
-        $loginEcoleURL= rawurlencode($ecole->getLogin());
+        $loginEcoleURL = rawurlencode($ecole->getEcole()->getLogin());
 
         if(!$etudiant->dejaDemande($ecole->getNom())){
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';
-        }
-        else if(!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& !$etudiant->dejaDemande($ecole->getNom())){
+        } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && !$etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande déjà evoyée et acceptée)&emsp;  </p></li>';
-        }
-        else if (!in_array($etudiant->getCodeUnique(),$ecole->getFutursEtudiants())&& $etudiant->dejaDemande($ecole->getNom())){
+        } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && $etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande en attente de réponse)&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=supprimerDemande&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Supprimer la demande  </a> </p></li>';
 
         }
@@ -70,6 +69,7 @@ foreach ($etudiants as $etudiant) {
     } else {
         echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
     }
+    $i++;
 }
 
 echo "</ul>";

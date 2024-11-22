@@ -159,9 +159,9 @@ class ControleurProfesseur extends ControleurGenerique
         }
         $professeur = new Professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
         (new ProfesseurRepository)->mettreAJour($professeur);
-        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($professeur->getLogin())." a bien été mis à jour");
+        MessageFlash::ajouter("success","Le compte de login ".htmlspecialchars($professeur->getProfesseur()->getLogin())." a bien été mis à jour");
         $professeurs = (new ProfesseurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
+        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getProfesseur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
     }
 
     public static function creerProfesseurDepuisFormulaire(): void
