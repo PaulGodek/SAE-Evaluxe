@@ -25,7 +25,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherEcole(): void
     {
         if (!ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -52,7 +52,7 @@ class ControleurEcole extends ControleurGenerique
     {
 
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $ecoles = (new EcoleRepository)->recuperer();
@@ -63,7 +63,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherListeEcoleOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParNom(); //appel au modèle pour gérer la BD
@@ -73,7 +73,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherListeEcoleOrdonneParVille(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
@@ -84,7 +84,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherDetail(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -192,7 +192,7 @@ class ControleurEcole extends ControleurGenerique
     public static function supprimer(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $login = $_GET["login"];
@@ -205,7 +205,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherFormulaireMiseAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
@@ -215,7 +215,7 @@ class ControleurEcole extends ControleurGenerique
     public static function mettreAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -232,7 +232,7 @@ class ControleurEcole extends ControleurGenerique
     public static function ajouterEtudiant(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEcole() && !ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -261,7 +261,7 @@ class ControleurEcole extends ControleurGenerique
     public static function valider(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -293,7 +293,7 @@ class ControleurEcole extends ControleurGenerique
     public static function afficherResultatRechercheEcole(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $ecoles = EcoleRepository::rechercherEcole($_GET['nom']);
@@ -304,7 +304,7 @@ class ControleurEcole extends ControleurGenerique
     public static function accepterDemande(): void
     {
         if (!ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -334,7 +334,7 @@ class ControleurEcole extends ControleurGenerique
     public static function refuserDemande(): void
     {
         if (!ConnexionUtilisateur::estEtudiant()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 

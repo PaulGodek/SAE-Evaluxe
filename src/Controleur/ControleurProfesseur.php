@@ -19,7 +19,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = (new ProfesseurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -29,7 +29,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
@@ -39,7 +39,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParPrenom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParPrenom(); //appel au modèle pour gérer la BD
@@ -78,7 +78,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherFormulaireCreation(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte professeur", "cheminCorpsVue" => "professeur/formulaireCreationProfesseur.php"]);
@@ -88,7 +88,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function creerDepuisFormulaire(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         if (!isset($_GET["login"])) {
@@ -111,11 +111,11 @@ class ControleurProfesseur extends ControleurGenerique
     public static function supprimer(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         if (!isset($_GET["login"])) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $login = $_GET["login"];
@@ -128,7 +128,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherFormulaireMiseAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         if (!isset($_GET["login"])) {
@@ -143,7 +143,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function mettreAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         if (!isset($_GET["login"])) {
@@ -166,7 +166,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function creerProfesseurDepuisFormulaire(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
 
@@ -192,7 +192,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherResultatRechercheProfesseur(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
