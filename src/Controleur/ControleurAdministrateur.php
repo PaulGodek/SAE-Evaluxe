@@ -54,10 +54,26 @@ class ControleurAdministrateur extends ControleurGenerique
 
         self::createDatabaseTable($tableName, $columns);
 
-        self::insertDataIntoTable($tableName, $columns, $sheetData);
+        $filteredData = array_filter($sheetData, function ($row) use ($columns) {
+            $etudidIndex = array_search('etudid', $columns);
+
+            if ($etudidIndex === false || !isset($row[$etudidIndex])) {
+                return false;
+            }
+
+            $etudidValue = $row[$etudidIndex];
+
+            return is_numeric($etudidValue) && $etudidValue !== 'etud_codes' && $etudidValue !== '';
+        });
+
+
+        if (empty($filteredData)) {
+            throw new Exception("Aucune ligne valide à insérer après filtrage des valeurs nulles.");
+        }
+
+        self::insertDataIntoTable($tableName, $columns, $filteredData);
 
         MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
-        //echo '<script type="text/javascript">window.location.href = "controleurFrontal.php?controleur=utilisateur&action=afficherListe";</script>';
         self::redirectionVersURL("success", "Importation réussie", "afficherListe&controleur=utilisateur");
         exit;
     }
@@ -81,6 +97,9 @@ class ControleurAdministrateur extends ControleurGenerique
 
         foreach ($row as $index => $col) {
             $col = trim($col);
+            if (array_key_exists($col, self::$columnSynonyms)) {
+                $col = self::$columnSynonyms[$col];
+            }
             if (in_array($col, $usedColumns)) {
                 $counter = 1;
                 $originalCol = $col;
@@ -97,20 +116,54 @@ class ControleurAdministrateur extends ControleurGenerique
         return $columns;
     }
 
+    private static array $columnSynonyms = [
+        'Groupes' => 'groupes_de_TD',
+        'groupes de TD' => 'groupes_de_TD',
+    ];
+
     private static function createDatabaseTable(string $tableName, array $columns): void
     {
+        $columnTypeMapping = [
+            'etudid' => 'INT(11)',
+            'code_nip' => 'VARCHAR(50)',
+            'Rg' => 'VARCHAR(50)',
+            'Civ.' => 'VARCHAR(50)',
+            'Nom' => 'VARCHAR(50)',
+            'Prénom' => 'VARCHAR(50)',
+            'Nom_1' => 'VARCHAR(100)',
+            'Abs' => 'INT(11)',
+            'Just.' => 'INT(11)',
+            'UEs' => 'VARCHAR(255)',
+            'groupes_de_TD' => 'VARCHAR(100)',
+            'Cursus' => 'VARCHAR(100)',
+            'Bac' => 'VARCHAR(100)',
+            'Spécialité' => 'VARCHAR(500)',
+            'Type Adm.' => 'VARCHAR(100)',
+            'Rg. Adm.' => 'INT(11)',
+            'Parcours' => 'VARCHAR(10)',
+        ];
+
+        $defaultType = 'FLOAT DEFAULT NULL';
+
         $columnDefinitions = [];
         foreach ($columns as $index => $col) {
-            if ($index === 0) {
-                $columnDefinitions[] = "`$col` INT PRIMARY KEY";
+            $sanitizedCol = "`$col`";
+
+            $dataType = $columnTypeMapping[$col] ?? $defaultType;
+
+            if ($index === 0 && $col === 'etudid') {
+                $columnDefinitions[] = "$sanitizedCol $dataType PRIMARY KEY";
             } else {
-                $columnDefinitions[] = "`$col` TEXT";
+                $columnDefinitions[] = "$sanitizedCol $dataType";
             }
         }
+
+        $dropTableQuery = "DROP TABLE IF EXISTS `$tableName`";
 
         $createTableQuery = "CREATE TABLE IF NOT EXISTS `$tableName` (" . implode(',', $columnDefinitions) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC";
 
         $pdo = ConnexionBaseDeDonnees::getPdo();
+        $pdo->exec($dropTableQuery);
         $pdo->exec($createTableQuery);
     }
 
@@ -127,16 +180,13 @@ class ControleurAdministrateur extends ControleurGenerique
 
         foreach ($data as $rowIndex => $row) {
             $row = array_slice($row, 0, count($columns));
-            $etudidIndex = array_search('etudid', $columns);
-            if ($etudidIndex !== false) {
-                $etudidValue = $row[$etudidIndex] ?? null;
 
-                if (!is_numeric($etudidValue)) {
-                    return;
+            $row = array_map(function ($value) {
+                if ($value === '' || $value === '~') {
+                    return null;
                 }
-            }
-
-            $row = array_map(fn($value) => is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value, $row);
+                return is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value;
+            }, $row);
 
             try {
                 $stmt->execute($row);
@@ -145,5 +195,6 @@ class ControleurAdministrateur extends ControleurGenerique
             }
         }
     }
+
 
 }

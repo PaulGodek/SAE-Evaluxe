@@ -82,7 +82,7 @@ class EcoleRepository extends AbstractRepository
             $ecoleFormatTableau['adresse'],
             $ecoleFormatTableau['ville'],
             $ecoleFormatTableau['valide'],
-            isset($data['futursEtudiants']) ? json_decode($data['futursEtudiants'], true) : []
+            isset($ecoleFormatTableau['futursEtudiants']) ? json_decode($ecoleFormatTableau['futursEtudiants'], true) : []
 
         );
 

@@ -230,10 +230,9 @@ class ControleurEtudiant extends ControleurGenerique
             $etudiantExistant->setIdEtudiant($_GET["etudid"]);
         }
         //$etudiantChangee = new Etudiant($user, $_GET["etudid"], $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
-        //var_dump($etudiantExistant);
 
         $repository->mettreAJour($etudiantExistant);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiantExistant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
+        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été mis à jour");
         //$etudiants = (new EtudiantRepository)->recuperer();
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
