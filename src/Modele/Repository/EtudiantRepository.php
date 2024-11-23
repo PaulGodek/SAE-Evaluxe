@@ -8,6 +8,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use PDO;
+use PDOException;
 use Random\RandomException;
 
 class EtudiantRepository extends AbstractRepository
@@ -401,6 +402,29 @@ class EtudiantRepository extends AbstractRepository
         ];
 
         return $pdoStatement->execute($values);
+    }
+
+
+    public static function creerEtudiant(string $nom,string $prenom, int $idEtudiant)
+    {
+        try{
+        $sql = 'INSERT  INTO EtudiantImportation (login,codeUnique,idEtudiant,demandes) Values (:loginTag, :codeUniqueTag, :idEtudiantTag, :demandesTag)';
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $login =  mb_strtolower($nom.=substr($prenom, 0, 1), "UTF-8");
+        $values = [
+            "loginTag" => $login,
+            "codeUniqueTag" => Etudiant::genererCodeUnique(),
+            "idEtudiantTag" => $idEtudiant,
+            "demandesTag" => '[""]'
+        ];
+
+        $pdoStatement->execute($values);
+        } catch (PDOException $e) {
+            if ($e->getCode() == '45000') {
+
+            }
+        }
     }
 
 }

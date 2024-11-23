@@ -5,7 +5,10 @@ namespace App\GenerateurAvis\Controleur;
 require __DIR__ . '/../../bootstrap.php';
 
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Exception;
 use PDOException;
 use Shuchkin\SimpleXLSX;
@@ -193,8 +196,13 @@ class ControleurAdministrateur extends ControleurGenerique
             } catch (PDOException $e) {
                 throw new Exception("Erreur d'insertion d'une ligne #$rowIndex: " . $e->getMessage());
             }
+            UtilisateurRepository::creerUtilisateur($row[4],$row[5]);
+            EtudiantRepository::creerEtudiant($row[4],$row[5],$row[0]);
         }
     }
+
+
+
 
 
 }
