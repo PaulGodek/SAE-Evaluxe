@@ -111,33 +111,25 @@ class AgregationRepository extends AbstractRepository
         return $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
     }
 
-    public static function calculateAgregationNotes(array $agregations, int $idEtudiant): array
+    public static function calculateAgregationNotes(array $agregations, string $codeNip): array
     {
-        $result = []; // Mảng kết quả
+        $result = [];
 
         foreach ($agregations as $agregation) {
             $totalNotes = 0;
             $totalCoefficients = 0;
 
-            // Lấy danh sách môn học liên kết với agregation
             $matieres = (new AgregationRepository)->getMatieresForAgregation((int)$agregation['id']);
 
             foreach ($matieres as $matiere) {
-                // Lấy điểm cho môn học
-                $note = self::getNoteForMatiere($matiere['id_ressource'], $idEtudiant);
-
-                // Lấy hệ số môn học
+                $note = self::getNoteForMatiere($matiere['id_ressource'], $codeNip);
                 $matiereCoefficient = (float)$matiere['coefficient'];
-
-                // Tính toán tổng điểm và hệ số
                 $totalNotes += $note * $matiereCoefficient;
                 $totalCoefficients += $matiereCoefficient;
             }
 
-            // Tính điểm trung bình cuối cùng
             $noteFinale = $totalCoefficients > 0 ? $totalNotes / $totalCoefficients : 0;
 
-            // Chỉ lưu ID và điểm trung bình cuối cùng vào mảng kết quả
             $result[] = [
                 'id' => $agregation['id'],
                 'note_finale' => $noteFinale,
@@ -147,34 +139,33 @@ class AgregationRepository extends AbstractRepository
         return $result;
     }
 
-
-
     public function getMatieresForAgregation(int $idAgregation): array
     {
         $sql = "SELECT am.id_ressource, m.nom AS matiere, am.coefficient
-            FROM agregation_matiere am
-            JOIN ressources m ON am.id_ressource = m.id_ressource
-            WHERE am.id_agregation = :id_agregation";
+        FROM agregation_matiere am
+        JOIN ressources m ON am.id_ressource = m.id_ressource
+        WHERE am.id_agregation = :id_agregation";
         $sql = "SELECT m.nom AS matiere, am.coefficient
                 FROM " . (new AgregationMatiereRepository())->getNomTable() . " am
                 JOIN " . (new RessourceRepository())->getNomTable() . " m ON am.id_ressource = m.id_ressource
                 WHERE am.id_agregation = :id_agregation";
+
+
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['id_agregation' => $idAgregation]);
 
         return $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
     }
 
-    public static function getNoteForMatiere(string $idRessource, int $idEtudiant): float
+    public static function getNoteForMatiere(string $idRessource, string $codeNip): float
     {
-        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND idEtudiant = :idEtudiant";
+        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-        $stmt->execute(['id_ressource' => $idRessource, 'idEtudiant' => $idEtudiant]);
+        $stmt->execute(['id_ressource' => $idRessource, 'code_nip' => $codeNip]);
 
         $note = $stmt->fetchColumn();
         return $note !== false ? (float)$note : 0.0;
     }
-
 
 
 }
