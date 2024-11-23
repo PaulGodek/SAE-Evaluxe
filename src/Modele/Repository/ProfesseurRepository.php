@@ -144,4 +144,94 @@ class ProfesseurRepository extends AbstractRepository
         }
         return $tableauProfesseurs;
     }
+
+    public static function ajouterAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
+        $sql = "INSERT INTO Avis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag)";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur,
+            "avisTag" => $avis
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function mettreAJourAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
+        $sql = "UPDATE Avis SET avis = :avisTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur,
+            "avisTag" => $avis
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur) :bool {
+        $sql = "DELETE FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function getAvis(string $loginEtudiant, string $loginProfesseur) : ?string {
+        $sql = "SELECT avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetch()["avis"];
+    }
+
+    public static function getToutAvis(string $loginEtudiant) : ?array {
+        $sql = "SELECT loginProfesseur, avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getNomPrenomParIdProfesseur(string $loginProfesseur) : ?array {
+        $sql = "SELECT nom, prenom FROM " . (new ProfesseurRepository)->getNomTable() . " WHERE login = :loginTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginTag" => $loginProfesseur,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetch();
+    }
 }

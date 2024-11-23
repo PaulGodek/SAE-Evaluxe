@@ -3,6 +3,10 @@
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
 /** @var string $idEtudiant */
+/** @var string $loginEtudiant */
+
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+
 ?>
 
 <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
@@ -18,6 +22,10 @@ $bacHTML = htmlspecialchars($informationsPersonelles["bac"]);
 $specialiteHTML = htmlspecialchars($informationsPersonelles["specialite"]);
 $typeAdmHTML = htmlspecialchars($informationsPersonelles["typeAdm"]);
 $rgAdmHTML = htmlspecialchars($informationsPersonelles["rgAdm"]);
+
+if (ConnexionUtilisateur::estAdministrateur())
+    echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';
+
 if ($informationsPersonelles) {
     echo '<div class="etudiant-details">';
     echo "<h2>Détails de l'étudiant</h2>";

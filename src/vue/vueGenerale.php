@@ -38,15 +38,25 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                class="item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
+                <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=administrateur"
+                   class="item">Importer
+                    les fichiers Excel</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"
                    class="item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
             <?php endif; ?>
-            <?php if (ConnexionUtilisateur::estProfesseur()): ?>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
+            <?php if (ConnexionUtilisateur::estEtudiant()):
+                $login = ConnexionUtilisateur::getLoginUtilisateurConnecte(); ?>
+                <a href="controleurFrontal.php?action=afficherDetail&controleur=etudiant&login=<?= urlencode($login) ?>"
+                   class="item">Notes</a>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
             <?php endif; ?>
+            <?php if (ConnexionUtilisateur::estProfesseur() || ConnexionUtilisateur::estEcole()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
+            <?php endif; ?>
+            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="item">Agrégation</a>
             <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="item">Déconnexion</a>
         <?php endif; ?>
     </div>

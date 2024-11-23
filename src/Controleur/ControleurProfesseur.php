@@ -5,6 +5,7 @@ namespace App\GenerateurAvis\Controleur;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use TypeError;
@@ -19,7 +20,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = (new ProfesseurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -29,7 +30,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
@@ -200,5 +201,86 @@ class ControleurProfesseur extends ControleurGenerique
         }
         $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
         self::afficherVue("vueGenerale.php", ["professeurs" => $professeurs, "titre" => "Résultat recherche professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+    }
+
+    public static function afficherFormulaireAvisEtudiant(): void {
+        if (!ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        if (!isset($_GET["loginEtudiant"])) {
+            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            return;
+        }
+        if (!isset($_GET["idEtudiant"])) {
+            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            return;
+        }
+        $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant(rawurldecode($_GET["idEtudiant"]));
+        if (is_null($nomPrenomArray)) {
+            $nomPrenomArray = array(
+                "Nom" => "NomInconnu",
+                "Prenom" => "PrenomInconnu"
+            );
+        }
+        $avis = ProfesseurRepository::getAvis($_GET["loginEtudiant"], ConnexionUtilisateur::getLoginUtilisateurConnecte());
+        self::afficherVue("vueGenerale.php", ["avis" => $avis, "nomPrenomArray" => $nomPrenomArray, "loginEtudiant" => $_GET["loginEtudiant"], "titre" => "Formulaire d'avis d'étudiant", "cheminCorpsVue" => "professeur/formulaireAvisPersonnaliseEtudiant.php"]);
+    }
+
+    public static function publierAvisEtudiant() : void {
+        if (!ConnexionUtilisateur::estProfesseur()) {
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        if (!isset($_GET["loginEtudiant"])) {
+            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            return;
+        }
+        if (!isset($_GET["avis"])) {
+            self::afficherErreurProfesseur("L'avis de l'étudiant n'est pas renseigné");
+            return;
+        }
+        if (!isset($_GET["avisDejaSet"])) {
+            self::afficherErreurProfesseur("L'avis de l'étudiant n'est pas renseigné");
+            return;
+        }
+        $loginConnecte = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        if ($_GET["avisDejaSet"] === "1") {
+            if (strcmp($_GET["avis"], "") === 0) {
+                ProfesseurRepository::supprimerAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte);
+            } else {
+                ProfesseurRepository::mettreAJourAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+            }
+        } else {
+            ProfesseurRepository::ajouterAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+        }
+        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom();
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
+        MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
+        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+    }
+
+    public static function afficherAvisProfesseurs() : void {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        if (!isset($_GET["login"])) {
+            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            return;
+        }
+        $avis = ProfesseurRepository::getToutAvis($_GET["login"]);
+        $listeNomPrenom = array();
+        if (!is_null($avis)) {
+            foreach ($avis as $avisIndividuel) {
+                $nomPrenom = ProfesseurRepository::getNomPrenomParIdProfesseur($avisIndividuel["loginProfesseur"]);
+                $listeNomPrenom[$avisIndividuel["loginProfesseur"]] = $nomPrenom;
+            }
+        }
+        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom, "avis" => $avis, "titre" => "Avis des Professeurs", "cheminCorpsVue" => "etudiant/avisProfesseurs.php"]);
     }
 }

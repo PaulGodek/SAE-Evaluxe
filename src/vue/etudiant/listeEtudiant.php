@@ -19,6 +19,7 @@
 /** @var Etudiant[] $etudiants */
 /** @var bool $parParcours */
 /**@var Ecole $ecole */
+/** @var ?bool $avis */
 
 /**@var array $listeNomPrenom */
 
@@ -49,17 +50,23 @@ foreach ($etudiants as $etudiant) {
 
         $loginEcoleURL = rawurlencode($ecole->getUtilisateur()->getLogin());
 
-        if (!$etudiant->dejaDemande($ecole->getNom())) {
-
+        if(!$etudiant->dejaDemande($ecole->getNom())){
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=demander&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Demander l\'accès aux informations </a> </p></li>';
         } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && !$etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande déjà evoyée et acceptée)&emsp;  </p></li>';
         } else if (!in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants()) && $etudiant->dejaDemande($ecole->getNom())) {
             echo '<li><p> L\'étudiant ' . $nomHTML . '&nbsp;' . $prenomHTML . '  &emsp; (Demande en attente de réponse)&emsp; <a href="controleurFrontal.php?controleur=etudiant&action=supprimerDemande&login=' . $loginURL . '&demandeur=' . $loginEcoleURL . '">Supprimer la demande  </a> </p></li>';
 
-        } else {
-
         }
+
+    } else if (ConnexionUtilisateur::estProfesseur()) {
+        $idEtudiantURL = rawurlencode($etudiant->getIdEtudiant());
+        if (strcmp($etudiant->getAvisProfesseur(ConnexionUtilisateur::getLoginUtilisateurConnecte()), "") === 0) {
+            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Ajouter un avis ?)<a/></p></li>';
+        } else {
+            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Modifier un avis ?)<a/></p></li>';
+        }
+
     } else {
         echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p></li>';
     }

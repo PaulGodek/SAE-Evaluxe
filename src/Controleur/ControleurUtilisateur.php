@@ -79,6 +79,7 @@ class ControleurUtilisateur extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "idEtudiant" => $idEtudiant,
                         "codeUnique" => $etudiant->getCodeUnique(),
+                        "loginEtudiant" => $etudiant->getUtilisateur()->getLogin(),
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"
                     ]);
                 } else if ($utilisateur->getType() == "universite") {
@@ -107,7 +108,12 @@ class ControleurUtilisateur extends ControleurGenerique
         if (ConnexionUtilisateur::estProfesseur()) $avoirDroits = true;
         if ($avoirDroits) {
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
-            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+            $listeNomPrenom = array();
+            foreach ($etudiants as $etudiant) {
+                $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $listeNomPrenom[] = $nomPrenom;
+            }
+            self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
         }
     }
 
