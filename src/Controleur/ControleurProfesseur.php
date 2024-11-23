@@ -251,7 +251,12 @@ class ControleurProfesseur extends ControleurGenerique
             ProfesseurRepository::ajouterAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom();
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
         MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
-        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 }

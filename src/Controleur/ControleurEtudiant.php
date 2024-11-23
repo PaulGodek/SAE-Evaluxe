@@ -28,6 +28,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
+        $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
@@ -45,6 +46,7 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
+        $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
@@ -59,6 +61,7 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
+        $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
@@ -74,6 +77,7 @@ class ControleurEtudiant extends ControleurGenerique
         }
 
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
+        $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
@@ -192,7 +196,12 @@ class ControleurEtudiant extends ControleurGenerique
         (new EtudiantRepository)->supprimer($login);
         MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été supprimé");
         $etudiants = (new EtudiantRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
+        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherFormulaireMiseAJour(): void
@@ -227,6 +236,7 @@ class ControleurEtudiant extends ControleurGenerique
         MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($etudiantExistant->getUtilisateur()->getLogin()) . " a bien été mis à jour");
         //$etudiants = (new EtudiantRepository)->recuperer();
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
+        $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
@@ -246,7 +256,12 @@ class ControleurEtudiant extends ControleurGenerique
             return;
         }
         $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
-        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
+        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
 
@@ -275,8 +290,13 @@ class ControleurEtudiant extends ControleurGenerique
         }
 
         $etudiants = (new EtudiantRepository())->recuperer();
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
 
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function supprimerDemande(): void
@@ -298,7 +318,12 @@ class ControleurEtudiant extends ControleurGenerique
         }
 
         $etudiants = (new EtudiantRepository())->recuperer();
+        $listeNomPrenom = array();
+        foreach ($etudiants as $etudiant) {
+            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $listeNomPrenom[] = $nomPrenom;
+        }
 
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 }

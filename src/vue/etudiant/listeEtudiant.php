@@ -61,7 +61,7 @@ foreach ($etudiants as $etudiant) {
 
     } else if (ConnexionUtilisateur::estProfesseur()) {
         $idEtudiantURL = rawurlencode($etudiant->getIdEtudiant());
-        if (is_null($etudiant->getAvisProfesseur(ConnexionUtilisateur::getLoginUtilisateurConnecte()))) {
+        if (strcmp($etudiant->getAvisProfesseur(ConnexionUtilisateur::getLoginUtilisateurConnecte()), "") === 0) {
             echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Ajouter un avis ?)<a/></p></li>';
         } else {
             echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Modifier un avis ?)<a/></p></li>';
