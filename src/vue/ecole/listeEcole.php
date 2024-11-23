@@ -1,10 +1,18 @@
+<?php
+
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Modele\DataObject\Ecole;
+use App\GenerateurAvis\Modele\DataObject\Etudiant;
+if(ConnexionUtilisateur::estAdministrateur()||ConnexionUtilisateur::estProfesseur()){
+    echo '
+
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheEcole"/>
     <input type="hidden" name="controleur" value="ecole"/>
     <fieldset>
         <legend>Recherche :</legend>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="nomID">Nom de l'école</label>
+            <label class="InputAddOn-item" for="nomID">Nom de l\'école</label>
             <input class="InputAddOn-field" type="text" name="nom" placeholder="Ex : Polytech" id="nomID" required>
         </p>
 
@@ -13,14 +21,11 @@
             <button class="button-submit" type="submit">Rechercher</button>
         </p>
     </fieldset>
-</form>
+</form>';}
 
 
-<?php
 
-use App\GenerateurAvis\Lib\ConnexionUtilisateur;
-use App\GenerateurAvis\Modele\DataObject\Ecole;
-use App\GenerateurAvis\Modele\DataObject\Etudiant;
+
 
 echo "<h2>Liste des écoles</h2> 
     <p><a href='controleurFrontal.php?controleur=ecole&action=afficherListe'>  Trier par validation  </a>&emsp; 

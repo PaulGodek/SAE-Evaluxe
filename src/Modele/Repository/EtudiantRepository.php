@@ -376,7 +376,7 @@ class EtudiantRepository extends AbstractRepository
         $demandesSTR = json_encode($etudiant->getDemandes());
 
         $values = [
-            "loginTag" => $etudiant->getEtudiant()->getLogin(),
+            "loginTag" => $etudiant->getUtilisateur()->getLogin(),
             "demandeTag" => $demandesSTR
         ];
 
