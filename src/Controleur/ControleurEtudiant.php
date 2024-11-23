@@ -6,6 +6,7 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\Repository\AgregationRepository;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
@@ -97,17 +98,20 @@ class ControleurEtudiant extends ControleurGenerique
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+
         if ($peutChecker) {
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
                 if ($etudiant == NULL) {
                     self::afficherErreurEtudiant(" ");
-                    MessageFlash::ajouter("error", "L'étudiant  {$_GET['login']} n'existe pas");
+                    MessageFlash::ajouter("error", "L'étudiant {$_GET['login']} n'existe pas");
                 } else {
                     $code_nip = $etudiant->getCodeNip();
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip($code_nip);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
                     $result = EtudiantRepository::recupererTousLesDetailsEtudiantParCodeNip($code_nip);
+
+                    $notesAgregation = AgregationRepository::recupererNotesEtudiant($idEtudiant);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
@@ -118,6 +122,8 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsPersonelles" => $etudiantInfo,
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "code_nip" => $code_nip,
+                        "notesAgrégation" => $notesAgregation,
+                        "idEtudiant" => $idEtudiant,
                         "codeUnique" => $etudiant->getCodeUnique(),
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
@@ -125,6 +131,7 @@ class ControleurEtudiant extends ControleurGenerique
                 self::afficherErreurEtudiant(" ");
                 MessageFlash::ajouter("error", "Erreur Inconnue");
 
+                MessageFlash::ajouter("error", "Jsp ce qu'il s'est passé dsl");
             }
         } else {
             self::afficherErreurEtudiant(" ");

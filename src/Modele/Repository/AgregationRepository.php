@@ -3,6 +3,7 @@
 namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
+use App\GenerateurAvis\Modele\DataObject\Matiere;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\DataObject\Agregation;
 use App\GenerateurAvis\Modele\Repository\AbstractRepository;
