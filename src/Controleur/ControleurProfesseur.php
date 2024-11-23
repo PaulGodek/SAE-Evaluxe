@@ -246,7 +246,11 @@ class ControleurProfesseur extends ControleurGenerique
         }
         $loginConnecte = ConnexionUtilisateur::getLoginUtilisateurConnecte();
         if ($_GET["avisDejaSet"] === "1") {
-            ProfesseurRepository::mettreAJourAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+            if (strcmp($_GET["avis"], "") === 0) {
+                ProfesseurRepository::supprimerAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte);
+            } else {
+                ProfesseurRepository::mettreAJourAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+            }
         } else {
             ProfesseurRepository::ajouterAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
         }

@@ -173,6 +173,19 @@ class ProfesseurRepository extends AbstractRepository
         return $pdoStatement->execute($values);
     }
 
+    public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur) :bool {
+        $sql = "DELETE FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
     public static function getAvis(string $loginEtudiant, string $loginProfesseur) : ?string {
         $sql = "SELECT avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
