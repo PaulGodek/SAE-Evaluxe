@@ -45,13 +45,14 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
@@ -60,13 +61,14 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
@@ -75,14 +77,14 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
@@ -260,7 +262,9 @@ class ControleurEtudiant extends ControleurGenerique
             $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom,"ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
 
@@ -280,6 +284,7 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant(" ");
             return;
         }
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
         $etudiant->addDemande($nom);
 
@@ -295,7 +300,7 @@ class ControleurEtudiant extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
 
-        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom,"ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function supprimerDemande(): void
@@ -315,6 +320,7 @@ class ControleurEtudiant extends ControleurGenerique
         if ($etudiant->removeDemande($nom)) {
             MessageFlash::ajouter("success", "La demande a bien été supprimée.");
         }
+        $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
         $etudiants = (new EtudiantRepository())->recuperer();
         $listeNomPrenom = array();
@@ -323,6 +329,6 @@ class ControleurEtudiant extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
 
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 }
