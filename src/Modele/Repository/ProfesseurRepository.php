@@ -189,4 +189,36 @@ class ProfesseurRepository extends AbstractRepository
         }
         return $pdoStatement->fetch()["avis"];
     }
+
+    public static function getToutAvis(string $loginEtudiant) : ?array {
+        $sql = "SELECT loginProfesseur, avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getNomPrenomParIdProfesseur(string $loginProfesseur) : ?array {
+        $sql = "SELECT nom, prenom FROM " . (new ProfesseurRepository)->getNomTable() . " WHERE login = :loginTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginTag" => $loginProfesseur,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetch();
+    }
 }

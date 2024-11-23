@@ -19,7 +19,7 @@ class Etudiant extends AbstractDataObject
     /**
      * @throws RandomException
      */
-    public function __construct(Utilisateur $etudiant, int $idEtudiant, ?array $demandes, ?string $codeUnique = null)
+    public function __construct(Utilisateur $etudiant, int $idEtudiant, ?array $demandes = null, ?string $codeUnique = null)
     {
         $this->etudiant = $etudiant;
         $this->idEtudiant = $idEtudiant;

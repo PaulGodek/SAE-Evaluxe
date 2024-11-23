@@ -79,6 +79,7 @@ class ControleurUtilisateur extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "idEtudiant" => $idEtudiant,
                         "codeUnique" => $etudiant->getCodeUnique(),
+                        "loginEtudiant" => $etudiant->getUtilisateur()->getLogin(),
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"
                     ]);
                 } else if ($utilisateur->getType() == "universite") {

@@ -259,4 +259,24 @@ class ControleurProfesseur extends ControleurGenerique
         MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
         self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
+
+    public static function afficherAvisProfesseurs() : void {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        if (!isset($_GET["login"])) {
+            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            return;
+        }
+        $avis = ProfesseurRepository::getToutAvis($_GET["login"]);
+        $listeNomPrenom = array();
+        if (!is_null($avis)) {
+            foreach ($avis as $avisIndividuel) {
+                $nomPrenom = ProfesseurRepository::getNomPrenomParIdProfesseur($avisIndividuel["loginProfesseur"]);
+                $listeNomPrenom[$avisIndividuel["loginProfesseur"]] = $nomPrenom;
+            }
+        }
+        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom, "avis" => $avis, "titre" => "Avis des Professeurs", "cheminCorpsVue" => "etudiant/avisProfesseurs.php"]);
+    }
 }
