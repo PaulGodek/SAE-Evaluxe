@@ -20,7 +20,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = (new ProfesseurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -30,7 +30,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
+            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
