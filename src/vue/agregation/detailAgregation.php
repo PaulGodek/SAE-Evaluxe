@@ -20,6 +20,7 @@
         <table>
             <thead>
             <tr>
+                <th>Id Ressource</th>
                 <th>Matière</th>
                 <th>Coefficient</th>
             </tr>
@@ -27,6 +28,7 @@
             <tbody>
             <?php foreach ($agregationDetails['matieres'] as $matiere): ?>
                 <tr>
+                    <td><?= htmlspecialchars($matiere['id_ressource']) ?></td>
                     <td><?= htmlspecialchars($matiere['matiere']) ?></td>
                     <td><?= htmlspecialchars($matiere['coefficient']) ?></td>
                 </tr>
