@@ -69,7 +69,6 @@ class ControleurAgregation extends ControleurGenerique
         foreach ($matieres as $index => $matiereId) {
             $coefficient = $coefficients[$index];
 
-            // Tạo đối tượng Matiere
             $matiere = new Matiere($matiereId, $coefficient);
 
             $matiereRepository = new AgregationMatiereRepository();
@@ -85,32 +84,25 @@ class ControleurAgregation extends ControleurGenerique
     }
 
     public static function afficherDetailAgregation(): void {
-        // Kiểm tra kết nối của người dùng, nếu không đăng nhập thì chuyển hướng
         if (!ConnexionUtilisateur::estConnecte()) {
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
-        // Kiểm tra nếu tham số 'id' có trong URL
         if (!isset($_GET['id'])) {
             self::redirectionVersURL("error", "L'ID de l'agrégation est manquant", "afficherListeAgregations&controleur=agregation");
             return;
         }
 
-        // Lấy giá trị id từ tham số GET
         $idAgregation = (int)$_GET['id'];
-
-        // Lấy chi tiết agrégation từ repository
         $agregationRepository = new AgregationRepository();
         $agregationDetails = $agregationRepository->getAgregationDetailsById($idAgregation);
 
-        // Kiểm tra nếu không tìm thấy agrégation
         if (empty($agregationDetails)) {
             self::redirectionVersURL("error", "Agrégation non trouvée", "afficherListeAgregations&controleur=agregation");
             return;
         }
 
-        // Hiển thị view với dữ liệu chi tiết
         self::afficherVue('vueGenerale.php', [
             "cheminCorpsVue" => "agregation/detailAgregation.php",
             "agregationDetails" => $agregationDetails
@@ -184,9 +176,6 @@ class ControleurAgregation extends ControleurGenerique
             "cheminCorpsVue" => "agregation/modifierAgregation.php"
         ]);
     }
-
-
-
 
 
 

@@ -5,12 +5,13 @@
 /** @var string $code_nip */
 
 /** @var string $loginEtudiant */
+/** @var array $agregations */
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
 ?>
 
-    <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
+<link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
 
 <?php
 $codeUniqueHTML = $codeUnique;
@@ -23,6 +24,17 @@ $bacHTML = $informationsPersonelles["bac"];
 $specialiteHTML = $informationsPersonelles["specialite"];
 $typeAdmHTML = $informationsPersonelles["typeAdm"];
 $rgAdmHTML = $informationsPersonelles["rgAdm"];
+
+if (!empty($agregations)) {
+    echo "<h2>Agregations et notes finales</h2>";
+    foreach ($agregations as $agregation) {
+        echo "<h3>Agregation ID: " . htmlspecialchars($agregation['id']) . "</h3>";
+        echo "<p>Note finale: " . number_format($agregation['note_finale'], 2) . "</p>";
+    }
+} else {
+    echo "<p>Aucune agregation disponible.</p>";
+}
+
 
 if (ConnexionUtilisateur::estAdministrateur())
     echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';
