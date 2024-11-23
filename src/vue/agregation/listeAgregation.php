@@ -10,7 +10,7 @@
 <!--                <th>ID</th>-->
                 <th>Nom</th>
 <!--                <th>Parcours</th>-->
-                <th>Login</th>
+<!--                <th>Login</th>-->
                 <th>Actions</th>
                 <th>Details</th>
             </tr>
@@ -21,7 +21,7 @@
 <!--                    <td>--><?php //= htmlspecialchars($agregation->getId()) ?><!--</td>-->
                     <td><?= htmlspecialchars($agregation->getNom()) ?></td>
 <!--                    <td>--><?php //= htmlspecialchars($agregation->getParcours()) ?><!--</td>-->
-                    <td><?= htmlspecialchars($agregation->getLogin()) ?></td>
+<!--                    <td>--><?php //= htmlspecialchars($agregation->getLogin()) ?><!--</td>-->
                     <td>
 <!--                        <a href="controleurFrontal.php?controleur=agregation&action=afficherFormulaireMiseAJour&id=--><?php //= urlencode($agregation->getId()) ?><!--">Modifier</a>-->
                         <a href="controleurFrontal.php?controleur=agregation&action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a>

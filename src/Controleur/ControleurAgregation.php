@@ -18,7 +18,13 @@ class ControleurAgregation extends ControleurGenerique
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
-        $agre = (new AgregationRepository())->recuperer();
+
+        $loginActuel = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        $agre = array_filter(
+            (new AgregationRepository())->recuperer(),
+            fn($agregation) => $agregation->getLogin() === $loginActuel
+        );
+
         self::afficherVue('vueGenerale.php', [
             "titre" => "Liste des agregations",
             "cheminCorpsVue" => "agregation/listeAgregation.php",
