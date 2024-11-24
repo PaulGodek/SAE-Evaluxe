@@ -173,21 +173,14 @@ class AdministrateurRepository extends AbstractRepository
     public static function supprimerSemestre(string $nomSemestre): bool
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        try {
-            $pdo->beginTransaction();
 
-            $sql = "DELETE FROM semestres WHERE nom = :nom";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':nom' => $nomSemestre]);
+        $sql = "DELETE FROM semestres WHERE nomTable = :nom";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':nom' => $nomSemestre]);
 
-            $pdo->exec("DROP TABLE IF EXISTS {$nomSemestre}");
+        $result = $pdo->exec("DROP TABLE IF EXISTS {$nomSemestre}");
 
-            $pdo->commit();
-            return true;
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            return false;
-        }
+        return $result !== false;
     }
 
     public static function afficherSemestres(): false|array
