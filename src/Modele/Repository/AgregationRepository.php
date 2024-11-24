@@ -142,13 +142,15 @@ class AgregationRepository extends AbstractRepository
     public function getMatieresForAgregation(int $idAgregation): array
     {
         $sql = "SELECT am.id_ressource, m.nom AS matiere, am.coefficient
-        FROM agregation_matiere am
-        JOIN ressources m ON am.id_ressource = m.id_ressource
-        WHERE am.id_agregation = :id_agregation";
+            FROM agregation_matiere am
+            JOIN ressources m ON am.id_ressource = m.id_ressource
+            WHERE am.id_agregation = :id_agregation";
+
         $sql = "SELECT m.nom AS matiere, am.coefficient
                 FROM " . (new AgregationMatiereRepository())->getNomTable() . " am
                 JOIN " . (new RessourceRepository())->getNomTable() . " m ON am.id_ressource = m.id_ressource
                 WHERE am.id_agregation = :id_agregation";
+
 
 
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
