@@ -245,7 +245,11 @@ class EtudiantRepository extends AbstractRepository
     public static function recupererDetailsEtudiantParId($idEtudiant): array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        //$tables = self::getAllSemesterTables();
+        $sql = "SELECT nomTable FROM semestres WHERE estPublie = TRUE";
+        $stmt = $pdo->query($sql);
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        //$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
         $etudiantInfo = null;
         $etudiantDetailsPerSemester = [];
 
@@ -311,7 +315,17 @@ class EtudiantRepository extends AbstractRepository
     public static function recupererTousLesDetailsEtudiantParId($idEtudiant): array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        if (ConnexionUtilisateur::estAdministrateur() || ConnexionUtilisateur::estProfesseur()) {
+            $sql = "SELECT nomTable FROM semestres";
+            $stmt = $pdo->query($sql);
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } else {
+            $sql = "SELECT nomTable FROM semestres WHERE estPublie = TRUE";
+            $stmt = $pdo->query($sql);
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        //$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
         $etudiantInfo = null;
         $etudiantDetailsPerSemester = [];
 
@@ -405,26 +419,25 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-    public static function creerEtudiant(string $nom,string $prenom, int $idEtudiant)
+    public static function creerEtudiant(string $nom, string $prenom, int $idEtudiant)
     {
-        try{
-        $sql = 'INSERT  INTO EtudiantImportation (login,codeUnique,idEtudiant,demandes) Values (:loginTag, :codeUniqueTag, :idEtudiantTag, :demandesTag)';
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        try {
+            $sql = 'INSERT  INTO EtudiantImportation (login,codeUnique,idEtudiant,demandes) Values (:loginTag, :codeUniqueTag, :idEtudiantTag, :demandesTag)';
+            $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
-        $login =  mb_strtolower($nom.=substr($prenom, 0, 1), "UTF-8");
-        $values = [
-            "loginTag" => $login,
-            "codeUniqueTag" => Etudiant::genererCodeUnique(),
-            "idEtudiantTag" => $idEtudiant,
-            "demandesTag" => '[""]'
-        ];
+            $login = mb_strtolower($nom .= substr($prenom, 0, 1), "UTF-8");
+            $values = [
+                "loginTag" => $login,
+                "codeUniqueTag" => Etudiant::genererCodeUnique(),
+                "idEtudiantTag" => $idEtudiant,
+                "demandesTag" => '[""]'
+            ];
 
-        $pdoStatement->execute($values);
+            $pdoStatement->execute($values);
         } catch (PDOException $e) {
             if ($e->getCode() == '45000') {
 
             }
         }
     }
-
 }

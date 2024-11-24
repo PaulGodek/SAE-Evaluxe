@@ -6,6 +6,7 @@ require __DIR__ . '/../../bootstrap.php';
 
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\Repository\AdministrateurRepository;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
@@ -47,15 +48,16 @@ class ControleurAdministrateur extends ControleurGenerique
 
         $tableName = preg_replace('/[^a-zA-Z0-9_]/', '_', $semesterYear);
 
-        $sheetData = self::parseExcelFile($filePath);
+        $repository = new AdministrateurRepository();
+        $sheetData = $repository::parseExcelFile($filePath);
 
         if (empty($sheetData)) {
             throw new Exception("Le fichier Excel est vide.");
         }
 
-        $columns = self::extractColumns(array_shift($sheetData));
+        $columns = $repository::extractColumns(array_shift($sheetData));
 
-        self::createDatabaseTable($tableName, $columns);
+        $repository::createDatabaseTable($tableName, $columns);
 
         $filteredData = array_filter($sheetData, function ($row) use ($columns) {
             $etudidIndex = array_search('etudid', $columns);
@@ -74,135 +76,70 @@ class ControleurAdministrateur extends ControleurGenerique
             throw new Exception("Aucune ligne valide à insérer après filtrage des valeurs nulles.");
         }
 
-        self::insertDataIntoTable($tableName, $columns, $filteredData);
+        $repository::insertDataIntoTable($tableName, $columns, $filteredData);
+        $repository::ajouterNouveauSemestre($tableName);
 
-        MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
+        //MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
         self::redirectionVersURL("success", "Importation réussie", "afficherListe&controleur=utilisateur");
         exit;
     }
 
-
-    /**
-     * @throws Exception
-     */
-    private static function parseExcelFile(string $filePath): array
+    public static function afficherSemestres(): void
     {
-        if ($xlsx = SimpleXLSX::parse($filePath)) {
-            return $xlsx->rows();
+        try {
+            $repository = new AdministrateurRepository();
+            $semesters = $repository::afficherSemestres();
+
+            $cheminCorpsVue = 'administrateur/semestres.php';
+            self::afficherVue('vueGenerale.php', [
+                "titre" => "Liste des semestres",
+                "cheminCorpsVue" => $cheminCorpsVue,
+                "semestres" => $semesters
+            ]);
+        } catch (Exception $e) {
+            self::afficherErreurAdministrateur("Erreur lors de la récupération des semestres : " . $e->getMessage());
         }
-        throw new Exception("Échec de l'analyse du fichier Excel. Erreur : " . SimpleXLSX::parseError());
     }
 
-    private static function extractColumns(array $row): array
+    public static function publierSemestre(): void
     {
-        $columns = [];
-        $usedColumns = [];
+        try {
+            $repository = new AdministrateurRepository();
+            if (isset($_POST['nomSemestre'])) {
+                $nomSemestre = $_POST['nomSemestre'];
+                $result = $repository::publierSemestre($nomSemestre);
 
-        foreach ($row as $index => $col) {
-            $col = trim($col);
-            if (array_key_exists($col, self::$columnSynonyms)) {
-                $col = self::$columnSynonyms[$col];
-            }
-            if (in_array($col, $usedColumns)) {
-                $counter = 1;
-                $originalCol = $col;
-                while (in_array($col, $usedColumns)) {
-                    $col = $originalCol . "_" . $counter;
-                    $counter++;
+                if ($result) {
+                    self::redirectionVersURL("success", "Le semestre a été publié", "afficherSemestres&controleur=administrateur");
+                    return;
+                } else {
+                    self::afficherErreurAdministrateur("Erreur lors de la publication du semestre.");
                 }
             }
-
-            $usedColumns[] = $col;
-
-            $columns[] = $col ?: "column_$index";
+        } catch (Exception $e) {
+            self::afficherErreurAdministrateur("Erreur lors de la publication du semestre : " . $e->getMessage());
         }
-        return $columns;
     }
 
-    private static array $columnSynonyms = [
-        'Groupes' => 'groupes_de_TD',
-        'groupes de TD' => 'groupes_de_TD',
-    ];
-
-    private static function createDatabaseTable(string $tableName, array $columns): void
+    public static function supprimerSemestre(): void
     {
-        $columnTypeMapping = [
-            'etudid' => 'INT(11)',
-            'code_nip' => 'VARCHAR(50)',
-            'Rg' => 'VARCHAR(50)',
-            'Civ.' => 'VARCHAR(50)',
-            'Nom' => 'VARCHAR(50)',
-            'Prénom' => 'VARCHAR(50)',
-            'Nom_1' => 'VARCHAR(100)',
-            'Abs' => 'INT(11)',
-            'Just.' => 'INT(11)',
-            'UEs' => 'VARCHAR(255)',
-            'groupes_de_TD' => 'VARCHAR(100)',
-            'Cursus' => 'VARCHAR(100)',
-            'Bac' => 'VARCHAR(100)',
-            'Spécialité' => 'VARCHAR(500)',
-            'Type Adm.' => 'VARCHAR(100)',
-            'Rg. Adm.' => 'INT(11)',
-            'Parcours' => 'VARCHAR(10)',
-        ];
+        try {
+            $repository = new AdministrateurRepository();
+            if (isset($_POST['nomSemestre'])) {
+                $nomSemestre = $_POST['nomSemestre'];
+                $result = $repository::supprimerSemestre($nomSemestre);
 
-        $defaultType = 'FLOAT DEFAULT NULL';
-
-        $columnDefinitions = [];
-        foreach ($columns as $index => $col) {
-            $sanitizedCol = "`$col`";
-
-            $dataType = $columnTypeMapping[$col] ?? $defaultType;
-
-            if ($index === 0 && $col === 'etudid') {
-                $columnDefinitions[] = "$sanitizedCol $dataType PRIMARY KEY";
-            } else {
-                $columnDefinitions[] = "$sanitizedCol $dataType";
-            }
-        }
-
-        $dropTableQuery = "DROP TABLE IF EXISTS `$tableName`";
-
-        $createTableQuery = "CREATE TABLE IF NOT EXISTS `$tableName` (" . implode(',', $columnDefinitions) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC";
-
-        $pdo = ConnexionBaseDeDonnees::getPdo();
-        $pdo->exec($dropTableQuery);
-        $pdo->exec($createTableQuery);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private static function insertDataIntoTable(string $tableName, array $columns, array $data): void
-    {
-        $sanitizedColumns = array_map(fn($col) => "`$col`", $columns);
-
-        $insertQuery = "INSERT INTO `$tableName` (" . implode(',', $sanitizedColumns) . ") VALUES (" . str_repeat('?,', count($columns) - 1) . "?)";
-        $pdo = ConnexionBaseDeDonnees::getPdo();
-        $stmt = $pdo->prepare($insertQuery);
-
-        foreach ($data as $rowIndex => $row) {
-            $row = array_slice($row, 0, count($columns));
-
-            $row = array_map(function ($value) {
-                if ($value === '' || $value === '~') {
-                    return null;
+                if ($result) {
+                    self::redirectionVersURL("success", "Le semestre a été supprimé", "afficherSemestres&controleur=administrateur");
+                    return;
+                } else {
+                    self::afficherErreurAdministrateur("Erreur lors de la suppression du semestre.");
                 }
-                return is_string($value) ? mb_convert_encoding($value, 'UTF-8', 'auto') : $value;
-            }, $row);
-
-            try {
-                $stmt->execute($row);
-            } catch (PDOException $e) {
-                throw new Exception("Erreur d'insertion d'une ligne #$rowIndex: " . $e->getMessage());
             }
-            UtilisateurRepository::creerUtilisateur($row[4],$row[5]);
-            EtudiantRepository::creerEtudiant($row[4],$row[5],$row[0]);
+        } catch (Exception $e) {
+            self::afficherErreurAdministrateur("Erreur lors de la suppression du semestre : " . $e->getMessage());
         }
     }
-
-
-
 
 
 }
