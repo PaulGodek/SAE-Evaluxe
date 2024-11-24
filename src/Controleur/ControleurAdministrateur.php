@@ -75,8 +75,9 @@ class ControleurAdministrateur extends ControleurGenerique
         }
 
         self::insertDataIntoTable($tableName, $columns, $filteredData);
+        self::ajouterNouveauSemestre($tableName);
 
-        MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
+        //MessageFlash::ajouter('success', "Fichier Excel importé avec succès dans un tableau `$tableName`.");
         self::redirectionVersURL("success", "Importation réussie", "afficherListe&controleur=utilisateur");
         exit;
     }
@@ -196,13 +197,44 @@ class ControleurAdministrateur extends ControleurGenerique
             } catch (PDOException $e) {
                 throw new Exception("Erreur d'insertion d'une ligne #$rowIndex: " . $e->getMessage());
             }
-            UtilisateurRepository::creerUtilisateur($row[4],$row[5]);
-            EtudiantRepository::creerEtudiant($row[4],$row[5],$row[0]);
+            UtilisateurRepository::creerUtilisateur($row[4], $row[5]);
+            EtudiantRepository::creerEtudiant($row[4], $row[5], $row[0]);
         }
     }
 
+    public static function publierSemestre(int $nomSemestre): bool
+    {
+        $sql = "UPDATE semestres SET estPublie = TRUE WHERE nomTable = :table";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        return $pdoStatement->execute([':table' => $nomSemestre]);
+    }
 
+    public static function supprimerSemestre(int $nomSemestre): bool
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        try {
+            $pdo->beginTransaction();
 
+            $sql = "DELETE FROM semestres WHERE nom = :nom";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':nom' => $nomSemestre]);
+
+            $pdo->exec("DROP TABLE IF EXISTS {$nomSemestre}");
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            return false;
+        }
+    }
+
+    public static function ajouterNouveauSemestre(string $tableName): bool
+    {
+        $sql = "INSERT INTO semestres (nomTable) VALUES (:name)";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        return $pdoStatement->execute([':name' => $tableName]);
+    }
 
 
 }
