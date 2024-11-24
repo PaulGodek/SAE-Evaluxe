@@ -163,14 +163,14 @@ class AdministrateurRepository extends AbstractRepository
         }
     }
 
-    public static function publierSemestre(int $nomSemestre): bool
+    public static function publierSemestre(string $nomSemestre): bool
     {
         $sql = "UPDATE semestres SET estPublie = TRUE WHERE nomTable = :table";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         return $pdoStatement->execute([':table' => $nomSemestre]);
     }
 
-    public static function supprimerSemestre(int $nomSemestre): bool
+    public static function supprimerSemestre(string $nomSemestre): bool
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
         try {

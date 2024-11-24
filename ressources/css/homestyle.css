@@ -443,3 +443,45 @@ legend {
 #cookie-banner .close-button {
     font-size: 30px;
 }
+
+/*Semestres*/
+.semestres-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.semestres-table th, .semestres-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.semestres-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.btn-publish {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-publish:hover {
+    background-color: #218838;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}

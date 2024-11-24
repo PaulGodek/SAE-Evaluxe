@@ -83,6 +83,7 @@ class ControleurAdministrateur extends ControleurGenerique
         self::redirectionVersURL("success", "Importation réussie", "afficherListe&controleur=utilisateur");
         exit;
     }
+
     public static function afficherSemestres(): void
     {
         try {
@@ -99,5 +100,46 @@ class ControleurAdministrateur extends ControleurGenerique
             self::afficherErreurAdministrateur("Erreur lors de la récupération des semestres : " . $e->getMessage());
         }
     }
+
+    public static function publierSemestre(): void
+    {
+        try {
+            $repository = new AdministrateurRepository();
+            if (isset($_POST['nomSemestre'])) {
+                $nomSemestre = $_POST['nomSemestre'];
+                $result = $repository::publierSemestre($nomSemestre);
+
+                if ($result) {
+                    self::redirectionVersURL("success", "Le semestre a été publié", "afficherSemestres&controleur=administrateur");
+                    return;
+                } else {
+                    self::afficherErreurAdministrateur("Erreur lors de la publication du semestre.");
+                }
+            }
+        } catch (Exception $e) {
+            self::afficherErreurAdministrateur("Erreur lors de la publication du semestre : " . $e->getMessage());
+        }
+    }
+
+    public static function supprimerSemestre(): void
+    {
+        try {
+            $repository = new AdministrateurRepository();
+            if (isset($_POST['nomSemestre'])) {
+                $nomSemestre = $_POST['nomSemestre'];
+                $result = $repository::supprimerSemestre($nomSemestre);
+
+                if ($result) {
+                    self::redirectionVersURL("success", "Le semestre a été supprimé", "afficherSemestres&controleur=administrateur");
+                    return;
+                } else {
+                    self::afficherErreurAdministrateur("Erreur lors de la suppression du semestre.");
+                }
+            }
+        } catch (Exception $e) {
+            self::afficherErreurAdministrateur("Erreur lors de la suppression du semestre : " . $e->getMessage());
+        }
+    }
+
 
 }
