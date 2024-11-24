@@ -57,7 +57,10 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
             <?php endif; ?>
             <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="item">Agrégation</a>
-            <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="item">Déconnexion</a>
+            <input type="checkbox" id="logOutToggle" hidden>
+            <label for="logOutToggle" id="LogOutButton">
+                <img src="../ressources/images/log-out.png" id="LogOutIcon" alt="Log Out Icon">
+            </label>
         <?php endif; ?>
     </div>
 
@@ -89,9 +92,16 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                class="nav-item">Connexion</a>
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
-                <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=administrateur"
-                   class="nav-item">Importer
-                    les fichiers Excel</a>
+                <div class="dropdown">
+                    <span class="item">Semestres</span>
+                    <div class="dropdown-content">
+                        <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=administrateur"
+                           class="nav-item">Importation</a>
+                        <a href="controleurFrontal.php?action=afficherSemestres&controleur=administrateur"
+                           class="nav-item">Information</a>
+                    </div>
+                </div>
+
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="nav-item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
@@ -109,7 +119,13 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
             <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégation</a>
-            <a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">Déconnexion</a>
+            <!--<a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">
+                <img src="../ressources/images/log-out.png" alt="Déconnexion" class="nav-icon">
+            </a>-->
+            <input type="checkbox" id="logOutToggle" hidden>
+            <label for="logOutToggle" id="LogOutButton">
+                <img src="../ressources/images/log-out.png" id="LogOutIcon" alt="Log Out Icon">
+            </label>
         <?php endif; ?>
     </nav>
 
@@ -160,6 +176,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
     </div>
 </footer>
 <script src="../ressources/javascript/accessibility.js"></script>
+<script src="../ressources/javascript/deconnecter.js"></script>
 
 
 </body>
