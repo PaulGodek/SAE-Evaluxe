@@ -27,7 +27,7 @@ class Etudiant extends AbstractDataObject
         if ($codeUnique !== null) {
             $this->codeUnique = $codeUnique;
         } else {
-            $this->codeUnique = $this->genererCodeUnique();
+            $this->codeUnique = Etudiant::genererCodeUnique();
         }
 
         $this->demandes = $demandes ?? [];
@@ -47,7 +47,7 @@ class Etudiant extends AbstractDataObject
     /**
      * @throws RandomException
      */
-    public function genererCodeUnique(): string
+    public static function genererCodeUnique(): string
     {
         do {
             $code = bin2hex(random_bytes(5));

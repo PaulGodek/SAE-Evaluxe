@@ -2,8 +2,10 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use PDOException;
 
 class UtilisateurRepository extends AbstractRepository
 {
@@ -89,4 +91,30 @@ class UtilisateurRepository extends AbstractRepository
 
         return (bool)$pdoStatement->fetch();
     }
+
+
+    public  static function creerUtilisateur( string $nom,string $prenom){
+        try{
+        $sql='INSERT  INTO UtilisateurImportation (login,type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $login =  mb_strtolower($nom.=substr($prenom, 0, 1), "UTF-8");
+
+        $values=[
+            "loginTag"=>$login,
+            "typeTag"=>"etudiant",
+            "password_hashTag"=>MotDePasse::hacher("123")
+        ];
+
+        $pdoStatement->execute($values);
+        } catch (PDOException $e) {
+            if ($e->getCode() == '45000') {
+
+            }
+        }
+
+
+    }
 }
+
+
