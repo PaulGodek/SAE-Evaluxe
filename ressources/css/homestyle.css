@@ -339,20 +339,9 @@ main {
         display: none;
     }
 
-    #accessibilityButton {
+    #accessibilityButton,
+    #LogOutButton {
         right: 100px;
-    }
-    .dropdown-content {
-        display: inline-flex;
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-30%);
-        min-width: 110px;
-        z-index: 1;
-        border-radius: 1.5rem;
-        padding: 0;
-        background-color: transparent;
     }
 }
 
