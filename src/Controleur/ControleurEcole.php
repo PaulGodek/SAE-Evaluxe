@@ -38,7 +38,7 @@ class ControleurEcole extends ControleurGenerique
 
         $ecoleRepository = new EcoleRepository();
         $ecole = $ecoleRepository->recupererParClePrimaire($loginEcole);
-        if (isset($ecole)) {
+        if (!isset($ecole)) {
             self::afficherErreurEcole("Aucune école avec le login " . $loginEcole . " n'existe");
             return;
         }
@@ -83,7 +83,7 @@ class ControleurEcole extends ControleurGenerique
         }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEcoleOrdonneParVille(): void
@@ -99,7 +99,7 @@ class ControleurEcole extends ControleurGenerique
         }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
 
 
@@ -351,7 +351,7 @@ class ControleurEcole extends ControleurGenerique
         }
 
         $ecoles = (new EcoleRepository())->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant"=>$etudiant, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
     }
 
@@ -374,7 +374,7 @@ class ControleurEcole extends ControleurGenerique
 
 
         $ecoles = (new EcoleRepository())->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant"=>$etudiant, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
     }
 }
