@@ -45,11 +45,11 @@ class EtudiantRepository extends AbstractRepository
      */
     private static function getTablesSemestrePublie(): array
     {
-        //$pdo = ConnexionBaseDeDonnees::getPdo();
-        //$sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
-        //$stmt = $pdo->query($sql);
-        //$tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        $tables = ['OLDsemestre1_2024', 'OLDsemestre2_2024', 'OLDsemestre3_2024', 'OLDsemestre4_2024', 'OLDsemestre5_2024'];
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
+        $stmt = $pdo->query($sql);
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        //$tables = ['OLDsemestre1_2024', 'OLDsemestre2_2024', 'OLDsemestre3_2024', 'OLDsemestre4_2024', 'OLDsemestre5_2024'];
         return $tables;
     }
 
@@ -356,10 +356,10 @@ class EtudiantRepository extends AbstractRepository
                     $etudiantInfo = [
                         'nom' => htmlspecialchars($details['Nom']),
                         'prenom' => htmlspecialchars($details['Prénom']),
-                        'nomEtPrenom' => htmlspecialchars($details['nom_et_prénom']),
+                        'nomEtPrenom' => htmlspecialchars($details['Nom_1']),
                         'etudid' => htmlspecialchars($details['etudid']),
                         'codenip' => htmlspecialchars($details['code_nip']),
-                        'civ' => htmlspecialchars($details['Civ']),
+                        'civ' => htmlspecialchars($details['Civ.']),
                         'bac' => htmlspecialchars($details['Bac'] ?? 'N/A'),
                         'specialite' => htmlspecialchars($details['Spécialité'] ?? 'N/A'),
                         'typeAdm' => htmlspecialchars($details['Type Adm.'] ?? 'N/A'),
