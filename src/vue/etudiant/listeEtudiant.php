@@ -36,7 +36,7 @@ echo "<h2>Liste des étudiants</h2>
 $i = 0;
 foreach ($etudiants as $etudiant) {
 
-    $idEtudiant = $etudiant->getIdEtudiant();
+    $code_nip = $etudiant->getCodeNip();
 
     if ($listeNomPrenom[$i]) {
         $nomHTML = htmlspecialchars($listeNomPrenom[$i]['Nom']);
@@ -60,11 +60,11 @@ foreach ($etudiants as $etudiant) {
         }
 
     } else if (ConnexionUtilisateur::estProfesseur()) {
-        $idEtudiantURL = rawurlencode($etudiant->getIdEtudiant());
+        $code_nipURL = rawurlencode($etudiant->getCodeNip());
         if (strcmp($etudiant->getAvisProfesseur(ConnexionUtilisateur::getLoginUtilisateurConnecte()), "") === 0) {
-            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Ajouter un avis ?)<a/></p></li>';
+            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&code_nip=' . $code_nipURL . '">(Ajouter un avis ?)<a/></p></li>';
         } else {
-            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&idEtudiant=' . $idEtudiantURL . '">(Modifier un avis ?)<a/></p></li>';
+            echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '<a/>   <a href=controleurFrontal.php?controleur=professeur&action=afficherFormulaireAvisEtudiant&loginEtudiant=' . $loginURL . '&code_nip=' . $code_nipURL . '">(Modifier un avis ?)<a/></p></li>';
         }
 
     } else {

@@ -30,7 +30,7 @@ class ControleurEtudiant extends ControleurGenerique
 
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
@@ -49,7 +49,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
@@ -65,7 +65,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParPrenom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
@@ -81,7 +81,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParParcours(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
@@ -104,10 +104,10 @@ class ControleurEtudiant extends ControleurGenerique
                     self::afficherErreurEtudiant(" ");
                     MessageFlash::ajouter("error", "L'étudiant  {$_GET['login']} n'existe pas");
                 } else {
-                    $idEtudiant = $etudiant->getIdEtudiant();
-                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
+                    $code_nip = $etudiant->getCodeNip();
+                    $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip($code_nip);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
-                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($idEtudiant);
+                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParCodeNip($code_nip);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
@@ -117,13 +117,13 @@ class ControleurEtudiant extends ControleurGenerique
                         "titre" => "Détail de $nomPrenom",
                         "informationsPersonelles" => $etudiantInfo,
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
-                        "idEtudiant" => $idEtudiant,
+                        "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
                 }
             } catch (TypeError $e) {
                 self::afficherErreurEtudiant(" ");
-                MessageFlash::ajouter("error", "Jsp ce qu'il s'est passé dsl");
+                MessageFlash::ajouter("error", "Erreur Inconnue");
 
             }
         } else {
@@ -152,10 +152,10 @@ class ControleurEtudiant extends ControleurGenerique
                     MessageFlash::ajouter("error", "L'étudiant  {$_GET['codeUnique']} n'existe pas");
                     self::afficherErreurEtudiant(" ");
                 } else {
-                    $idEtudiant = $etudiant->getIdEtudiant();
-                    $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant($idEtudiant);
+                    $code_nip = $etudiant->getCodeNip();
+                    $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip($code_nip);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
-                    $result = EtudiantRepository::recupererDetailsEtudiantParId($idEtudiant);
+                    $result = EtudiantRepository::recupererDetailsEtudiantParCodeNip($code_nip);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
@@ -165,7 +165,7 @@ class ControleurEtudiant extends ControleurGenerique
                         "titre" => "Détail de $nomPrenom",
                         "informationsPersonelles" => $etudiantInfo,
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
-                        "idEtudiant" => $idEtudiant,
+                        "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
                         "cheminCorpsVue" => "etudiant/detailEtudiantPourEcoles.php"]);
                 }
@@ -200,7 +200,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = (new EtudiantRepository)->recuperer();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom, "etudiants" => $etudiants, "login" => $login, "titre" => "Suppression de compte étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
@@ -228,10 +228,10 @@ class ControleurEtudiant extends ControleurGenerique
         $login = $_GET["login"];
         $repository = new EtudiantRepository();
         $etudiantExistant = $repository->recupererParClePrimaire($login);
-        if (isset($_GET["etudid"])) {
-            $etudiantExistant->setIdEtudiant($_GET["etudid"]);
+        if (isset($_GET["code_nip"])) {
+            $etudiantExistant->setCodeNip($_GET["code_nip"]);
         }
-        //$etudiantChangee = new Etudiant($user, $_GET["etudid"], $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
+        //$etudiantChangee = new Etudiant($user, $_GET["code_nip"], $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
 
         $repository->mettreAJour($etudiantExistant);
         MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été mis à jour");
@@ -239,7 +239,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         self::afficherVue('vueGenerale.php',
@@ -259,7 +259,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
@@ -296,7 +296,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = (new EtudiantRepository())->recuperer();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
 
@@ -325,7 +325,7 @@ class ControleurEtudiant extends ControleurGenerique
         $etudiants = (new EtudiantRepository())->recuperer();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
 

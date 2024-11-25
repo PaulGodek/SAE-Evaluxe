@@ -231,7 +231,7 @@ class EcoleRepository extends AbstractRepository
         foreach ($ecole->getFutursEtudiants() as $code) {
             $etudiant = $etudiantRepository->recupererEtudiantParCodeUnique($code);
             if ($etudiant) {
-                $nomPrenom = $etudiantRepository->getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $nomPrenom = $etudiantRepository->getNomPrenomParCodeNip($etudiant->getCodeNip());
                 $futursEtudiants[] = [
                     'codeUnique' => $code,
                     'nom' => $nomPrenom['Nom'],

@@ -16,8 +16,8 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
             <input class="InputAddOn-field" type="text" name="login" id="login_id" value="<?= htmlspecialchars($etudiant->getUtilisateur()->getLogin())?>" readonly>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="idE_id">Id étudiant&#42;</label>
-            <input class="InputAddOn-field" type="text"  name="etudid" id="idE_id" value="<?= htmlspecialchars($etudiant->getIdEtudiant())?>" required>
+            <label class="InputAddOn-item" for="code_nipID">code NIP étudiant&#42;</label>
+            <input class="InputAddOn-field" type="text" name="code_nip" id="code_nipID" value="<?= htmlspecialchars($etudiant->getCodeNip())?>" required>
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="codeUnique_id">Code Unique&#42;</label>

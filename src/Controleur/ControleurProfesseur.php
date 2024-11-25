@@ -212,11 +212,11 @@ class ControleurProfesseur extends ControleurGenerique
             self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
             return;
         }
-        if (!isset($_GET["idEtudiant"])) {
+        if (!isset($_GET["code_nip"])) {
             self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
             return;
         }
-        $nomPrenomArray = EtudiantRepository::getNomPrenomParIdEtudiant(rawurldecode($_GET["idEtudiant"]));
+        $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip(rawurldecode($_GET["code_nip"]));
         if (is_null($nomPrenomArray)) {
             $nomPrenomArray = array(
                 "Nom" => "NomInconnu",
@@ -257,7 +257,7 @@ class ControleurProfesseur extends ControleurGenerique
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
         MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
