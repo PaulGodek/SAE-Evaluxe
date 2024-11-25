@@ -38,6 +38,10 @@ class ControleurEcole extends ControleurGenerique
 
         $ecoleRepository = new EcoleRepository();
         $ecole = $ecoleRepository->recupererParClePrimaire($loginEcole);
+        if (isset($ecole)) {
+            self::afficherErreurEcole("Aucune école avec le login " . $loginEcole . " n'existe");
+            return;
+        }
 
         $futursEtudiants = $ecoleRepository::getFutursEtudiantsListe($loginEcole);
         self::afficherVue('vueGenerale.php', [
@@ -56,6 +60,12 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $ecoles = (new EcoleRepository)->recuperer();
+
+        if (empty($ecoles)) {
+            self::afficherErreurEcole("Aucune école n'existe");
+            return;
+        }
+
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
     }
@@ -67,6 +77,10 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParNom(); //appel au modèle pour gérer la BD
+        if (empty($ecoles)) {
+            self::afficherErreurEcole("Aucune école n'existe");
+            return;
+        }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
@@ -79,6 +93,10 @@ class ControleurEcole extends ControleurGenerique
             return;
         }
         $ecoles = EcoleRepository::recupererEcolesOrdonneParVille(); //appel au modèle pour gérer la BD
+        if (empty($ecoles)) {
+            self::afficherErreurEcole("Aucune école n'existe");
+            return;
+        }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles,"etudiant" => $etudiant, "titre" => "Liste des ecoles", "cheminCorpsVue" => "ecole/listeEcole.php"]);  //"redirige" vers la vue
@@ -115,7 +133,7 @@ class ControleurEcole extends ControleurGenerique
 
         if ($mdp !== $mdp2) {
             self::redirectionVersURL("warning", "Les mots de passes ne correspondent pas", "afficherFormulaireCreation&controleur=ecole");
-//            self::afficherErreurUtilisateur("Mots de passe distincts");
+//            self::afficherErreurEcole("Mots de passe distincts");
             return;
         }
         if (!isset($_GET["login"]) || !isset($_GET["nom"]) || !isset($_GET["adresse"]) || !isset($_GET["ville"])) {
