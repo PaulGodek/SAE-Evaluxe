@@ -13,7 +13,7 @@ use Random\RandomException;
 
 class EtudiantRepository extends AbstractRepository
 {
-    private static string $tableEtudiant = "EtudiantTest";
+    private static string $tableEtudiant = "EtudiantImportation";
 
     /**
      * @throws RandomException
@@ -130,9 +130,9 @@ class EtudiantRepository extends AbstractRepository
     }
 
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "EtudiantTest";
+        return self::$tableEtudiant;
     }
 
     protected function getNomClePrimaire(): string
@@ -245,7 +245,7 @@ class EtudiantRepository extends AbstractRepository
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
         //$tables = self::getAllSemesterTables();
-        $sql = "SELECT nomTable FROM semestres WHERE estPublie = TRUE";
+        $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
         $stmt = $pdo->query($sql);
         $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
         //$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
@@ -315,11 +315,11 @@ class EtudiantRepository extends AbstractRepository
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
         if (ConnexionUtilisateur::estAdministrateur() || ConnexionUtilisateur::estProfesseur()) {
-            $sql = "SELECT nomTable FROM semestres";
+            $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . ";";
             $stmt = $pdo->query($sql);
             $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
-            $sql = "SELECT nomTable FROM semestres WHERE estPublie = TRUE";
+            $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
             $stmt = $pdo->query($sql);
             $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }

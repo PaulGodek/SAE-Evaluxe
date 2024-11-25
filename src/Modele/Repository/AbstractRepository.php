@@ -46,7 +46,7 @@ abstract class AbstractRepository
         $listeTag = array(
             "login", "type", "password_hash"
         );
-        $sql = 'INSERT INTO Utilisateur (login, type, password_hash) VALUES (:' .join("Tag, :",$listeTag).'Tag)';
+        $sql = 'INSERT INTO ' . (new UtilisateurRepository())->getNomTable() . ' (login, type, password_hash) VALUES (:' .join("Tag, :",$listeTag).'Tag)';
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -73,7 +73,7 @@ abstract class AbstractRepository
     {
         if ($objet instanceof Utilisateur) {
 
-            $sql = 'INSERT INTO Utilisateur (login, type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
+            $sql = 'INSERT INTO ' . (new UtilisateurUtilisateurRepository())->getNomTable() . ' (login, type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
             $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
             $values = [

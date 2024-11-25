@@ -8,10 +8,12 @@ use App\GenerateurAvis\Modele\DataObject\Matiere;
 
 class AgregationMatiereRepository extends AbstractRepository
 {
+    private static string $tableAgregationMatiere = "agregation_matiere";
+
     public function ajouterMatierePourAgregation(int $id_agregation, Matiere $matiere): bool
     {
 
-        $sql = "INSERT INTO agregation_matiere (id_agregation, id_ressource, coefficient) 
+        $sql = "INSERT INTO " . $this->getNomTable() . " (id_agregation, id_ressource, coefficient) 
                 VALUES (:id_agregation, :id_ressource, :coefficient)";
 
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -22,9 +24,9 @@ class AgregationMatiereRepository extends AbstractRepository
         return $stmt->execute();
     }
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "agregation_matiere";
+        return self::$tableAgregationMatiere;
     }
 
     protected function getNomClePrimaire(): string
@@ -56,7 +58,7 @@ class AgregationMatiereRepository extends AbstractRepository
     }
 
     public function supprimerMatierePourAgregation(int $idAgregation, int $idMatiere): bool {
-        $sql = "DELETE FROM agregation_matiere WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
+        $sql = "DELETE FROM " . $this->getNomTable() . " WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->bindValue(':idAgregation', $idAgregation, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
         $stmt->bindValue(':idMatiere', $idMatiere, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
@@ -64,7 +66,7 @@ class AgregationMatiereRepository extends AbstractRepository
     }
 
     public function mettreAJourCoefficientPourAgregation(int $idAgregation, int $idMatiere, float $coefficient): bool {
-        $sql = "UPDATE agregation_matiere SET coefficient = :coefficient WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
+        $sql = "UPDATE " . $this->getNomTable() . " SET coefficient = :coefficient WHERE id_agregation = :idAgregation AND id_matiere = :idMatiere";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->bindValue(':idAgregation', $idAgregation, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
         $stmt->bindValue(':idMatiere', $idMatiere, ConnexionBaseDeDonnees::getPdo()::PARAM_INT);
@@ -75,7 +77,8 @@ class AgregationMatiereRepository extends AbstractRepository
     public function recupererParAgregation(int $idAgregation): array
     {
         $sql = "SELECT am.id_ressource, am.coefficient 
-            FROM agregation_matiere am
+            FROM " . $this->getNomTable() . " am
+            FROM " . $this->getNomTable() . " am
             WHERE am.id_agregation = :idAgregation";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);

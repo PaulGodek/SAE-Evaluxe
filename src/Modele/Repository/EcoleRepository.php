@@ -140,9 +140,9 @@ class EcoleRepository extends AbstractRepository
     }
 
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "EcoleTest";
+        return self::$tableEcole;
     }
 
     protected function getNomClePrimaire(): string

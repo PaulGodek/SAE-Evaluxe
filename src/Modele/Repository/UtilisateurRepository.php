@@ -9,7 +9,7 @@ use PDOException;
 
 class UtilisateurRepository extends AbstractRepository
 {
-    private static string $tableUtilisateur = "Utilisateur";
+    private static string $tableUtilisateur = "UtilisateurImportation";
 
     public static function recupererUtilisateurOrdonneParLogin(): array
     {
@@ -29,9 +29,9 @@ class UtilisateurRepository extends AbstractRepository
             $utilisateurFormatTableau['type'], $utilisateurFormatTableau['password_hash']);
     }
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "Utilisateur";
+        return self::$tableUtilisateur;
     }
 
     protected function getNomClePrimaire(): string
@@ -85,7 +85,7 @@ class UtilisateurRepository extends AbstractRepository
 
     public function existeUtilisateurParLogin(string $login): bool
     {
-        $sql = "SELECT 1 FROM Utilisateur WHERE login = :loginTag LIMIT 1";
+        $sql = "SELECT 1 FROM " . $this->getNomTable() . " WHERE login = :loginTag LIMIT 1";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $pdoStatement->execute(['loginTag' => $login]);
 
