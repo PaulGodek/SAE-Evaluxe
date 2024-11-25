@@ -7,9 +7,11 @@ use App\GenerateurAvis\Modele\DataObject\Ressource;
 
 class RessourceRepository extends AbstractRepository
 {
-    protected function getNomTable(): string
+    private static string $tableRessource = "ressources";
+
+    public function getNomTable(): string
     {
-        return 'ressources';
+        return self::$tableRessource;
     }
 
     protected function getNomClePrimaire(): string
@@ -27,7 +29,7 @@ class RessourceRepository extends AbstractRepository
 
     public function recuperer(): array
     {
-        $sql = "SELECT * FROM ressources";
+        $sql = "SELECT * FROM " . $this->getNomTable() . ";";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $ressource = [];

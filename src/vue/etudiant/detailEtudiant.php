@@ -2,7 +2,7 @@
 /** @var string|null $codeUnique */
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
-/** @var string $idEtudiant */
+/** @var string $code_nip */
 /** @var string $loginEtudiant */
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
@@ -68,5 +68,5 @@ if ($informationsPersonelles) {
     }
     echo '</div>';
 } else {
-    echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
+    echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec code NIP ' . htmlspecialchars($code_nip) . '.</p>';
 }

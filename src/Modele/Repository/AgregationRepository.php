@@ -9,9 +9,11 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
-    protected function getNomTable(): string
+    private static string $tableAgregation = "agregations";
+
+    public function getNomTable(): string
     {
-        return 'agregations';
+        return self::$tableAgregation;
     }
 
     protected function getNomClePrimaire(): string
@@ -50,7 +52,7 @@ class AgregationRepository extends AbstractRepository
 
     public function ajouterAgregation(Agregation $agregation): ?int
     {
-        $sql = "INSERT INTO agregations (nom_agregation, parcours, login) 
+        $sql = "INSERT INTO " . $this->getNomTable() . " (nom_agregation, parcours, login) 
             VALUES (:nom_agregation, :parcours, :login)";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -77,7 +79,7 @@ class AgregationRepository extends AbstractRepository
     }
     public function getAgregationDetailsById(int $idAgregation): array
     {
-        $sql = "SELECT * FROM agregations WHERE id = :id_agregation";
+        $sql = "SELECT * FROM " . $this->getNomTable() . " WHERE id = :id_agregation";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = ['id_agregation' => $idAgregation];
@@ -102,8 +104,8 @@ class AgregationRepository extends AbstractRepository
     private function getMatieresForAgregation(int $idAgregation): array
     {
         $sql = "SELECT m.nom AS matiere, am.coefficient
-                FROM agregation_matiere am
-                JOIN ressources m ON am.id_ressource = m.id_ressource
+                FROM " . (new AgregationMatiereRepository())->getNomTable() . " am
+                JOIN " . (new RessourceRepository())->getNomTable() . " m ON am.id_ressource = m.id_ressource
                 WHERE am.id_agregation = :id_agregation";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $values = ['id_agregation' => $idAgregation];

@@ -8,9 +8,9 @@ class ProfesseurRepository extends AbstractRepository
 {
     private static string $tableProfesseur = "ProfTest";
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "ProfTest";
+        return self::$tableProfesseur;
     }
 
     protected function getNomClePrimaire(): string

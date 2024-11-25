@@ -2,7 +2,7 @@
 /** @var Etudiant $etudiant */
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
-/** @var string $idEtudiant */
+/** @var string $code_nip */
 
 /** @var string|null $codeUnique */
 
@@ -49,7 +49,7 @@ if ($informationsPersonelles) {
     }
     echo '</div>';
 } else {
-    echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec ID ' . htmlspecialchars($idEtudiant) . '.</p>';
+    echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec code NIP ' . htmlspecialchars($code_nip) . '.</p>';
 }
 ?>
 <a href="controleurFrontal.php?action=afficherEcole&controleur=ecole" class="return-item">Retour</a>

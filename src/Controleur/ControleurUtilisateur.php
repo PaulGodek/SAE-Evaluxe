@@ -62,11 +62,11 @@ class ControleurUtilisateur extends ControleurGenerique
             } else {
                 if ($utilisateur->getType() == "etudiant") {
                     $etudiant = (new EtudiantRepository)->recupererParClePrimaire($utilisateur->getLogin());
-                    $idEtudiant = $etudiant->getIdEtudiant();
-                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParIdEtudiant($idEtudiant);
+                    $code_nip = $etudiant->getCodeNip();
+                    $nomPrenom = (new EtudiantRepository)->getNomPrenomParCodeNip($code_nip);
 
                     $titre = "Détail de l'étudiant {$nomPrenom['Prenom']} {$nomPrenom['Nom']}";
-                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParId($idEtudiant);
+                    $result = EtudiantRepository::recupererTousLesDetailsEtudiantParCodeNip($code_nip);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
@@ -77,7 +77,7 @@ class ControleurUtilisateur extends ControleurGenerique
                         "nomPrenom" => $nomPrenom,
                         "informationsPersonelles" => $etudiantInfo,
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
-                        "idEtudiant" => $idEtudiant,
+                        "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
                         "loginEtudiant" => $etudiant->getUtilisateur()->getLogin(),
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"
@@ -110,7 +110,7 @@ class ControleurUtilisateur extends ControleurGenerique
             $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
             $listeNomPrenom = array();
             foreach ($etudiants as $etudiant) {
-                $nomPrenom = EtudiantRepository::getNomPrenomParIdEtudiant($etudiant->getIdEtudiant());
+                $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
                 $listeNomPrenom[] = $nomPrenom;
             }
             self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
@@ -386,7 +386,7 @@ class ControleurUtilisateur extends ControleurGenerique
      * @throws RandomException
      */
     /*pour importer les données de notre tables avec tous
-    les informations pour sauvegarder seulement login, codeUnique et idEtudiant*/
+    les informations pour sauvegarder seulement login, codeUnique et code_nip*/
     public static function refaire(): void
     {
         // histoire d'être sûr que c'est bien un admin qui fait ça :
@@ -399,7 +399,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
         foreach ($tables as $table) {
             $query = "
-            SELECT LOWER(CONCAT(Nom, LEFT(Prénom, 1))) AS login, etudid AS etudid
+            SELECT LOWER(CONCAT(Nom, LEFT(Prénom, 1))) AS login, code_nip AS code_nip
             FROM {$table} AS s
             LEFT JOIN EtudiantTest AS e ON LOWER(CONCAT(s.Nom, LEFT(s.Prénom, 1))) = e.login
             WHERE e.login IS NULL
@@ -409,18 +409,19 @@ class ControleurUtilisateur extends ControleurGenerique
             $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $insertStmt = $pdo->prepare("
-            INSERT INTO EtudiantTest (login, codeUnique, idEtudiant)
-            VALUES (:login, :codeUnique, :idEtudiant)
+            INSERT INTO EtudiantTest (login, codeUnique, code_nip)
+            VALUES (:loginTag, :codeUniqueTag, :code_nipTag)
         ");
 
             foreach ($students as $student) {
-                $etudiant = new Etudiant($student['login'], $student['etudid']);
+                $user = new Utilisateur("temp", "temp", "temp");
+                $etudiant = new Etudiant($user, $student['code_nip']);
                 $codeUnique = $etudiant->getCodeUnique();
 
                 $insertStmt->execute([
-                    ':login' => $student['login'],
-                    ':idEtudiant' => $student['etudid'],
-                    ':codeUnique' => $codeUnique
+                    ':loginTag' => $student['login'],
+                    ':code_nipTag' => $student['code_nip'],
+                    ':codeUniqueTag' => $codeUnique
                 ]);
             }
         }

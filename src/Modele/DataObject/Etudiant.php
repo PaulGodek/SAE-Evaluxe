@@ -12,17 +12,17 @@ class Etudiant extends AbstractDataObject
 
     private Utilisateur $etudiant;
     private string $codeUnique;
-    private int $idEtudiant;
+    private int $code_nip;
     private static array $codesUniquesUtilisees = [];
     private array $demandes = [];
 
     /**
      * @throws RandomException
      */
-    public function __construct(Utilisateur $etudiant, int $idEtudiant, ?array $demandes = null, ?string $codeUnique = null)
+    public function __construct(Utilisateur $etudiant, int $code_nip, ?array $demandes = null, ?string $codeUnique = null)
     {
         $this->etudiant = $etudiant;
-        $this->idEtudiant = $idEtudiant;
+        $this->code_nip = $code_nip;
 
         if ($codeUnique !== null) {
             $this->codeUnique = $codeUnique;
@@ -61,14 +61,14 @@ class Etudiant extends AbstractDataObject
         return $this->codeUnique;
     }
 
-    public function getIdEtudiant(): int
+    public function getCodeNip(): int
     {
-        return $this->idEtudiant;
+        return $this->code_nip;
     }
 
-    public function setIdEtudiant(int $idEtudiant): void
+    public function setCodeNip(int $code_nip): void
     {
-        $this->idEtudiant = $idEtudiant;
+        $this->code_nip = $code_nip;
     }
 
     public function getDemandes(): array

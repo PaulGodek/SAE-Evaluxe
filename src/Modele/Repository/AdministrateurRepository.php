@@ -11,10 +11,16 @@ use Shuchkin\SimpleXLSX;
 class AdministrateurRepository extends AbstractRepository
 {
     private static string $tableAdmin = "AdminTest";
+    private static string $tableSemestre = "semestres";
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "AdminTest";
+        return self::$tableAdmin;
+    }
+
+    public function getNomTableSemestre(): string
+    {
+        return self::$tableSemestre;
     }
 
     protected function getNomClePrimaire(): string
@@ -159,13 +165,13 @@ class AdministrateurRepository extends AbstractRepository
                 throw new Exception("Erreur d'insertion d'une ligne #$rowIndex: " . $e->getMessage());
             }
             UtilisateurRepository::creerUtilisateur($row[4], $row[5]);
-            EtudiantRepository::creerEtudiant($row[4], $row[5], $row[0]);
+            EtudiantRepository::creerEtudiant($row[4], $row[5], $row[1]);
         }
     }
 
     public static function publierSemestre(string $nomSemestre): bool
     {
-        $sql = "UPDATE semestres SET estPublie = TRUE WHERE nomTable = :table";
+        $sql = "UPDATE " . self::$tableSemestre . " SET estPublie = TRUE WHERE nomTable = :table";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         return $pdoStatement->execute([':table' => $nomSemestre]);
     }
@@ -174,7 +180,7 @@ class AdministrateurRepository extends AbstractRepository
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
 
-        $sql = "DELETE FROM semestres WHERE nomTable = :nom";
+        $sql = "DELETE FROM " . self::$tableSemestre . " WHERE nomTable = :nom";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':nom' => $nomSemestre]);
 
@@ -186,7 +192,7 @@ class AdministrateurRepository extends AbstractRepository
     public static function afficherSemestres(): false|array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        $sql = "SELECT nomTable, estPublie FROM semestres";
+        $sql = "SELECT nomTable, estPublie FROM " . self::$tableSemestre . ";";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
@@ -195,7 +201,7 @@ class AdministrateurRepository extends AbstractRepository
 
     public static function ajouterNouveauSemestre(string $tableName): bool
     {
-        $sql = "INSERT INTO semestres (nomTable) VALUES (:name)";
+        $sql = "INSERT INTO " . self::$tableSemestre . " (nomTable) VALUES (:name)";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         return $pdoStatement->execute([':name' => $tableName]);
     }
