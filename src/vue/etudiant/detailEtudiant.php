@@ -3,13 +3,14 @@
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
 /** @var string $code_nip */
+
 /** @var string $loginEtudiant */
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
+    <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
 
 <?php
 $codeUniqueHTML = htmlspecialchars($codeUnique);
@@ -39,7 +40,7 @@ if ($informationsPersonelles) {
         echo "<p>Bac: {$bacHTML}</p>";
     }
     if ($informationsPersonelles['specialite'] !== 'N/A') {
-        echo "<p>Spécialité: {$specialiteHTML}</p>";
+        echo "<p class='specialite-long-text'>" . "Spécialité: {$specialiteHTML}" . "</p>";
     }
     if ($informationsPersonelles['typeAdm'] !== 'N/A') {
         echo "<p>Type d'admission: {$typeAdmHTML}</p>";

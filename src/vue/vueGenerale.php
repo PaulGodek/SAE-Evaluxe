@@ -39,8 +39,9 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
         <?php else: ?>
             <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
                 <a href="controleurFrontal.php?action=afficherFormulaireImport&controleur=administrateur"
-                   class="item">Importer
-                    les fichiers Excel</a>
+                   class="item">Importation</a>
+                <a href="controleurFrontal.php?action=afficherSemestres&controleur=administrateur"
+                   class="item">Information des semestres</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"
                    class="item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
