@@ -15,19 +15,73 @@ class EtudiantRepository extends AbstractRepository
 {
     private static string $tableEtudiant = "EtudiantImportation";
 
+    public function getNomTable(): string
+    {
+        return self::$tableEtudiant;
+    }
+
+    protected function getNomClePrimaire(): string
+    {
+        return "login";
+    }
+
+    protected function getNomsColonnes(): array
+    {
+        return ["login", "codeUnique", "code_nip", "demandes"];
+    }
+
+    protected function formatTableauSQL(AbstractDataObject $etudiant): array
+    {
+        return array(
+            "loginTag" => $etudiant->getUtilisateur()->getLogin(),
+            "codeUniqueTag" => $etudiant->getCodeUnique(),
+            "code_nipTag" => $etudiant->getCodeNip(),
+            "demandesTag" => $etudiant->getDemandes(),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private static function getTablesSemestrePublie(): array
+    {
+        //$pdo = ConnexionBaseDeDonnees::getPdo();
+        //$sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
+        //$stmt = $pdo->query($sql);
+        //$tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $tables = ['OLDsemestre1_2024', 'OLDsemestre2_2024', 'OLDsemestre3_2024', 'OLDsemestre4_2024', 'OLDsemestre5_2024'];
+        return $tables;
+    }
+
+    private static function getCorpsSQLSemestre(array $tablesSemestre) : string
+    {
+        $tempSql = "SELECT Distinct * FROM " . self::$tableEtudiant . " e ";
+        foreach ($tablesSemestre as $table) {
+            $tempSql = $tempSql . "JOIN $table ON $table.code_nip = e.code_nip ";
+        }
+        return $tempSql;
+    }
+
+    public static function getCorpsOrderBy(string $parametre, array $tablesSemestre): string
+    {
+        $tempSql = "ORDER BY ";
+        for ($i = 0; $i < count($tablesSemestre) - 1; $i++) {
+            $tempSql = $tempSql . $tablesSemestre[$i] . "." . $parametre . ", ";
+        }
+        $tempSql = $tempSql . $tablesSemestre[count($tablesSemestre) - 1] . "." . $parametre;
+        return $tempSql;
+    }
+
     /**
      * @throws RandomException
      */
     public static function recupererEtudiantsOrdonneParNom(): array
     {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
-            " e 
-        JOIN semestre1_2024 s1 on s1.code_nip=e.code_nip
-        JOIN semestre2_2024 s2 on s2.code_nip=e.code_nip
-        JOIN semestre3_2024 s3 on s3.code_nip=e.code_nip
-        JOIN semestre4_2024 s4 on s4.code_nip=e.code_nip
-        JOIN semestre5_2024 s5 on s5.code_nip=e.code_nip
-        ORDER BY s1.Nom,s2.Nom,s3.Nom,s4.Nom,s5.Nom ");
+        $tables = self::getTablesSemestrePublie();
+        $sql = self::getCorpsSQLSemestre($tables);
+        $sql = $sql . " " . self::getCorpsOrderBy("Nom", $tables) . ";";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -39,14 +93,11 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
     {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
-            " e 
-        JOIN semestre1_2024 s1 on s1.code_nip=e.code_nip
-        JOIN semestre2_2024 s2 on s2.code_nip=e.code_nip
-        JOIN semestre3_2024 s3 on s3.code_nip=e.code_nip
-        JOIN semestre4_2024 s4 on s4.code_nip=e.code_nip
-        JOIN semestre5_2024 s5 on s5.code_nip=e.code_nip
-        ORDER BY s1.Prénom,s2.Prénom,s3.Prénom,s4.Prénom,s5.Prénom ");
+        $tables = self::getTablesSemestrePublie();
+        $sql = self::getCorpsSQLSemestre($tables);
+        $sql = $sql . " " . self::getCorpsOrderBy("Prénom", $tables) . ";";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -57,14 +108,11 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParParcours(): array
     {
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query("SELECT Distinct * FROM " . self::$tableEtudiant .
-            " e 
-        JOIN semestre1_2024 s1 on s1.code_nip=e.code_nip
-        JOIN semestre2_2024 s2 on s2.code_nip=e.code_nip
-        JOIN semestre3_2024 s3 on s3.code_nip=e.code_nip
-        JOIN semestre4_2024 s4 on s4.code_nip=e.code_nip
-        JOIN semestre5_2024 s5 on s5.code_nip=e.code_nip
-        ORDER BY s1.Parcours,s2.Parcours,s3.Parcours,s4.Parcours,s5.Parcours;");
+        $tables = self::getTablesSemestrePublie();
+        $sql = self::getCorpsSQLSemestre($tables);
+        $sql = $sql . " " . self::getCorpsOrderBy("Parcours", $tables) . ";";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
         $tableauEtudiant = [];
         foreach ($pdoStatement as $EtudiantFormatTableau) {
@@ -127,32 +175,6 @@ class EtudiantRepository extends AbstractRepository
         }
 
         return (new EtudiantRepository)->construireDepuisTableauSQL($etudiantFormatTableau);
-    }
-
-
-    public function getNomTable(): string
-    {
-        return self::$tableEtudiant;
-    }
-
-    protected function getNomClePrimaire(): string
-    {
-        return "login";
-    }
-
-    protected function getNomsColonnes(): array
-    {
-        return ["login", "codeUnique", "code_nip", "demandes"];
-    }
-
-    protected function formatTableauSQL(AbstractDataObject $etudiant): array
-    {
-        return array(
-            "loginTag" => $etudiant->getUtilisateur()->getLogin(),
-            "codeUniqueTag" => $etudiant->getCodeUnique(),
-            "code_nipTag" => $etudiant->getCodeNip(),
-            "demandesTag" => $etudiant->getDemandes(),
-        );
     }
 
     public static function rechercherEtudiantParLogin(string $recherche): array
@@ -222,8 +244,8 @@ class EtudiantRepository extends AbstractRepository
 
     public static function getNomPrenomParCodeNip($code_nip): ?array
     {
-        $tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
         $pdo = ConnexionBaseDeDonnees::getPdo();
+        $tables = self::getTablesSemestrePublie();
 
         foreach ($tables as $table) {
             $query = "SELECT Nom, Prénom FROM {$table} WHERE code_nip = :code_nipTag";
@@ -244,11 +266,7 @@ class EtudiantRepository extends AbstractRepository
     public static function recupererDetailsEtudiantParCodeNip($code_nip): array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        //$tables = self::getAllSemesterTables();
-        $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
-        $stmt = $pdo->query($sql);
-        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        //$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
+        $tables = self::getTablesSemestrePublie();
         $etudiantInfo = null;
         $etudiantDetailsPerSemester = [];
 
@@ -319,9 +337,7 @@ class EtudiantRepository extends AbstractRepository
             $stmt = $pdo->query($sql);
             $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
-            $sql = "SELECT nomTable FROM " . (new AdministrateurRepository())->getNomTableSemestre() . " WHERE estPublie = TRUE";
-            $stmt = $pdo->query($sql);
-            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $tables = self::getTablesSemestrePublie();
         }
 
         //$tables = ['semestre1_2024', 'semestre2_2024', 'semestre3_2024', 'semestre4_2024', 'semestre5_2024'];
