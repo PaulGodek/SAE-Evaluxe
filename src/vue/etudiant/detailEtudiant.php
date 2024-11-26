@@ -13,16 +13,16 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
     <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
 
 <?php
-$codeUniqueHTML = htmlspecialchars($codeUnique);
-$nomHTML = htmlspecialchars($informationsPersonelles["nom"]);
-$prenomHTML = htmlspecialchars($informationsPersonelles["prenom"]);
-$etuidHTML = htmlspecialchars($informationsPersonelles["etudid"]);
-$codenipHTML = htmlspecialchars($informationsPersonelles["codenip"]);
-$civHTML = htmlspecialchars($informationsPersonelles["civ"]);
-$bacHTML = htmlspecialchars($informationsPersonelles["bac"]);
-$specialiteHTML = htmlspecialchars($informationsPersonelles["specialite"]);
-$typeAdmHTML = htmlspecialchars($informationsPersonelles["typeAdm"]);
-$rgAdmHTML = htmlspecialchars($informationsPersonelles["rgAdm"]);
+$codeUniqueHTML = $codeUnique;
+$nomHTML = $informationsPersonelles["nom"];
+$prenomHTML = $informationsPersonelles["prenom"];
+$etuidHTML = $informationsPersonelles["etudid"];
+$codenipHTML = $informationsPersonelles["codenip"];
+$civHTML = $informationsPersonelles["civ"];
+$bacHTML = $informationsPersonelles["bac"];
+$specialiteHTML = $informationsPersonelles["specialite"];
+$typeAdmHTML = $informationsPersonelles["typeAdm"];
+$rgAdmHTML = $informationsPersonelles["rgAdm"];
 
 if (ConnexionUtilisateur::estAdministrateur())
     echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';

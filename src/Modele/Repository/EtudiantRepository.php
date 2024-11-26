@@ -53,7 +53,7 @@ class EtudiantRepository extends AbstractRepository
         return $tables;
     }
 
-    private static function getCorpsSQLSemestre(array $tablesSemestre) : string
+    private static function getCorpsSQLSemestre(array $tablesSemestre): string
     {
         $tempSql = "SELECT Distinct * FROM " . self::$tableEtudiant . " e ";
         foreach ($tablesSemestre as $table) {
@@ -367,7 +367,7 @@ class EtudiantRepository extends AbstractRepository
                     ];
                 }
 
-                unset($details['Nom'], $details['Prénom'], $details['nom_et_prénom'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.'], $details['Type Adm.']);
+                unset($details['Nom'], $details['Prénom'], $details['Nom_1'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.'], $details['Type Adm.']);
 
                 $etudiantDetailsPerSemester[$table] = array_map(function ($value) {
                     return htmlspecialchars($value ?? '');
