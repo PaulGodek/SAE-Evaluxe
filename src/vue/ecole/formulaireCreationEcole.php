@@ -25,6 +25,10 @@
             <input class="InputAddOn-field" type="text" name="ville" id="ville_id" required>
         </p>
         <p class="InputAddOn">
+            <label class="InputAddOn-item" for="adresseMail_id">Adresse Mail&#42;</label>
+            <input class="InputAddOn-field" type="text" name="adresseMail" id="adresseMail_id" required>
+        </p>
+        <p class="InputAddOn">
             <label class="InputAddOn-item" for="mdp_id">Mot de passe&#42;</label>
             <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp" id="mdp_id" required>
         </p>
@@ -33,8 +37,8 @@
             <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp2" id="mdp2_id" required>
         </p>
         <p class="InputAddOn">
-<!--            <input class="InputAddOn-field" type="submit" value="Envoyer"/>-->
-            <button class = "button-submit" type="submit">Envoyer</button>
+            <!--            <input class="InputAddOn-field" type="submit" value="Envoyer"/>-->
+            <button class="button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>

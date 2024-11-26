@@ -136,7 +136,7 @@ class ControleurEcole extends ControleurGenerique
 //            self::afficherErreurEcole("Mots de passe distincts");
             return;
         }
-        if (!isset($_GET["login"]) || !isset($_GET["nom"]) || !isset($_GET["adresse"]) || !isset($_GET["ville"])) {
+        if (!isset($_GET["login"]) || !isset($_GET["nom"]) || !isset($_GET["adresse"]) || !isset($_GET["ville"]) || !isset($_GET["adresseMail"])) {
             self::redirectionVersURL("warning", "Compléter tous les champs", "afficherFormulaireCreation&controleur=ecole");
             return;
         }
@@ -155,7 +155,7 @@ class ControleurEcole extends ControleurGenerique
     {
         $utilisateur = new Utilisateur($_GET["login"], "universite", $_GET['mdp']);
         (new UtilisateurRepository)->ajouter($utilisateur);
-        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], false, []);
+        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["adresseMail"], false, []);
         (new EcoleRepository)->ajouter($ecole);
         MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
@@ -202,7 +202,12 @@ class ControleurEcole extends ControleurGenerique
 
             $mail->Body = ob_get_clean();
             $mail->send();
-            MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
+            if ($subject == "Création de compte école") {
+                MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
+            } else {
+                MessageFlash::ajouter("success", "L'email de validation a été envoyé");
+            }
+
         } catch (Exception $e) {
             MessageFlash::ajouter("warning", "Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
             self::afficherErreurEcole("");
@@ -302,7 +307,7 @@ class ControleurEcole extends ControleurGenerique
             "nom" => $ecole->getNom(),
             "adresse" => $ecole->getAdresse(),
             "ville" => $ecole->getVille(),
-            "login" => $ecole->getLogin(),
+            "login" => $ecole->getUtilisateur()->getLogin(),
         ];
         self::sendEmail($data, $ecole->getAdresseMail(), "Votre compte été validé!");
 
