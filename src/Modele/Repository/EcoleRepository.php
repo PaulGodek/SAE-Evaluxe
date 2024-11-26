@@ -82,9 +82,7 @@ class EcoleRepository extends AbstractRepository
             $ecoleFormatTableau['adresse'],
             $ecoleFormatTableau['ville'],
             $ecoleFormatTableau['valide'],
-            isset($ecoleFormatTableau['futursEtudiants']) ? json_decode($ecoleFormatTableau['futursEtudiants'], true) : []
-
-        );
+            isset($ecoleFormatTableau['futursEtudiants']) ? json_decode($ecoleFormatTableau['futursEtudiants'], true) : [], $ecoleFormatTableau['adresseMail']);
 
         if (!empty($ecoleFormatTableau['futursEtudiants'])) {
             $futursEtudiants = json_decode($ecoleFormatTableau['futursEtudiants'], true);
@@ -152,7 +150,7 @@ class EcoleRepository extends AbstractRepository
 
     protected function getNomsColonnes(): array
     {
-        return ["login", "nom", "adresse", "ville", "futursEtudiants", "valide"];
+        return ["login", "nom", "adresse", "ville", "futursEtudiants", "valide", "adresseMail"];
     }
 
     protected function formatTableauSQL(AbstractDataObject $ecole): array
@@ -173,7 +171,8 @@ class EcoleRepository extends AbstractRepository
             "adresseTag" => $ecole->getAdresse(),
             "villeTag" => $ecole->getVille(),
             "futursEtudiantsTag" => $futursEtudiantsEncode,
-            "valideTag" => $valide
+            "valideTag" => $valide,
+            "adresseMailTag" => $ecole->getAdresseMail(),
         );
     }
 
