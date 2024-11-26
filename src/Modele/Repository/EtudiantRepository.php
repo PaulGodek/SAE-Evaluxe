@@ -287,7 +287,7 @@ class EtudiantRepository extends AbstractRepository
                 continue;
             }
 
-            $query = "SELECT Nom, Prénom, Abs, Just_1, Moy, Parcours, {$ueColumnsString} FROM {$table} WHERE code_nip = :code_nipTag";
+            $query = "SELECT Nom, Prénom, Abs, 'Just.', Moy, Parcours, {$ueColumnsString} FROM {$table} WHERE code_nip = :code_nipTag";
             $stmt = $pdo->prepare($query);
             $stmt->execute([':code_nipTag' => $code_nip]);
 
@@ -300,7 +300,7 @@ class EtudiantRepository extends AbstractRepository
                 }
 
                 $absences = (int)htmlspecialchars($details['Abs'] ?? '0');
-                $justifications = (int)htmlspecialchars($details['Just_1'] ?? '0');
+                $justifications = (int)htmlspecialchars($details['Just.'] ?? '0');
                 $moyenne = (float)htmlspecialchars($details['Moy'] ?? '0');
                 $parcours = htmlspecialchars($details['Parcours'] ?? '-');
 
