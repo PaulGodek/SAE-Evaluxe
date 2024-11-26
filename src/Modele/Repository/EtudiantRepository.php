@@ -209,8 +209,7 @@ class EtudiantRepository extends AbstractRepository
         return $tableauEtudiant;
     }
 
-    //Pour plus tard
-    /*public static function rechercherEtudiant(string $recherche)
+    public static function rechercherEtudiant(string $recherche)
     {
 
         $sql = "SELECT * FROM " . self::$tableEtudiant .
@@ -240,7 +239,7 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
 
-    }*/
+    }
 
     public static function getNomPrenomParCodeNip($code_nip): ?array
     {
@@ -453,6 +452,61 @@ class EtudiantRepository extends AbstractRepository
             if ($e->getCode() == '45000') {
 
             }
+        }
+    }
+
+    public static function creerDetailEtudiant(string $code_nip, ?string $Civ, string $Nom, string $Prenom)
+    {
+            if (is_null($Civ))
+                $Civ = "";
+            $sql = "INSERT INTO InformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) VALUES ( :code_nipTag , :CivTag , :NomTag , :PrenomTag );";
+            $pdo = ConnexionBaseDeDonnees::getPdo();
+            $pdoStatement = $pdo->prepare($sql);
+            $values = [
+                "code_nipTag" => $code_nip,
+                "CivTag" => $Civ,
+                "NomTag" => $Nom,
+                "PrenomTag" => $Prenom
+            ];
+
+            $pdoStatement->execute($values);
+    }
+
+    public static function creerParcoursEtudiant(string $code_nip, string $Parcours)
+    {
+        try {
+            $sql = "SELECT * FROM ParcoursEtudiant WHERE code_nip = :code_nipTag";
+            $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+            $values = [
+                "code_nipTag" => $code_nip
+            ];
+
+            $pdoStatement->execute($values);
+
+            if ($pdoStatement->rowCount() !== 0) {
+                $sql = "UPDATE ParcoursEtudiant SET Parcours = :ParcoursTag WHERE code_nip = :code_nipTag;";
+                $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+                $values = [
+                    "code_nipTag" => $code_nip,
+                    "ParcoursTag" => $Parcours
+                ];
+
+                $pdoStatement->execute($values);
+            } else {
+                $sql = "INSERT INTO ParcoursEtudiant VALUES (:code_nipTag, :ParcoursTag);";
+                $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+                $values = [
+                    "code_nipTag" => $code_nip,
+                    "ParcoursTag" => $Parcours
+                ];
+
+                $pdoStatement->execute($values);
+            }
+        } catch (PDOException $e) {
+            if ($e->getCode() == '45000') {}
         }
     }
 }

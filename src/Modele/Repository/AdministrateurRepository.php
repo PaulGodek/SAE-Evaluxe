@@ -6,6 +6,7 @@ use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Administrateur;
 use Exception;
 use PDO;
+use PDOException;
 use Shuchkin\SimpleXLSX;
 
 class AdministrateurRepository extends AbstractRepository
@@ -166,6 +167,17 @@ class AdministrateurRepository extends AbstractRepository
             }
             UtilisateurRepository::creerUtilisateur($row[4], $row[5]);
             EtudiantRepository::creerEtudiant($row[4], $row[5], $row[1]);
+            EtudiantRepository::creerDetailEtudiant($row[1], $row[3], $row[4], $row[5]);
+            $idxParcours = 0;
+            foreach ($columns as $col) {
+                if (strcmp($col, "Parcours") === 0) {
+                    break;
+                }
+                $idxParcours++;
+            }
+            if (!is_null($row[$idxParcours])) {
+                EtudiantRepository::creerParcoursEtudiant($row[1], $row[$idxParcours]);
+            }
         }
     }
 
