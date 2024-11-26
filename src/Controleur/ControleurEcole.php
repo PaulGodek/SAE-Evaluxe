@@ -164,6 +164,7 @@ class ControleurEcole extends ControleurGenerique
             "adresse" => $ecole->getAdresse(),
             "ville" => $ecole->getVille(),
             "login" => $utilisateur->getLogin(),
+            "title" => "Un nouveau compte École a été créé :"
         ];
 
         self::sendEmail($data, "evaluxe2024@gmail.com", "Création de compte école");
@@ -196,7 +197,8 @@ class ControleurEcole extends ControleurGenerique
                 "adresse" => $data["adresse"],
                 "ville" => $data["ville"],
                 "login" => $data["login"],
-                "dateCreation" => date('Y-m-d H:i:s')
+                "dateCreation" => date('Y-m-d H:i:s'),
+                "title" => $data["title"],
             ]);
             include __DIR__ . '/../vue/ecole/emailEcole.php';
 
@@ -308,6 +310,7 @@ class ControleurEcole extends ControleurGenerique
             "adresse" => $ecole->getAdresse(),
             "ville" => $ecole->getVille(),
             "login" => $ecole->getUtilisateur()->getLogin(),
+            "title" => "Votre compte a été validé!"
         ];
         self::sendEmail($data, $ecole->getAdresseMail(), "Votre compte été validé!");
 
