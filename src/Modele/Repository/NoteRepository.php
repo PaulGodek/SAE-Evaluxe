@@ -54,4 +54,9 @@ class NoteRepository extends AbstractRepository
         $result = $pdoStatement->fetch();
         return $result['moyenne'] !== null ? (float)$result['moyenne'] : 0.0;
     }
+
+    public function getUEParSemestre(string $UE, string $semestre, $code_nip): float
+    {
+
+    }
 }
