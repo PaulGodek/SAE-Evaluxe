@@ -157,7 +157,7 @@ class ControleurEcole extends ControleurGenerique
         (new UtilisateurRepository)->ajouter($utilisateur);
         $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["adresseMail"], false, []);
         (new EcoleRepository)->ajouter($ecole);
-        MessageFlash::ajouter("success", "L'école a été créée avec succès.");
+        //MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         $data = [
             "nom" => $ecole->getNom(),
@@ -204,11 +204,6 @@ class ControleurEcole extends ControleurGenerique
 
             $mail->Body = ob_get_clean();
             $mail->send();
-            if ($subject == "Création de compte école") {
-                MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
-            } else {
-                MessageFlash::ajouter("success", "L'email de validation a été envoyé");
-            }
 
         } catch (Exception $e) {
             MessageFlash::ajouter("warning", "Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
