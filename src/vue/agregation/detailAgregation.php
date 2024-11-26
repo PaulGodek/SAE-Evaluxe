@@ -1,5 +1,5 @@
 <section>
-    <h1>Détails de l'Agrégation</h1>
+    <h1>Détails de l'Agrégation </h1>
 
     <?php if (!empty($agregationDetails['nom_agregation'])): ?>
         <p><strong>Nom:</strong> <?= htmlspecialchars($agregationDetails['nom_agregation']) ?></p>
@@ -13,7 +13,6 @@
         <p><strong>Login:</strong> <?= htmlspecialchars($agregationDetails['login']) ?></p>
     <?php endif; ?>
 
-    <h2>Matières</h2>
     <?php if (empty($agregationDetails['matieres'])): ?>
         <p>Aucune matière trouvée.</p>
     <?php else: ?>
@@ -21,7 +20,7 @@
             <thead>
             <tr>
                 <th>Id Ressource</th>
-                <th>Matière</th>
+                <th>Nom Ressource</th>
                 <th>Coefficient</th>
             </tr>
             </thead>
