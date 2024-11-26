@@ -112,12 +112,11 @@ class ControleurEtudiant extends ControleurGenerique
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
                     $result = EtudiantRepository::recupererTousLesDetailsEtudiantParCodeNip($code_nip);
 
-                    $notesAgregation = AgregationRepository::recupererNotesEtudiant($idEtudiant);
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
                     $agregations = (new AgregationRepository)->getAgregationDetailsByLogin($_GET['login']);
-                    $agregationResults = AgregationRepository::calculateAgregationNotes($agregations, $idEtudiant);
+                    $agregationResults = AgregationRepository::calculateAgregationNotes($agregations, $code_nip);
 
 
                     self::afficherVue('vueGenerale.php', [
@@ -126,12 +125,10 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsPersonelles" => $etudiantInfo,
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "code_nip" => $code_nip,
-                        "notesAgrégation" => $notesAgregation,
-                        "agregations" => $agregationResults,
-                        "idEtudiant" => $idEtudiant,
                         "codeUnique" => $etudiant->getCodeUnique(),
-                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"
-                    ]);
+                        "agregations" => $agregationResults,
+                        "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+
                 }
             } catch (TypeError $e) {
                 self::afficherErreurEtudiant(" ");
