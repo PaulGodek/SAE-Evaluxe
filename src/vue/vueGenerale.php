@@ -104,7 +104,16 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 </div>
 
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur" class="nav-item">Utilisateurs</a>
-                <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
+                <div class="dropdown">
+                    <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant"
+                       class="nav-item">Étudiants</a>
+                    <div class="dropdown-content">
+                        <a href="controleurFrontal.php?controleur=Note&action=afficherChartParcour"
+                           class="nav-item">Chart Parcours</a>
+                        <a href="controleurFrontal.php?controleur=Note&action=afficherChartMoyenneUEParSemestre"
+                           class="nav-item">Chart UEs</a>
+                    </div>
+                </div>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur"
                    class="nav-item">Professeurs</a>
