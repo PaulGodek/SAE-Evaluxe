@@ -37,3 +37,62 @@
         </table>
     <?php endif; ?>
 </section>
+
+<style>
+    section h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    section p {
+        font-size: 1.1rem;
+        color: #555;
+        margin: 10px 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table th, table td {
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    table th {
+        background-color: #f8f8f8;
+        color: #333;
+    }
+
+    table td {
+        background-color: #fafafa;
+    }
+
+    table tr:nth-child(even) td {
+        background-color: #f1f1f1;
+    }
+
+    table tr:hover td {
+        background-color: #e2e2e2;
+    }
+
+    section p {
+        font-size: 1rem;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    section h2 {
+        font-size: 1.5rem;
+        color: #444;
+        margin-top: 30px;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 10px;
+    }
+
+</style>
