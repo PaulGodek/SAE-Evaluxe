@@ -14,15 +14,17 @@ class Ecole extends AbstractDataObject
     private array $futursEtudiants = [];
 
     private bool $estValide;
+    private string $adresseMail = "";
 
-    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, bool $estValide, ?array $futursEtudiants)
+    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, string $adresseMail, bool $estValide, ?array $futursEtudiants)
     {
         $this->ecole = $ecole;
         $this->nom = $nom;
         $this->adresse = $adresse;
         $this->ville = $ville;
-        $this->futursEtudiants = $futursEtudiants ?? [];
+        $this->adresseMail = $adresseMail;
         $this->estValide = $estValide;
+        $this->futursEtudiants = $futursEtudiants ?? [];
     }
 
     public function getNom(): string
@@ -106,4 +108,15 @@ class Ecole extends AbstractDataObject
     {
         return EcoleRepository::mettreAJourFutursEtudiants($this);
     }
+
+    public function getAdresseMail(): string
+    {
+        return $this->adresseMail;
+    }
+
+    public function setAdresseMail(string $adresseMail): void
+    {
+        $this->adresseMail = $adresseMail;
+    }
+
 }
