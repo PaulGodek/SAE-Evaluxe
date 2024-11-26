@@ -38,7 +38,7 @@ class ControleurAgregation extends ControleurGenerique
         }
         $ressourceRepository = new RessourceRepository();
         $ressources = $ressourceRepository->recuperer();
-        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => "agregation/creerAgregation.php", 'ressources' => $ressources]);
+        self::afficherVue('vueGenerale.php', ["titre" => "Créer une agrégation", "cheminCorpsVue" => "agregation/creerAgregation.php", 'ressources' => $ressources]);
     }
 
     public static function creerAgregationDepuisFormulaire(): void
@@ -104,6 +104,7 @@ class ControleurAgregation extends ControleurGenerique
         }
 
         self::afficherVue('vueGenerale.php', [
+            "titre" => "Détails de l'agrégation",
             "cheminCorpsVue" => "agregation/detailAgregation.php",
             "agregationDetails" => $agregationDetails
         ]);
