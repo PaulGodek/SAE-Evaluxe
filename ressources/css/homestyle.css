@@ -494,3 +494,7 @@ legend {
 .btn-delete:hover {
     background-color: #c82333;
 }
+
+label[for="codeUnique_id"] {
+    font-size: 20px;
+}

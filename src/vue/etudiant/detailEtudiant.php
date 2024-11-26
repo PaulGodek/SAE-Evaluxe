@@ -55,7 +55,7 @@ if ($informationsPersonelles) {
     }
 
     // Thêm phần Agregations et notes finales
-    echo "<h2>Agregations et notes finales</h2>";
+    echo "<h2>Agrégations et notes finales</h2>";
     if (!empty($agregations)) {
         echo "<ul class='agregation-list'>";
         foreach ($agregations as $agregation) {
@@ -66,7 +66,7 @@ if ($informationsPersonelles) {
         }
         echo "</ul>";
     } else {
-        echo "<p>Aucune agregation disponible.</p>";
+        echo "<p>Aucune agrégation disponible.</p>";
     }
 
 

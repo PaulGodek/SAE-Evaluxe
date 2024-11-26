@@ -13,8 +13,12 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
     <input type="hidden" name="action" value="ajouterEtudiant"/>
     <input type="hidden" name="controleur" value="ecole"/>
     <input type="hidden" name="login" value="<?php echo htmlspecialchars($ecole->getUtilisateur()->getLogin()); ?>"/>
-    <label for="codeUnique">Code Unique de l'Étudiant:</label>
-    <input type="text" id="codeUnique" name="codeUnique" required>
+    <p class="InputAddOn">
+        <label class="InputAddOn-item" for="codeUnique_id">Code Unique de l'Étudiant:&#42;</label>
+        <input class="InputAddOn-field" type="text" name="codeUnique" id="codeUnique_id" required>
+    </p>
+    <!--    <label for="codeUnique">Code Unique de l'Étudiant:</label>-->
+    <!--    <input type="text" id="codeUnique" name="codeUnique" required>-->
     <button class="button-submit" type="submit">Ajouter Étudiant</button>
 </form>
 
