@@ -115,9 +115,8 @@ class ControleurEtudiant extends ControleurGenerique
 
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
-                    $agregations = (new AgregationRepository)->getAgregationDetailsByLogin($_GET['login']);
-                    $agregationResults = AgregationRepository::calculateAgregationNotes($agregations, $code_nip);
-
+                    $agregations = (new AgregationRepository)->getAgregationDetailsByLogin(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+                    $agregationsResults = AgregationRepository::calculateAgregationNotes($agregations, $code_nip);
 
                     self::afficherVue('vueGenerale.php', [
                         "etudiant" => $etudiant,
@@ -126,7 +125,7 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
-                        "agregations" => $agregationResults,
+                       "agregations" => $agregationsResults,
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
 
                 }

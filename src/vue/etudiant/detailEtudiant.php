@@ -3,15 +3,15 @@
 /** @var array $informationsPersonelles */
 /** @var array $informationsParSemestre */
 /** @var string $code_nip */
-
 /** @var string $loginEtudiant */
 /** @var array $agregations */
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Modele\Repository\AgregationRepository;
 
 ?>
 
-<link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
+    <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
 
 <?php
 $codeUniqueHTML = $codeUnique;
@@ -25,20 +25,12 @@ $specialiteHTML = $informationsPersonelles["specialite"];
 $typeAdmHTML = $informationsPersonelles["typeAdm"];
 $rgAdmHTML = $informationsPersonelles["rgAdm"];
 
-
-
-if (ConnexionUtilisateur::estAdministrateur())
+if (ConnexionUtilisateur::estAdministrateur()) {
     echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';
-
-if (!empty($agregations)) {
-    echo "<h2>Agregations et notes finales</h2>";
-    foreach ($agregations as $agregation) {
-        echo "<h3>Nom agrégation: " . htmlspecialchars($agregation['nom_agregation']) . "</h3>";
-        echo "<p>Note finale: " . number_format($agregation['note_finale'], 2) . "</p>";
-    }
-} else {
-    echo "<p>Aucune agregation disponible.</p>";
 }
+
+$agregations = (new AgregationRepository)->getAgregationDetailsByLogin(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+$agregations = AgregationRepository::calculateAgregationNotes($agregations, $code_nip);
 
 if ($informationsPersonelles) {
     echo '<div class="etudiant-details">';
@@ -62,6 +54,22 @@ if ($informationsPersonelles) {
         echo "<p>Rg. Adm.: {$rgAdmHTML}</p>";
     }
 
+    // Thêm phần Agregations et notes finales
+    echo "<h2>Agregations et notes finales</h2>";
+    if (!empty($agregations)) {
+        echo "<ul class='agregation-list'>";
+        foreach ($agregations as $agregation) {
+            echo "<li class='agregation-item'>";
+            echo "<span class='nom-agregation'>" . htmlspecialchars($agregation['nom_agregation']) . ":</span> ";
+            echo "<span class='note-finale'>" . number_format($agregation['note_finale'], 3) . "</span>";
+            echo "</li>";
+        }
+        echo "</ul>";
+    } else {
+        echo "<p>Aucune agregation disponible.</p>";
+    }
+
+
     foreach ($informationsParSemestre as $table => $details) {
         preg_match('/semestre(\d+)_\d+/', $table, $matches);
         $semesterNumber = htmlspecialchars($matches[1] ?? 'Inconnu');
@@ -84,3 +92,4 @@ if ($informationsPersonelles) {
 } else {
     echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec code NIP ' . htmlspecialchars($code_nip) . '.</p>';
 }
+

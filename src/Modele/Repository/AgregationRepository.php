@@ -104,7 +104,7 @@ class AgregationRepository extends AbstractRepository
 
     public function getAgregationDetailsByLogin(string $login): array
     {
-        $sql = "SELECT * FROM agregations WHERE login = :login";
+        $sql = "SELECT * FROM " . $this->getNomTable() . " WHERE login = :login";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['login' => $login]);
 
