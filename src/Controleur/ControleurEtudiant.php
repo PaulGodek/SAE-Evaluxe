@@ -265,7 +265,7 @@ class ControleurEtudiant extends ControleurGenerique
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        $etudiants = EtudiantRepository::rechercherEtudiantParLogin($_GET['reponse']);
+        $etudiants = EtudiantRepository::rechercherEtudiant($_GET['reponse']);
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
             $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());

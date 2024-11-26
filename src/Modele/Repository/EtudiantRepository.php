@@ -53,33 +53,12 @@ class EtudiantRepository extends AbstractRepository
         return $tables;
     }
 
-    private static function getCorpsSQLSemestre(array $tablesSemestre): string
-    {
-        $tempSql = "SELECT Distinct * FROM " . self::$tableEtudiant . " e ";
-        foreach ($tablesSemestre as $table) {
-            $tempSql = $tempSql . "JOIN $table ON $table.code_nip = e.code_nip ";
-        }
-        return $tempSql;
-    }
-
-    public static function getCorpsOrderBy(string $parametre, array $tablesSemestre): string
-    {
-        $tempSql = "ORDER BY ";
-        for ($i = 0; $i < count($tablesSemestre) - 1; $i++) {
-            $tempSql = $tempSql . $tablesSemestre[$i] . "." . $parametre . ", ";
-        }
-        $tempSql = $tempSql . $tablesSemestre[count($tablesSemestre) - 1] . "." . $parametre;
-        return $tempSql;
-    }
-
     /**
      * @throws RandomException
      */
     public static function recupererEtudiantsOrdonneParNom(): array
-    {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $tables = self::getTablesSemestrePublie();
-        $sql = self::getCorpsSQLSemestre($tables);
-        $sql = $sql . " " . self::getCorpsOrderBy("Nom", $tables) . ";";
+    {
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Nom";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -92,10 +71,8 @@ class EtudiantRepository extends AbstractRepository
 
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
-    {//Pire façon de faire, il va falloir changer ça pour le sprint suivant, ce n'est que temporaire
-        $tables = self::getTablesSemestrePublie();
-        $sql = self::getCorpsSQLSemestre($tables);
-        $sql = $sql . " " . self::getCorpsOrderBy("Prénom", $tables) . ";";
+    {
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Prénom";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -108,9 +85,7 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParParcours(): array
     {
-        $tables = self::getTablesSemestrePublie();
-        $sql = self::getCorpsSQLSemestre($tables);
-        $sql = $sql . " " . self::getCorpsOrderBy("Parcours", $tables) . ";";
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN ParcoursEtudiant p ON e.code_nip = p.code_nip ORDER BY p.Parcours";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -209,19 +184,18 @@ class EtudiantRepository extends AbstractRepository
         return $tableauEtudiant;
     }
 
-    //Pour plus tard
-    /*public static function rechercherEtudiant(string $recherche)
+    public static function rechercherEtudiant(string $recherche)
     {
 
-        $sql = "SELECT * FROM " . self::$tableEtudiant .
-            " WHERE nom LIKE :rechercheTag1
-            OR nom LIKE :rechercheTag2
-            OR nom LIKE :rechercheTag3
-            OR nom = :rechercheTag4
-            OR prenom LIKE :rechercheTag1
-            OR prenom LIKE :rechercheTag2
-            OR prenom LIKE :rechercheTag3
-            OR prenom = :rechercheTag4 ";
+        $sql = "SELECT * FROM ".self::$tableEtudiant." e JOIN InformationsPersonnellesEtudiants i on e.code_nip=i.code_nip
+            WHERE Nom LIKE :rechercheTag1
+            OR Nom LIKE :rechercheTag2
+            OR Nom LIKE :rechercheTag3
+            OR Nom = :rechercheTag4
+            OR Prénom LIKE :rechercheTag1
+            OR Prénom LIKE :rechercheTag2
+            OR Prénom LIKE :rechercheTag3
+            OR Prénom = :rechercheTag4 ";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -240,24 +214,21 @@ class EtudiantRepository extends AbstractRepository
         }
         return $tableauEtudiant;
 
-    }*/
+    }
 
     public static function getNomPrenomParCodeNip($code_nip): ?array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
-        $tables = self::getTablesSemestrePublie();
 
-        foreach ($tables as $table) {
-            $query = "SELECT Nom, Prénom FROM {$table} WHERE code_nip = :code_nipTag";
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([':code_nipTag' => $code_nip]);
+        $query = "SELECT Nom, Prénom FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':code_nipTag' => $code_nip]);
 
-            if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                return [
-                    'Nom' => $result['Nom'],
-                    'Prenom' => $result['Prénom']
-                ];
-            }
+        if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return [
+                'Nom' => $result['Nom'],
+                'Prenom' => $result['Prénom']
+            ];
         }
 
         return null;
@@ -453,6 +424,61 @@ class EtudiantRepository extends AbstractRepository
             if ($e->getCode() == '45000') {
 
             }
+        }
+    }
+
+    public static function creerDetailEtudiant(string $code_nip, ?string $Civ, string $Nom, string $Prenom)
+    {
+            if (is_null($Civ))
+                $Civ = "";
+            $sql = "INSERT INTO InformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) VALUES ( :code_nipTag , :CivTag , :NomTag , :PrenomTag );";
+            $pdo = ConnexionBaseDeDonnees::getPdo();
+            $pdoStatement = $pdo->prepare($sql);
+            $values = [
+                "code_nipTag" => $code_nip,
+                "CivTag" => $Civ,
+                "NomTag" => $Nom,
+                "PrenomTag" => $Prenom
+            ];
+
+            $pdoStatement->execute($values);
+    }
+
+    public static function creerParcoursEtudiant(string $code_nip, string $Parcours)
+    {
+        try {
+            $sql = "SELECT * FROM ParcoursEtudiant WHERE code_nip = :code_nipTag";
+            $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+            $values = [
+                "code_nipTag" => $code_nip
+            ];
+
+            $pdoStatement->execute($values);
+
+            if ($pdoStatement->rowCount() !== 0) {
+                $sql = "UPDATE ParcoursEtudiant SET Parcours = :ParcoursTag WHERE code_nip = :code_nipTag;";
+                $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+                $values = [
+                    "code_nipTag" => $code_nip,
+                    "ParcoursTag" => $Parcours
+                ];
+
+                $pdoStatement->execute($values);
+            } else {
+                $sql = "INSERT INTO ParcoursEtudiant VALUES (:code_nipTag, :ParcoursTag);";
+                $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+                $values = [
+                    "code_nipTag" => $code_nip,
+                    "ParcoursTag" => $Parcours
+                ];
+
+                $pdoStatement->execute($values);
+            }
+        } catch (PDOException $e) {
+            if ($e->getCode() == '45000') {}
         }
     }
 }
