@@ -136,7 +136,7 @@ class ControleurEcole extends ControleurGenerique
 //            self::afficherErreurEcole("Mots de passe distincts");
             return;
         }
-        if (!isset($_GET["login"]) || !isset($_GET["nom"]) || !isset($_GET["adresse"]) || !isset($_GET["ville"])) {
+        if (!isset($_GET["login"]) || !isset($_GET["nom"]) || !isset($_GET["adresse"]) || !isset($_GET["ville"]) || !isset($_GET["adresseMail"])) {
             self::redirectionVersURL("warning", "Compléter tous les champs", "afficherFormulaireCreation&controleur=ecole");
             return;
         }
@@ -155,24 +155,25 @@ class ControleurEcole extends ControleurGenerique
     {
         $utilisateur = new Utilisateur($_GET["login"], "universite", $_GET['mdp']);
         (new UtilisateurRepository)->ajouter($utilisateur);
-        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], false, []);
+        $ecole = new Ecole($utilisateur, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["adresseMail"], false, []);
         (new EcoleRepository)->ajouter($ecole);
-        MessageFlash::ajouter("success", "L'école a été créée avec succès.");
+        //MessageFlash::ajouter("success", "L'école a été créée avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
         $data = [
             "nom" => $ecole->getNom(),
             "adresse" => $ecole->getAdresse(),
             "ville" => $ecole->getVille(),
             "login" => $utilisateur->getLogin(),
+            "title" => "Un nouveau compte École a été créé :"
         ];
-        self::sendEmailToAdmin($data);
+
+        self::sendEmail($data, "evaluxe2024@gmail.com", "Création de compte école");
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Création de compte école", "cheminCorpsVue" => "ecole/ecoleCree.php"]);
     }
 
-    private static function sendEmailToAdmin(array $data): void
+    private static function sendEmail(array $data, string $emailRecipient, string $subject): void
     {
         $mail = new PHPMailer(true);
-        //app password: wxkp ming dado mmya
         try {
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
@@ -184,12 +185,11 @@ class ControleurEcole extends ControleurGenerique
             $mail->Port = 587;
 
             $mail->setFrom("evaluxe.iutmontpellier@gmail.com", "No Reply");
-            $mail->addAddress("evaluxe2024@gmail.com");
+            $mail->addAddress($emailRecipient);
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8';
             $mail->setLanguage('fr');
-            $mail->Subject = "Création de compte école";
-
+            $mail->Subject = $subject;
 
             ob_start();
             extract([
@@ -197,18 +197,18 @@ class ControleurEcole extends ControleurGenerique
                 "adresse" => $data["adresse"],
                 "ville" => $data["ville"],
                 "login" => $data["login"],
-                "dateCreation" => date('Y-m-d H:i:s')
+                "dateCreation" => date('Y-m-d H:i:s'),
+                "title" => $data["title"],
             ]);
             include __DIR__ . '/../vue/ecole/emailEcole.php';
 
             $mail->Body = ob_get_clean();
             $mail->send();
-            MessageFlash::ajouter("success", "Le message a été envoyé à l'administrateur");
+
         } catch (Exception $e) {
             MessageFlash::ajouter("warning", "Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
             self::afficherErreurEcole("");
         }
-
     }
 
     public static function supprimer(): void
@@ -243,7 +243,7 @@ class ControleurEcole extends ControleurGenerique
 
         $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
         $ecoleExistant = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
-        $ecole = new Ecole($user, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"], $ecoleExistant->getFutursEtudiants());
+        $ecole = new Ecole($user, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"], $ecoleExistant->getFutursEtudiants(), $ecoleExistant->getAdresseMail());
         (new EcoleRepository)->mettreAJour($ecole);
         MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
         $ecoles = (new EcoleRepository)->recuperer();
@@ -300,6 +300,14 @@ class ControleurEcole extends ControleurGenerique
         MessageFlash::ajouter("success", "L'école a été validée avec succès.");
         (new EcoleRepository())->valider($ecole);
         $ecoles = (new EcoleRepository())->recuperer();
+        $data = [
+            "nom" => $ecole->getNom(),
+            "adresse" => $ecole->getAdresse(),
+            "ville" => $ecole->getVille(),
+            "login" => $ecole->getUtilisateur()->getLogin(),
+            "title" => "Votre compte a été validé!"
+        ];
+        self::sendEmail($data, $ecole->getAdresseMail(), "Votre compte été validé!");
 
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Validation de compte ecole", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 
