@@ -57,7 +57,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
             <?php if (ConnexionUtilisateur::estProfesseur() || ConnexionUtilisateur::estEcole()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
             <?php endif; ?>
-            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="item">Agrégation</a>
+            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="item">Agrégations</a>
             <input type="checkbox" id="logOutToggle" hidden>
             <label for="logOutToggle" id="LogOutButton">
                 <img src="../ressources/images/log-out.png" id="LogOutIcon" alt="Log Out Icon">
@@ -119,7 +119,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
             <?php if (ConnexionUtilisateur::estProfesseur() || ConnexionUtilisateur::estEcole()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
-            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégation</a>
+            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégations</a>
             <!--<a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">
                 <img src="../ressources/images/log-out.png" alt="Déconnexion" class="nav-icon">
             </a>-->

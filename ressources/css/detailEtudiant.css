@@ -130,3 +130,23 @@ tr:hover {
     margin-top: -10px;
     margin-bottom: 15px;
 }
+
+.agregation-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.agregation-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.nom-agregation {
+    font-weight: bold;
+}
+
+.note-finale {
+    color: #007BFF; /* Màu xanh nổi bật */
+}

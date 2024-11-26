@@ -3,6 +3,7 @@
 namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
+use App\GenerateurAvis\Modele\DataObject\Matiere;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\DataObject\Agregation;
 use App\GenerateurAvis\Modele\Repository\AbstractRepository;
@@ -101,21 +102,72 @@ class AgregationRepository extends AbstractRepository
         ];
     }
 
-    private function getMatieresForAgregation(int $idAgregation): array
+    public function getAgregationDetailsByLogin(string $login): array
     {
-        $sql = "SELECT m.nom AS matiere, am.coefficient
+        $sql = "SELECT * FROM " . $this->getNomTable() . " WHERE login = :login";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $stmt->execute(['login' => $login]);
+
+        return $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
+    }
+
+    public static function calculateAgregationNotes(array $agregations, string $codeNip): array
+    {
+        $result = [];
+
+        foreach ($agregations as $agregation) {
+            $totalNotes = 0;
+            $totalCoefficients = 0;
+
+            $matieres = (new AgregationRepository)->getMatieresForAgregation((int)$agregation['id']);
+
+            foreach ($matieres as $matiere) {
+                $note = self::getNoteForMatiere($matiere['id_ressource'], $codeNip);
+                $matiereCoefficient = (float)$matiere['coefficient'];
+                $totalNotes += $note * $matiereCoefficient;
+                $totalCoefficients += $matiereCoefficient;
+            }
+
+            $noteFinale = $totalCoefficients > 0 ? $totalNotes / $totalCoefficients : 0;
+
+            $result[] = [
+                'nom_agregation' => $agregation['nom_agregation'],
+                'note_finale' => $noteFinale,
+            ];
+        }
+
+        return $result;
+    }
+
+    public function getMatieresForAgregation(int $idAgregation): array
+    {
+//        $sql = "SELECT am.id_ressource, m.nom AS matiere, am.coefficient
+//            FROM agregation_matiere am
+//            JOIN ressources m ON am.id_ressource = m.id_ressource
+//            WHERE am.id_agregation = :id_agregation";
+
+        $sql = "SELECT m.id_ressource, m.nom AS matiere, am.coefficient
                 FROM " . (new AgregationMatiereRepository())->getNomTable() . " am
                 JOIN " . (new RessourceRepository())->getNomTable() . " m ON am.id_ressource = m.id_ressource
                 WHERE am.id_agregation = :id_agregation";
+
+
+
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-        $values = ['id_agregation' => $idAgregation];
-        $stmt->execute($values);
+        $stmt->execute(['id_agregation' => $idAgregation]);
 
-        $matieres = $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
-
-        return $matieres;
+        return $stmt->fetchAll(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC);
     }
 
+    public static function getNoteForMatiere(string $idRessource, string $codeNip): float
+    {
+        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $stmt->execute(['id_ressource' => $idRessource, 'code_nip' => $codeNip]);
+
+        $note = $stmt->fetchColumn();
+        return $note !== false ? (float)$note : 0.0;
+    }
 
 
 }

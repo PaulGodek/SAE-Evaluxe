@@ -6,6 +6,8 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\Repository\AgregationRepository;
+use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
@@ -97,20 +99,24 @@ class ControleurEtudiant extends ControleurGenerique
         if (ConnexionUtilisateur::estAdministrateur()) $peutChecker = true;
         if (ConnexionUtilisateur::estEtudiant() && strcmp(ConnexionUtilisateur::getLoginUtilisateurConnecte(), $_GET["login"]) === 0) $peutChecker = true;
         if (ConnexionUtilisateur::estProfesseur()) $peutChecker = true;
+
         if ($peutChecker) {
             try {
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
                 if ($etudiant == NULL) {
                     self::afficherErreurEtudiant(" ");
-                    MessageFlash::ajouter("error", "L'étudiant  {$_GET['login']} n'existe pas");
+                    MessageFlash::ajouter("error", "L'étudiant {$_GET['login']} n'existe pas");
                 } else {
                     $code_nip = $etudiant->getCodeNip();
                     $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip($code_nip);
                     $nomPrenom = $nomPrenomArray['Nom'] . ' ' . $nomPrenomArray['Prenom'];
                     $result = EtudiantRepository::recupererTousLesDetailsEtudiantParCodeNip($code_nip);
 
+
                     $etudiantInfo = $result['info'];
                     $etudiantDetailsPerSemester = $result['details'];
+                    $agregations = (new AgregationRepository)->getAgregationDetailsByLogin(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+                    $agregationsResults = AgregationRepository::calculateAgregationNotes($agregations, $code_nip);
 
                     self::afficherVue('vueGenerale.php', [
                         "etudiant" => $etudiant,
@@ -119,12 +125,15 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
+                       "agregations" => $agregationsResults,
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
+
                 }
             } catch (TypeError $e) {
                 self::afficherErreurEtudiant(" ");
                 MessageFlash::ajouter("error", "Erreur Inconnue");
 
+                MessageFlash::ajouter("error", "Jsp ce qu'il s'est passé dsl");
             }
         } else {
             self::afficherErreurEtudiant(" ");
@@ -330,5 +339,15 @@ class ControleurEtudiant extends ControleurGenerique
         }
 
         self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+    }
+
+    public static function getNoteForMatiere(int $idRessource, int $idEtudiant): float
+    {
+        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND idEtudiant = :idEtudiant";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $stmt->execute(['id_ressource' => $idRessource, 'idEtudiant' => $idEtudiant]);
+
+        $note = $stmt->fetchColumn();
+        return $note !== false ? (float)$note : 0;
     }
 }
