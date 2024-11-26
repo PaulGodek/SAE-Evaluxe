@@ -131,7 +131,7 @@ class AgregationRepository extends AbstractRepository
             $noteFinale = $totalCoefficients > 0 ? $totalNotes / $totalCoefficients : 0;
 
             $result[] = [
-                'id' => $agregation['id'],
+                'nom_agregation' => $agregation['nom_agregation'],
                 'note_finale' => $noteFinale,
             ];
         }

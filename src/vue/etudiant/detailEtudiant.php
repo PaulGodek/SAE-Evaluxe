@@ -25,19 +25,20 @@ $specialiteHTML = $informationsPersonelles["specialite"];
 $typeAdmHTML = $informationsPersonelles["typeAdm"];
 $rgAdmHTML = $informationsPersonelles["rgAdm"];
 
+
+
+if (ConnexionUtilisateur::estAdministrateur())
+    echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';
+
 if (!empty($agregations)) {
     echo "<h2>Agregations et notes finales</h2>";
     foreach ($agregations as $agregation) {
-        echo "<h3>Agregation ID: " . htmlspecialchars($agregation['id']) . "</h3>";
+        echo "<h3>Nom agrégation: " . htmlspecialchars($agregation['nom_agregation']) . "</h3>";
         echo "<p>Note finale: " . number_format($agregation['note_finale'], 2) . "</p>";
     }
 } else {
     echo "<p>Aucune agregation disponible.</p>";
 }
-
-
-if (ConnexionUtilisateur::estAdministrateur())
-    echo '<p><a class="button" href="controleurFrontal.php?controleur=Professeur&action=afficherAvisProfesseurs&login=' . rawurlencode($loginEtudiant) . '">Voir avis des professeurs</a></p>';
 
 if ($informationsPersonelles) {
     echo '<div class="etudiant-details">';
