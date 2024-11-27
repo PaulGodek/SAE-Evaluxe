@@ -11,7 +11,7 @@ use App\GenerateurAvis\Modele\Repository\AgregationRepository;
 
 ?>
 
-    <link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
+<link rel="stylesheet" type="text/css" href="../ressources/css/detailEtudiant.css">
 
 <?php
 $codeUniqueHTML = $codeUnique;
@@ -54,7 +54,6 @@ if ($informationsPersonelles) {
         echo "<p>Rg. Adm.: {$rgAdmHTML}</p>";
     }
 
-    // Thêm phần Agregations et notes finales
     echo "<h2>Agregations et notes finales</h2>";
     if (!empty($agregations)) {
         echo "<ul class='agregation-list'>";
@@ -73,23 +72,99 @@ if ($informationsPersonelles) {
     foreach ($informationsParSemestre as $table => $details) {
         preg_match('/semestre(\d+)_\d+/', $table, $matches);
         $semesterNumber = htmlspecialchars($matches[1] ?? 'Inconnu');
+
         echo '<div class="semester-details">';
         echo "<h3>Semestre: {$semesterNumber}</h3>";
 
+        echo '<div class="semester-table-container">';
+        echo '<table class="semester-table">';
+        echo '<thead>';
+        echo '<tr>';
+
+        $validColumns = [];
         foreach ($details as $column => $value) {
-            if ($column == 'abs' && isset($details['just1'])) {
-                echo "<p>Absences non justifiées: " . htmlspecialchars(max(0, $value - $details['just1'])) . "</p>";
-            } elseif ($column == 'just1') {
-                continue;
-            } elseif ($value !== '') {
-                $valueHTML = htmlspecialchars($value);
-                echo "<p>" . htmlspecialchars(ucfirst(str_replace('_', ' ', $column))) . ": $valueHTML</p>";
+            if (!empty($value)) {
+                $validColumns[$column] = $value;
             }
         }
+
+        foreach ($validColumns as $column => $value) {
+            echo "<th>" . htmlspecialchars(ucfirst(str_replace('_', ' ', $column))) . "</th>";
+        }
+
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
+        echo '<tr>';
+
+        foreach ($validColumns as $value) {
+            echo "<td>" . htmlspecialchars($value) . "</td>";
+        }
+
+        echo '</tr>';
+        echo '</tbody>';
+        echo '</table>';
+        echo '</div>';
         echo '</div>';
     }
     echo '</div>';
 } else {
     echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec code NIP ' . htmlspecialchars($code_nip) . '.</p>';
 }
+?>
 
+
+<style>
+
+    .semester-table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .semester-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    .semester-table th, .semester-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+    .semester-table th {
+        background-color: #f2f2f2;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .semester-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .semester-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .semester-table td {
+        font-size: 14px;
+    }
+
+    .semester-details {
+        margin-bottom: 40px;
+    }
+
+    .semester-details h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .specialite-long-text {
+        word-wrap: break-word;
+    }
+
+
+</style>
