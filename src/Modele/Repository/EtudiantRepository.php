@@ -187,7 +187,7 @@ class EtudiantRepository extends AbstractRepository
     public static function rechercherEtudiant(string $recherche)
     {
 
-        $sql = "SELECT * FROM ".self::$tableEtudiant." e JOIN InformationsPersonnellesEtudiants i on e.code_nip=i.code_nip
+        $sql = "SELECT * FROM " . self::$tableEtudiant . " e JOIN InformationsPersonnellesEtudiants i on e.code_nip=i.code_nip
             WHERE Nom LIKE :rechercheTag1
             OR Nom LIKE :rechercheTag2
             OR Nom LIKE :rechercheTag3
@@ -429,20 +429,34 @@ class EtudiantRepository extends AbstractRepository
 
     public static function creerDetailEtudiant(string $code_nip, ?string $Civ, string $Nom, string $Prenom)
     {
-            if (is_null($Civ))
-                $Civ = "";
-            $sql = "INSERT INTO InformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) VALUES ( :code_nipTag , :CivTag , :NomTag , :PrenomTag );";
-            $pdo = ConnexionBaseDeDonnees::getPdo();
-            $pdoStatement = $pdo->prepare($sql);
-            $values = [
-                "code_nipTag" => $code_nip,
-                "CivTag" => $Civ,
-                "NomTag" => $Nom,
-                "PrenomTag" => $Prenom
-            ];
+        if (is_null($Civ)) {
+            $Civ = "";
+        }
 
-            $pdoStatement->execute($values);
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        $checkSql = "SELECT COUNT(*) FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
+        $checkStatement = $pdo->prepare($checkSql);
+        $checkStatement->execute(["code_nipTag" => $code_nip]);
+        $recordExists = $checkStatement->fetchColumn() > 0;
+
+        if ($recordExists) {
+            return;
+        }
+
+        $sql = "INSERT INTO InformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) 
+            VALUES (:code_nipTag, :CivTag, :NomTag, :PrenomTag)";
+        $pdoStatement = $pdo->prepare($sql);
+        $values = [
+            "code_nipTag" => $code_nip,
+            "CivTag" => $Civ,
+            "NomTag" => $Nom,
+            "PrenomTag" => $Prenom
+        ];
+
+        $pdoStatement->execute($values);
     }
+
 
     public static function creerParcoursEtudiant(string $code_nip, string $Parcours)
     {
@@ -478,7 +492,8 @@ class EtudiantRepository extends AbstractRepository
                 $pdoStatement->execute($values);
             }
         } catch (PDOException $e) {
-            if ($e->getCode() == '45000') {}
+            if ($e->getCode() == '45000') {
+            }
         }
     }
 }
