@@ -45,6 +45,11 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=utilisateur"
                    class="item">Utilisateurs</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
+                <a href="controleurFrontal.php?controleur=Note&action=afficherChartParcour"
+                   class="item">Chart Parcours</a>
+                <a href="controleurFrontal.php?controleur=Note&action=afficherChartMoyenneUEParSemestre"
+                   class="item">Chart UEs</a>
+
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="item">Écoles</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=professeur" class="item">Professeurs</a>
             <?php endif; ?>
