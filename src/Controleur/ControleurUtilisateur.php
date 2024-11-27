@@ -276,6 +276,7 @@ class ControleurUtilisateur extends ControleurGenerique
         if (!MotDePasse::verifier($mdpL, $utilisateur->getPasswordHash())) {
             MessageFlash::ajouter("warning", "Mot de passe incorrect");
             self::afficherErreurUtilisateur(" ");
+            return;
         }
         ConnexionUtilisateur::connecter($utilisateur->getLogin());
 
