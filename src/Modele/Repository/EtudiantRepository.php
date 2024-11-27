@@ -327,7 +327,6 @@ class EtudiantRepository extends AbstractRepository
                     $etudiantInfo = [
                         'nom' => htmlspecialchars($details['Nom']),
                         'prenom' => htmlspecialchars($details['Prénom']),
-                        'nomEtPrenom' => htmlspecialchars($details['Nom_1']),
                         'etudid' => htmlspecialchars($details['etudid']),
                         'codenip' => htmlspecialchars($details['code_nip']),
                         'civ' => htmlspecialchars($details['Civ.']),
@@ -338,7 +337,7 @@ class EtudiantRepository extends AbstractRepository
                     ];
                 }
 
-                unset($details['Nom'], $details['Prénom'], $details['Nom_1'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.'], $details['Type Adm.']);
+                unset($details['Nom'], $details['Prénom'], $details['etudid'], $details['code_nip'], $details['Civ'], $details['Bac'], $details['Spécialité'], $details['Rg. Adm.'], $details['Type Adm.']);
 
                 $etudiantDetailsPerSemester[$table] = array_map(function ($value) {
                     return htmlspecialchars($value ?? '');

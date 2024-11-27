@@ -179,7 +179,37 @@ class AdministrateurRepository extends AbstractRepository
                 EtudiantRepository::creerParcoursEtudiant($row[1], $row[$idxParcours]);
             }
         }
+        self::removeSuffixColumns($tableName);
+
     }
+
+    public static function removeSuffixColumns(string $tableName): void
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        $sql = "DESCRIBE `$tableName`";
+        $stmt = $pdo->query($sql);
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        //$columnsToRemove = [];
+        foreach ($columns as $column) {
+            $colName = $column['Field'];
+            if (preg_match('/_([0-9]+)$/', $colName)) {
+                $dropColumnsSql = "ALTER TABLE `$tableName` DROP COLUMN  `$colName`";
+                $pdo->exec($dropColumnsSql);
+            }
+        }
+
+//        if (!empty($columnsToRemove)) {
+//            $dropColumnsSql = "ALTER TABLE `$tableName` DROP COLUMN " . implode(", ", $columnsToRemove);
+//            try {
+//                $pdo->exec($dropColumnsSql);
+//            } catch (PDOException $e) {
+//                throw new Exception("Erreur lors de la suppression des colonnes : " . $e->getMessage());
+//            }
+//        }
+    }
+
 
     public static function publierSemestre(string $nomSemestre): bool
     {
