@@ -2,7 +2,7 @@
 
 namespace App\GenerateurAvis\Modele\DataObject;
 
-class Note
+class Note extends AbstractDataObject
 {
     private string $code_nip;
     private float $note;
