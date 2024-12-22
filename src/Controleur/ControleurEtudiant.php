@@ -4,8 +4,10 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AgregationRepository;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
@@ -230,33 +232,50 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function mettreAJour(): void //definetely not the best but works for now
     {
-        if (!ConnexionUtilisateur::estAdministrateur()) {
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEtudiant()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
             self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        $login = $_GET["login"];
-        $repository = new EtudiantRepository();
-        $etudiantExistant = $repository->recupererParClePrimaire($login);
-        if (isset($_GET["code_nip"])) {
-            $etudiantExistant->setCodeNip($_GET["code_nip"]);
-        }
-        //$etudiantChangee = new Etudiant($user, $_GET["code_nip"], $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
+        $etudiantExistant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
 
-        $repository->mettreAJour($etudiantExistant);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($login) . " a bien été mis à jour");
-        //$etudiants = (new EtudiantRepository)->recuperer();
-        $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom(); //appel au modèle pour gérer la BD
-        $listeNomPrenom = array();
-        foreach ($etudiants as $etudiant) {
-            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
-            $listeNomPrenom[] = $nomPrenom;
-        }
-        self::afficherVue('vueGenerale.php',
-            ["etudiants" => $etudiants,
-                "listeNomPrenom" => $listeNomPrenom,
-                "titre" => "Liste des etudiants",
-                "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        $mdp = $_GET['nvmdp'] ?? '';
+        $mdp2 = $_GET['nvmdp2'] ?? '';
 
+        if ($mdp !== $mdp2) {
+            MessageFlash::ajouter("warning","Les mots de passe ne correspondent pas");
+            self::afficherVue('vueGenerale.php', ["etudiant" => $etudiantExistant, "titre" => "Formulaire de mise à jour d'un etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+            return;
+        }
+        $userexistant = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        if($_GET["nvmdp"]==''){
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), $userexistant->getPasswordHash());
+        }else {
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), MotDePasse::hacher($_GET["nvmdp"]));
+        }
+        (new UtilisateurRepository)->mettreAJour($user);
+        $etudiant = new Etudiant($user, $etudiantExistant->getCodeNip(), $etudiantExistant->getDemandes(), $etudiantExistant->getCodeUnique());
+        (new EtudiantRepository)->mettreAJour($etudiant);
+
+        if (ConnexionUtilisateur::estAdministrateur()) {
+            MessageFlash::ajouter("success", "L'étudiant a été mis à jour avec succès.");
+            $etudiants = (new EtudiantRepository)->recuperer();
+            $listeNomPrenom = array();
+            foreach ($etudiants as $etudiant) {
+                $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
+                $listeNomPrenom[] = $nomPrenom;
+            }
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        }else{
+            MessageFlash::ajouter("success", "Votre compte a été mis à jour avec succès.");
+            $etudiant=(new EtudiantRepository())->recupererParClePrimaire($_GET['login']);
+            $nomPrenom=EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
+            self::afficherVue('vueGenerale.php', [
+                "user" => $etudiant,
+                "nomPrenom"=>$nomPrenom,
+                "titre" => "Compte Etudiant",
+                "cheminCorpsVue" => "etudiant/compteEtudiant.php"
+            ]);
+        }
     }
 
     public static function afficherResultatRechercheEtudiant(): void

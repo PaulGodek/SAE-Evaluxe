@@ -4,7 +4,9 @@ namespace App\GenerateurAvis\Controleur;
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
@@ -143,28 +145,48 @@ class ControleurProfesseur extends ControleurGenerique
 
     public static function mettreAJour(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur()) {
+
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
             self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-        if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Le login n'est pas renseigné");
-            return;
-        } elseif (!isset($_GET["nom"])) {
-            self::afficherErreurProfesseur("Le nom n'est pas renseigné");
-            return;
-        } elseif (!isset($_GET["prenom"])) {
-            self::afficherErreurProfesseur("Le prénom n'est pas renseigné");
+
+        $professeurExistant = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
+
+
+
+
+        $mdp = $_GET['nvmdp'] ?? '';
+        $mdp2 = $_GET['nvmdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            MessageFlash::ajouter("warning","Les mots de passe ne correspondent pas");
+            self::afficherVue('vueGenerale.php', ["ecole" => $professeurExistant, "titre" => "Formulaire de mise à jour d'un professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
             return;
         }
-        $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
-        $professeurExistant = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
-        $professeur = new Professeur($user, $_GET["nom"], $_GET["prenom"]);
-        (new ProfesseurRepository)->mettreAJour($professeur);
-        MessageFlash::ajouter("success", "Le compte de login " . htmlspecialchars($professeur->getUtilisateur()->getLogin()) . " a bien été mis à jour");
-        $professeurs = (new ProfesseurRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeurExistant->getUtilisateur()->getLogin(), "titre" => "Mise a jour de compte professeur", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
-        //self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "login" => $professeur->getUtilisateur()->getLogin(), "titre" => "Suppression de compte professeur", "cheminCorpsVue" => "professeur/professeurMisAJour.php"]);
+
+        $userexistant = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        if($_GET["nvmdp"]==''){
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), $userexistant->getPasswordHash());
+        }else {
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), MotDePasse::hacher($_GET["nvmdp"]));
+        }        (new UtilisateurRepository)->mettreAJour($user);
+        $prof = new Professeur($user, $_GET["nom"], $_GET["prenom"]);
+        (new ProfesseurRepository)->mettreAJour($prof);
+
+        if (ConnexionUtilisateur::estAdministrateur()) {
+            MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
+            $professeurs = (new ProfesseurRepository)->recuperer();
+            self::afficherVue('vueGenerale.php', ["professeurs" => $professeurs, "titre" => "Liste Professeurs", "cheminCorpsVue" => "professeur/listeProfesseur.php"]);
+        }else{
+            MessageFlash::ajouter("success", "Votre compte a été mis à jour avec succès.");
+            $prof=(new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
+            self::afficherVue('vueGenerale.php', [
+                "user" => $prof,
+                "titre" => "Compte Ecole",
+                "cheminCorpsVue" => "professeur/compteProfesseur.php"
+            ]);
+        }
     }
 
     public static function creerProfesseurDepuisFormulaire(): void

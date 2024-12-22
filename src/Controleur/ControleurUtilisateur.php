@@ -9,6 +9,7 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\HTTP\Cookie;
+use App\GenerateurAvis\Modele\Repository\AdministrateurRepository;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -210,11 +211,19 @@ class ControleurUtilisateur extends ControleurGenerique
 
     public static function afficherFormulaireMiseAJour(): void
     {
-        if (self::verifierAdminConnecte()) {
+        if (ConnexionUtilisateur::estAdministrateur()) {
+
             $utilisateur = (new UtilisateurRepository)->recupererParClePrimaire($_GET['login']);
-            if ($utilisateur->getType() == "etudiant") {
+            if ($utilisateur->getType() == "administrateur") {
+                $admin=(new AdministrateurRepository())->recupererParClePrimaire($_GET['login']);
+                self::afficherVue('vueGenerale.php', ["admin" => $admin, "titre" => "Formulaire de mise à jour d'administrateur", "cheminCorpsVue" => "administrateur/formulaireMiseAJourAdministrateur.php"]);
+
+            }
+            else if ($utilisateur->getType() == "etudiant") {
+
                 $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
-                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+                $nomPrenom=EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant,"nomPrenom"=>$nomPrenom, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
 
             } else if ($utilisateur->getType() == "universite") {
                 $ecole = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
@@ -224,6 +233,22 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Formulaire de mise à jour du professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
 
             }
+        }else{
+            if (ConnexionUtilisateur::estEcole()) {
+                $ecole=(new EcoleRepository())->recupererParClePrimaire($_GET['login']);
+                self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'une école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
+
+            }
+            else if (ConnexionUtilisateur::estEtudiant()) {
+                $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
+                $nomPrenom=(EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip()));
+                self::afficherVue('vueGenerale.php', ["etudiant" => $etudiant,"nomPrenom"=>$nomPrenom, "titre" => "Formulaire de mise à jour d'etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
+
+            } else if (ConnexionUtilisateur::estProfesseur()) {
+                $professeur = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
+                self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Formulaire de mise à jour d'un professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
+            }
+
         }
     }
 
@@ -233,6 +258,7 @@ class ControleurUtilisateur extends ControleurGenerique
     public static function mettreAJour(): void
     {
         if (self::verifierAdminConnecte()) {
+
             if ($_GET["type"] == "etudiant") {
                 ControleurEtudiant::mettreAJour();
             } else if ($_GET["type"] == "universite") {
@@ -287,7 +313,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Etudiant connecté",
                 "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/pageEtudiant.php"
+                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
             ]);
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
@@ -298,7 +324,7 @@ class ControleurUtilisateur extends ControleurGenerique
                     "ecole" => $ecole,
                     "futursEtudiants" => $futursEtudiants,
                     "titre" => "École connectée",
-                    "cheminCorpsVue" => "ecole/pageEcole.php"
+                    "cheminCorpsVue" => "ecole/ecoleConnectee.php"
                 ]);
             } else {
                 ConnexionUtilisateur::deconnecter();
@@ -311,7 +337,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 "utilisateur" => $utilisateur,
                 "titre" => "Professeur connecté",
                 "professeur" => $professeur,
-                "cheminCorpsVue" => "professeur/detailProfesseur.php"
+                "cheminCorpsVue" => "professeur/professeurConnecte.php"
             ]);
         } else if ($utilisateur->getType() == "administrateur") {
             MessageFlash::ajouter("success", "Administrateur connecté");
@@ -426,6 +452,51 @@ class ControleurUtilisateur extends ControleurGenerique
                 ]);
             }
         }
+    }
+
+
+
+    public static function afficherCompte(){
+        if(ConnexionUtilisateur::estConnecte()){
+            $login=ConnexionUtilisateur::getLoginUtilisateurConnecte();
+
+            if(ConnexionUtilisateur::estAdministrateur()){
+                $user=(new AdministrateurRepository())->recupererParClePrimaire($login);
+                self::afficherVue('vueGenerale.php', [
+                    "user" => $user,
+                    "titre" => "Compte Administrateur",
+                    "cheminCorpsVue" => "administrateur/compteAdministrateur.php"
+                ]);
+            }elseif (ConnexionUtilisateur::estProfesseur()){
+                $user=(new ProfesseurRepository())->recupererParClePrimaire($login);
+                self::afficherVue('vueGenerale.php', [
+                    "user" => $user,
+                    "titre" => "Compte Professeur",
+                    "cheminCorpsVue" => "professeur/compteProfesseur.php"
+                ]);
+            }
+            elseif (ConnexionUtilisateur::estEtudiant()){
+                $user=(new EtudiantRepository())->recupererParClePrimaire($login);
+                $nomPrenom=(EtudiantRepository::getNomPrenomParCodeNip($user->getCodeNip()));
+                self::afficherVue('vueGenerale.php', [
+                    "user" => $user,
+                    "nomPrenom"=>$nomPrenom,
+                    "titre" => "Compte Etudiant",
+                    "cheminCorpsVue" => "etudiant/compteEtudiant.php"
+                ]);
+            }
+            elseif (ConnexionUtilisateur::estEcole()){
+                $user=(new EcoleRepository())->recupererParClePrimaire($login);
+                self::afficherVue('vueGenerale.php', [
+                    "user" => $user,
+                    "titre" => "Compte Ecole",
+                    "cheminCorpsVue" => "ecole/compteEcole.php"
+                ]);
+            }
+        }else{
+            self::afficherErreur("Vous n'êtes pas connecté");
+        }
+
     }
 
     public static function setCookieBanner(): void

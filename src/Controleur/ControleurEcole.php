@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Controleur;
 require __DIR__ . '/../../bootstrap.php';
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
@@ -237,18 +238,46 @@ class ControleurEcole extends ControleurGenerique
 
     public static function mettreAJour(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
+        if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEcole()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
             self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
-
-        $user = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
         $ecoleExistant = (new EcoleRepository)->recupererParClePrimaire($_GET['login']);
-        $ecole = new Ecole($user, $_GET["nom"], $_GET["adresse"], $_GET["ville"], $_GET["valide"], $ecoleExistant->getFutursEtudiants(), $ecoleExistant->getAdresseMail());
+
+
+
+
+        $mdp = $_GET['nvmdp'] ?? '';
+        $mdp2 = $_GET['nvmdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            MessageFlash::ajouter("warning","Les mots de passe ne correspondent pas");
+            self::afficherVue('vueGenerale.php', ["ecole" => $ecoleExistant, "titre" => "Formulaire de mise à jour d'une école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
+            return;
+        }
+        $userexistant = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        if(($_GET["nvmdp"]=='')){
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), $userexistant->getPasswordHash());
+        }else {
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), MotDePasse::hacher($_GET["nvmdp"]));
+        }
+        (new UtilisateurRepository)->mettreAJour($user);
+        $ecole = new Ecole($user, $_GET["nom"], $_GET["adresse"], $_GET["ville"],$ecoleExistant->getAdresseMail(), $ecoleExistant->isEstValide(), $ecoleExistant->getFutursEtudiants(), $ecoleExistant->getAdresseMail());
         (new EcoleRepository)->mettreAJour($ecole);
-        MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
-        $ecoles = (new EcoleRepository)->recuperer();
-        self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "login" => $ecole->getUtilisateur()->getLogin(), "titre" => "Mise à jour de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+
+        if (ConnexionUtilisateur::estAdministrateur()) {
+            MessageFlash::ajouter("success", "L'école a été mise à jour avec succès.");
+            $ecoles = (new EcoleRepository)->recuperer();
+            self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "titre" => "Mise à jour de compte école", "cheminCorpsVue" => "ecole/listeEcole.php"]);
+        }else{
+            MessageFlash::ajouter("success", "Votre compte a été mis à jour avec succès.");
+            $ecole=(new EcoleRepository())->recupererParClePrimaire($_GET['login']);
+            self::afficherVue('vueGenerale.php', [
+                "user" => $ecole,
+                "titre" => "Compte Ecole",
+                "cheminCorpsVue" => "ecole/compteEcole.php"
+            ]);
+        }
     }
 
     /**

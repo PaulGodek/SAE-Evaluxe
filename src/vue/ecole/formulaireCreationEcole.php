@@ -4,10 +4,7 @@
     <fieldset>
         <legend>Formulaire de création de compte école:</legend>
 
-        <p class="InputAddOn">
-            <label class="InputAddOn-item" for="type_id">Type&#42;</label>
-            <input class="InputAddOn-field" type="text" name="type" value="universite" id="type_id" readonly>
-        </p>
+
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
             <input class="InputAddOn-field" type="text" name="login" id="login_id" required>

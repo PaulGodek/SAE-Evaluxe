@@ -30,7 +30,9 @@ foreach ($professeurs as $professeur) {
     $nomHTML = htmlspecialchars($professeur->getNom());
     $prenomHTML = htmlspecialchars($professeur->getPrenom());
     $loginURL = rawurlencode($professeur->getUtilisateur()->getLogin());
-    echo '<li><p> Le professeur <a href="controleurFrontal.php?controleur=professeur&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;'.$prenomHTML .'</a></p></li>';
+    echo '<li><p> Le professeur <a href="controleurFrontal.php?controleur=professeur&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '&nbsp;'.$prenomHTML .'</a>';
+    echo ' (<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>'/*., <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?*/.'</a>)</p></li>';
+
 }
 
 echo "</ul>";
