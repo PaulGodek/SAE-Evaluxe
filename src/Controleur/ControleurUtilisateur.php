@@ -236,7 +236,7 @@ class ControleurUtilisateur extends ControleurGenerique
         }else{
             if (ConnexionUtilisateur::estEcole()) {
                 $ecole=(new EcoleRepository())->recupererParClePrimaire($_GET['login']);
-                self::afficherVue('vueGenerale.php', ["admin" => $ecole, "titre" => "Formulaire de mise à jour d'une école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
+                self::afficherVue('vueGenerale.php', ["ecole" => $ecole, "titre" => "Formulaire de mise à jour d'une école", "cheminCorpsVue" => "ecole/formulaireMiseAJourEcole.php"]);
 
             }
             else if (ConnexionUtilisateur::estEtudiant()) {
@@ -246,7 +246,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
             } else if (ConnexionUtilisateur::estProfesseur()) {
                 $professeur = (new ProfesseurRepository())->recupererParClePrimaire($_GET['login']);
-                self::afficherVue('vueGenerale.php', ["ecole" => $professeur, "titre" => "Formulaire de mise à jour d'un professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
+                self::afficherVue('vueGenerale.php', ["professeur" => $professeur, "titre" => "Formulaire de mise à jour d'un professeur", "cheminCorpsVue" => "professeur/formulaireMiseAJourProfesseur.php"]);
             }
 
         }
@@ -465,7 +465,7 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherVue('vueGenerale.php', [
                     "user" => $user,
                     "titre" => "Compte Administrateur",
-                    "cheminCorpsVue" => "administrateur/compteAdmin.php"
+                    "cheminCorpsVue" => "administrateur/compteAdministrateur.php"
                 ]);
             }elseif (ConnexionUtilisateur::estProfesseur()){
                 $user=(new ProfesseurRepository())->recupererParClePrimaire($login);

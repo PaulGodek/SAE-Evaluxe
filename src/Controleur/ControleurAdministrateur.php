@@ -4,8 +4,12 @@ namespace App\GenerateurAvis\Controleur;
 
 require __DIR__ . '/../../bootstrap.php';
 
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
+use App\GenerateurAvis\Lib\MotDePasse;
+use App\GenerateurAvis\Modele\DataObject\Administrateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
+use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AdministrateurRepository;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -141,5 +145,44 @@ class ControleurAdministrateur extends ControleurGenerique
         }
     }
 
+
+    public static function mettreAJour(): void{
+
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+        $adminExistant = (new AdministrateurRepository())->recupererParClePrimaire($_GET['login']);
+
+
+
+
+        $mdp = $_GET['nvmdp'] ?? '';
+        $mdp2 = $_GET['nvmdp2'] ?? '';
+
+        if ($mdp !== $mdp2) {
+            MessageFlash::ajouter("warning","Les mots de passe ne correspondent pas");
+            self::afficherVue('vueGenerale.php', ["admin" => $adminExistant, "titre" => "Formulaire de mise à jour d'un administrateur", "cheminCorpsVue" => "administrateur/formulaireMiseAJourAdministrateur.php"]);
+            return;
+        }
+        $userexistant = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
+        if($_GET["nvmdp"]==''){
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), $userexistant->getPasswordHash());
+        }else {
+            $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), MotDePasse::hacher($_GET["nvmdp"]));
+        }        (new UtilisateurRepository)->mettreAJour($user);
+        $admin = new Administrateur($user, $_GET["email"]);
+        (new AdministrateurRepository)->mettreAJour($admin);
+
+
+        MessageFlash::ajouter("success", "Votre compte a été mis à jour avec succès.");
+        $admin=(new AdministrateurRepository())->recupererParClePrimaire($_GET['login']);
+        self::afficherVue('vueGenerale.php', [
+            "user" => $admin,
+            "titre" => "Compte Administrateur",
+            "cheminCorpsVue" => "administrateur/compteAdministrateur.php"
+        ]);
+
+    }
 
 }

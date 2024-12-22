@@ -9,10 +9,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
     <input type="hidden" name="controleur" value="ecole"/>
     <fieldset>
         <legend>Formulaire de mise à jour</legend>
-        <p class="InputAddOn">
-            <label class="InputAddOn-item" for="type_id">Type&#42;</label>
-            <input class="InputAddOn-field" type="text" name="type" id="type_id" value="universite" readonly>
-        </p>
+
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
             <input class="InputAddOn-field" type="text" name="login" id="login_id"
@@ -34,9 +31,17 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
                    value="<?= htmlspecialchars($ecole->getVille()) ?>" required>
         </p>
         <p class="InputAddOn">
-            <label class="InputAddOn-item" for="valide_id">Est valide?&#42;</label>
-            <input class="InputAddOn-field" type="text" name="valide" id="valide_id"
-                   value="<?= htmlspecialchars($ecole->isEstValide()) ?>" readonly>
+            <label class="InputAddOn-item" for="email_id">Email&#42;</label>
+            <input class="InputAddOn-field" type="text" name="email" id="email_id"
+                   value="<?= htmlspecialchars($ecole->getAdresseMail()) ?>" required>
+        </p>
+        <p class="InputAddOn">
+            <label class="InputAddOn-item" for="nvmdp_id">Nouveau Mot de passe&#42;</label>
+            <input class="InputAddOn-field" type="password" value="" placeholder="" name="nvmdp" id="nvmdp_id" >
+        </p>
+        <p class="InputAddOn">
+            <label class="InputAddOn-item" for="nvmdp2_id">Vérification du nouveau mot de passe&#42;</label>
+            <input class="InputAddOn-field" type="password" value="" placeholder="" name="nvmdp2" id="nvmdp2_id" >
         </p>
         <p class="InputAddOn">
             <!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
