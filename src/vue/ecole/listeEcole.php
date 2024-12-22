@@ -50,7 +50,9 @@ foreach ($ecoles as $ecole) {
             echo '<li><p>L\'école <a href="controleurFrontal.php?controleur=ecole&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a> 
                       &ensp; <a href="controleurFrontal.php?controleur=ecole&action=valider&login=' . $loginURL . '">Valider</a> </p></li>';
         } else {
-            echo '<li><p>L\'école <a href="controleurFrontal.php?controleur=ecole&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a></p></li>';
+            echo '<li><p>L\'école <a href="controleurFrontal.php?controleur=ecole&action=afficherDetail&login=' . $loginURL . '">' . $nomHTML . '</a>';
+            echo '</a> (<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>'/*., <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?*/.'</a>)</p></li>';
+
         }
     } else {
         if ($etudiant->dejaDemande($ecole->getNom()) && !in_array($etudiant->getCodeUnique(), $ecole->getFutursEtudiants())) {
