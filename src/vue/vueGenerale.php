@@ -137,6 +137,7 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
             <!--<a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">
                 <img src="../ressources/images/log-out.png" alt="Déconnexion" class="nav-icon">
             </a>-->
+                <a href="controleurFrontal.php?controleur=utilisateur&action=afficherCompte" class="nav-item">Mon Compte</a>
             <input type="checkbox" id="logOutToggle" hidden>
             <label for="logOutToggle" id="LogOutButton">
                 <img src="../ressources/images/log-out.png" id="LogOutIcon" alt="Log Out Icon">
