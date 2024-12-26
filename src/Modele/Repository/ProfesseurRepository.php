@@ -6,7 +6,7 @@ use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 class ProfesseurRepository extends AbstractRepository
 {
-    private static string $tableProfesseur = "ProfTest";
+    private static string $tableProfesseur = "RELEASEProf";
 
     public function getNomTable(): string
     {
@@ -146,7 +146,7 @@ class ProfesseurRepository extends AbstractRepository
     }
 
     public static function ajouterAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
-        $sql = "INSERT INTO Avis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag)";
+        $sql = "INSERT INTO RELEASEAvis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag)";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -160,7 +160,7 @@ class ProfesseurRepository extends AbstractRepository
     }
 
     public static function mettreAJourAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
-        $sql = "UPDATE Avis SET avis = :avisTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+        $sql = "UPDATE RELEASEAvis SET avis = :avisTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -174,7 +174,7 @@ class ProfesseurRepository extends AbstractRepository
     }
 
     public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur) :bool {
-        $sql = "DELETE FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+        $sql = "DELETE FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -187,7 +187,7 @@ class ProfesseurRepository extends AbstractRepository
     }
 
     public static function getAvis(string $loginEtudiant, string $loginProfesseur) : ?string {
-        $sql = "SELECT avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+        $sql = "SELECT avis FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -204,7 +204,7 @@ class ProfesseurRepository extends AbstractRepository
     }
 
     public static function getToutAvis(string $loginEtudiant) : ?array {
-        $sql = "SELECT loginProfesseur, avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag";
+        $sql = "SELECT loginProfesseur, avis FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 

@@ -9,7 +9,7 @@ use PDOException;
 
 class UtilisateurRepository extends AbstractRepository
 {
-    private static string $tableUtilisateur = "UtilisateurImportation";
+    private static string $tableUtilisateur = "RELEASEUtilisateur";
 
     public static function recupererUtilisateurOrdonneParLogin(): array
     {
@@ -95,7 +95,7 @@ class UtilisateurRepository extends AbstractRepository
 
     public  static function creerUtilisateur( string $nom,string $prenom){
         try{
-        $sql='INSERT  INTO UtilisateurImportation (login,type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
+        $sql='INSERT  INTO ' . (new UtilisateurRepository())->getNomTable() . ' (login,type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $login =  mb_strtolower($nom.=substr($prenom, 0, 1), "UTF-8");

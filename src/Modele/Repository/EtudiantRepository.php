@@ -13,7 +13,7 @@ use Random\RandomException;
 
 class EtudiantRepository extends AbstractRepository
 {
-    private static string $tableEtudiant = "EtudiantImportation";
+    private static string $tableEtudiant = "RELEASEEtudiant";
 
     public function getNomTable(): string
     {
@@ -58,7 +58,7 @@ class EtudiantRepository extends AbstractRepository
      */
     public static function recupererEtudiantsOrdonneParNom(): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Nom";
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN RELEASEInformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Nom";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -72,7 +72,7 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Prénom";
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN RELEASEInformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Prénom";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -85,7 +85,7 @@ class EtudiantRepository extends AbstractRepository
 
     public static function recupererEtudiantsOrdonneParParcours(): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN ParcoursEtudiant p ON e.code_nip = p.code_nip ORDER BY p.Parcours";
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN RELEASEParcoursEtudiant p ON e.code_nip = p.code_nip ORDER BY p.Parcours";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -187,7 +187,7 @@ class EtudiantRepository extends AbstractRepository
     public static function rechercherEtudiant(string $recherche)
     {
 
-        $sql = "SELECT * FROM " . self::$tableEtudiant . " e JOIN InformationsPersonnellesEtudiants i on e.code_nip=i.code_nip
+        $sql = "SELECT * FROM " . self::$tableEtudiant . " e JOIN RELEASEInformationsPersonnellesEtudiants i on e.code_nip=i.code_nip
             WHERE Nom LIKE :rechercheTag1
             OR Nom LIKE :rechercheTag2
             OR Nom LIKE :rechercheTag3
@@ -220,7 +220,7 @@ class EtudiantRepository extends AbstractRepository
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
 
-        $query = "SELECT Nom, Prénom FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
+        $query = "SELECT Nom, Prénom FROM RELEASEInformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
         $stmt = $pdo->prepare($query);
         $stmt->execute([':code_nipTag' => $code_nip]);
 
@@ -407,7 +407,7 @@ class EtudiantRepository extends AbstractRepository
     public static function creerEtudiant(string $nom, string $prenom, int $code_nip)
     {
         try {
-            $sql = 'INSERT INTO EtudiantImportation (login,codeUnique,code_nip,demandes) Values (:loginTag, :codeUniqueTag, :code_nipTag, :demandesTag)';
+            $sql = 'INSERT INTO ' . self::$tableEtudiant . ' (login,codeUnique,code_nip,demandes) Values (:loginTag, :codeUniqueTag, :code_nipTag, :demandesTag)';
             $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
             $login = mb_strtolower($nom .= substr($prenom, 0, 1), "UTF-8");
@@ -434,7 +434,7 @@ class EtudiantRepository extends AbstractRepository
 
         $pdo = ConnexionBaseDeDonnees::getPdo();
 
-        $checkSql = "SELECT COUNT(*) FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
+        $checkSql = "SELECT COUNT(*) FROM RELEASEInformationsPersonnellesEtudiants WHERE code_nip = :code_nipTag";
         $checkStatement = $pdo->prepare($checkSql);
         $checkStatement->execute(["code_nipTag" => $code_nip]);
         $recordExists = $checkStatement->fetchColumn() > 0;
@@ -443,7 +443,7 @@ class EtudiantRepository extends AbstractRepository
             return;
         }
 
-        $sql = "INSERT INTO InformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) 
+        $sql = "INSERT INTO RELEASEInformationsPersonnellesEtudiants (code_nip, Civ, Nom, Prénom) 
             VALUES (:code_nipTag, :CivTag, :NomTag, :PrenomTag)";
         $pdoStatement = $pdo->prepare($sql);
         $values = [
@@ -460,7 +460,7 @@ class EtudiantRepository extends AbstractRepository
     public static function creerParcoursEtudiant(string $code_nip, string $Parcours)
     {
         try {
-            $sql = "SELECT * FROM ParcoursEtudiant WHERE code_nip = :code_nipTag";
+            $sql = "SELECT * FROM RELEASEParcoursEtudiant WHERE code_nip = :code_nipTag";
             $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
             $values = [
@@ -470,7 +470,7 @@ class EtudiantRepository extends AbstractRepository
             $pdoStatement->execute($values);
 
             if ($pdoStatement->rowCount() !== 0) {
-                $sql = "UPDATE ParcoursEtudiant SET Parcours = :ParcoursTag WHERE code_nip = :code_nipTag;";
+                $sql = "UPDATE RELEASEParcoursEtudiant SET Parcours = :ParcoursTag WHERE code_nip = :code_nipTag;";
                 $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
                 $values = [
@@ -480,7 +480,7 @@ class EtudiantRepository extends AbstractRepository
 
                 $pdoStatement->execute($values);
             } else {
-                $sql = "INSERT INTO ParcoursEtudiant VALUES (:code_nipTag, :ParcoursTag);";
+                $sql = "INSERT INTO RELEASEParcoursEtudiant VALUES (:code_nipTag, :ParcoursTag);";
                 $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
                 $values = [

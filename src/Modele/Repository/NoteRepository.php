@@ -39,7 +39,7 @@ class NoteRepository extends AbstractRepository
     }
 
     public function getNbEtudiantParcour(string $parcour): int {
-        $sql = "SELECT COUNT(*) AS nb_etudiants FROM ParcoursEtudiant WHERE Parcours = :parcour";
+        $sql = "SELECT COUNT(*) AS nb_etudiants FROM RELEASEParcoursEtudiant WHERE Parcours = :parcour";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['parcour' => $parcour]);
         $result = $stmt->fetch();
@@ -48,7 +48,7 @@ class NoteRepository extends AbstractRepository
 
     public function getMoyenneUEParSemestre(string $UE, string $semestre): float
     {
-        $sql = "SELECT AVG($UE) AS moyenne FROM etudiantUE WHERE numero_semestre = :semestre AND $UE != 0";
+        $sql = "SELECT AVG($UE) AS moyenne FROM RELEASEEtudiantUE WHERE numero_semestre = :semestre AND $UE != 0";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $pdoStatement->execute(['semestre' => $semestre]);
         $result = $pdoStatement->fetch();

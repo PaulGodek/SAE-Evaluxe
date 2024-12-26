@@ -8,7 +8,7 @@ use App\GenerateurAvis\Modele\DataObject\Matiere;
 
 class AgregationMatiereRepository extends AbstractRepository
 {
-    private static string $tableAgregationMatiere = "agregation_matiere";
+    private static string $tableAgregationMatiere = "RELEASEAgregation_matiere";
 
     public function ajouterMatierePourAgregation(int $id_agregation, Matiere $matiere): bool
     {

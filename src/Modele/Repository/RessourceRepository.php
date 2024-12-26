@@ -7,7 +7,7 @@ use App\GenerateurAvis\Modele\DataObject\Ressource;
 
 class RessourceRepository extends AbstractRepository
 {
-    private static string $tableRessource = "ressources";
+    private static string $tableRessource = "RELEASERessources";
 
     public function getNomTable(): string
     {

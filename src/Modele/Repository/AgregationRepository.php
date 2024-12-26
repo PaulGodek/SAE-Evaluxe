@@ -10,7 +10,7 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
-    private static string $tableAgregation = "agregations";
+    private static string $tableAgregation = "RELEASEAgregations";
 
     public function getNomTable(): string
     {
@@ -142,8 +142,8 @@ class AgregationRepository extends AbstractRepository
     public function getMatieresForAgregation(int $idAgregation): array
     {
 //        $sql = "SELECT am.id_ressource, m.nom AS matiere, am.coefficient
-//            FROM agregation_matiere am
-//            JOIN ressources m ON am.id_ressource = m.id_ressource
+//            FROM " . (new AgregationMatiereRepository())->getNomTable() . " am
+//            JOIN " . (new RessourceRepository())->getNomTable() . " m ON am.id_ressource = m.id_ressource
 //            WHERE am.id_agregation = :id_agregation";
 
         $sql = "SELECT m.id_ressource, m.nom AS matiere, am.coefficient
@@ -161,7 +161,7 @@ class AgregationRepository extends AbstractRepository
 
     public static function getNoteForMatiere(string $idRessource, string $codeNip): float
     {
-        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
+        $sql = "SELECT note FROM RELEASENote WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['id_ressource' => $idRessource, 'code_nip' => $codeNip]);
 

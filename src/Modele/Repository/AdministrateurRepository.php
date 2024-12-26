@@ -11,8 +11,8 @@ use Shuchkin\SimpleXLSX;
 
 class AdministrateurRepository extends AbstractRepository
 {
-    private static string $tableAdmin = "AdminTest";
-    private static string $tableSemestre = "semestres";
+    private static string $tableAdmin = "RELEASEAdmin";
+    private static string $tableSemestre = "RELEASESemestres";
 
     public function getNomTable(): string
     {
