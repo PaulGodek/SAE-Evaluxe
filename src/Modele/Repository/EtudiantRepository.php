@@ -54,11 +54,12 @@ class EtudiantRepository extends AbstractRepository
     }
 
     /**
+     * @return array
      * @throws RandomException
      */
-    public static function recupererEtudiantsOrdonneParNom(): array
+    public static function triEtudiant(string $ordre, string $tableauInfo): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Nom";
+        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN " . $tableauInfo . " p ON e.code_nip = p.code_nip ORDER BY p." . $ordre;
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
 
@@ -67,33 +68,25 @@ class EtudiantRepository extends AbstractRepository
             $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
         }
         return $tableauEtudiant;
+    }
+
+    /**
+     * @throws RandomException
+     */
+    public static function recupererEtudiantsOrdonneParNom(): array
+    {
+        return self::triEtudiant("Nom", "InformationsPersonnellesEtudiants");
     }
 
 
     public static function recupererEtudiantsOrdonneParPrenom(): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN InformationsPersonnellesEtudiants p ON e.code_nip = p.code_nip ORDER BY p.Prénom";
-
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
-
-        $tableauEtudiant = [];
-        foreach ($pdoStatement as $EtudiantFormatTableau) {
-            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
-        }
-        return $tableauEtudiant;
+        return self::triEtudiant("Prénom", "InformationsPersonnellesEtudiants");
     }
 
     public static function recupererEtudiantsOrdonneParParcours(): array
     {
-        $sql = "SELECT login, e.code_nip AS code_nip, demandes, codeUnique from " . self::$tableEtudiant . " e LEFT JOIN ParcoursEtudiant p ON e.code_nip = p.code_nip ORDER BY p.Parcours";
-
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
-
-        $tableauEtudiant = [];
-        foreach ($pdoStatement as $EtudiantFormatTableau) {
-            $tableauEtudiant[] = (new EtudiantRepository)->construireDepuisTableauSQL($EtudiantFormatTableau);
-        }
-        return $tableauEtudiant;
+        return self::triEtudiant("Parcours", "ParcoursEtudiant");
     }
 
     /**
