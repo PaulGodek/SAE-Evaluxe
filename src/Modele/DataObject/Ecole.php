@@ -1,28 +1,30 @@
 <?php
 
 namespace App\GenerateurAvis\Modele\DataObject;
+
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 
 class Ecole extends AbstractDataObject
 {
 
-    private string $login;
+    private Utilisateur $ecole;
     private string $nom;
     private string $adresse;
     private string $ville;
-    private array $futursEtudiants;
+    private array $futursEtudiants = [];
 
     private bool $estValide;
+    private string $adresseMail = "";
 
-    public function __construct(string $login, string $nom, string $adresse, string $ville,string $estValide)
+    public function __construct(Utilisateur $ecole, string $nom, string $adresse, string $ville, string $adresseMail, bool $estValide, ?array $futursEtudiants)
     {
-        $this->login = substr($login, 0, 64);
+        $this->ecole = $ecole;
         $this->nom = $nom;
         $this->adresse = $adresse;
         $this->ville = $ville;
-        $this->futursEtudiants = [];
+        $this->adresseMail = $adresseMail;
         $this->estValide = $estValide;
-
+        $this->futursEtudiants = $futursEtudiants ?? [];
     }
 
     public function getNom(): string
@@ -35,14 +37,14 @@ class Ecole extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getLogin(): string
+    public function getUtilisateur(): Utilisateur
     {
-        return $this->login;
+        return $this->ecole;
     }
 
-    public function setLogin(string $login): void
+    public function setUtilisateur(Utilisateur $ecole): void
     {
-        $this->login = substr($login, 0, 64);
+        $this->ecole = $ecole;
     }
 
     public function getAdresse(): string
@@ -76,9 +78,6 @@ class Ecole extends AbstractDataObject
     }
 
 
-
-
-
     public function addFuturEtudiant(string $code): void
     {
         if (!in_array($code, $this->futursEtudiants)) {
@@ -95,6 +94,11 @@ class Ecole extends AbstractDataObject
         }
     }
 
+    public function setFutursEtudiants(): void
+    {
+        $this->futursEtudiants = [];
+    }
+
     public function getFutursEtudiants(): array
     {
         return $this->futursEtudiants;
@@ -104,4 +108,15 @@ class Ecole extends AbstractDataObject
     {
         return EcoleRepository::mettreAJourFutursEtudiants($this);
     }
+
+    public function getAdresseMail(): string
+    {
+        return $this->adresseMail;
+    }
+
+    public function setAdresseMail(string $adresseMail): void
+    {
+        $this->adresseMail = $adresseMail;
+    }
+
 }

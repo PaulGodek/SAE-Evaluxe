@@ -1,6 +1,7 @@
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheUtilisateur"/>
     <input type="hidden" name="type" value="administrateur"/>
+    <input type="hidden" name="controleur" value="utilisateur"/>
     <fieldset>
         <legend>Recherche :</legend>
         <p class="InputAddOn">
@@ -44,7 +45,7 @@ foreach ($utilisateurs as $utilisateur) {
 
         }
 
-        echo '<li><p> Utilisateur de login <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">' . $loginHTML . '</a> (<a href="controleurFrontal.php?action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>, <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?</a>)</p></li>';
+        echo '<li><p> Utilisateur de login <a href="controleurFrontal.php?controleur=utilisateur&action=afficherDetail&login=' . $loginURL . '">' . $loginHTML . '</a></p></li>';
 
     }
     $type=$utilisateur->getType();

@@ -4,13 +4,13 @@ namespace App\GenerateurAvis\Modele\DataObject;
 
 class Professeur extends AbstractDataObject
 {
-    private string $login;
+    private Utilisateur $professeur;
     private string $nom;
     private string $prenom;
 
-    public function __construct(string $login, string $nom, string $prenom)
+    public function __construct(Utilisateur $professeur, string $nom, string $prenom)
     {
-        $this->login = substr($login, 0, 64);
+        $this->professeur = $professeur;
         $this->nom = $nom;
         $this->prenom = $prenom;
     }
@@ -25,14 +25,14 @@ class Professeur extends AbstractDataObject
         $this->nom = $nom;
     }
 
-    public function getLogin(): string
+    public function getUtilisateur(): Utilisateur
     {
-        return $this->login;
+        return $this->professeur;
     }
 
-    public function setLogin(string $login): void
+    public function setUtilisateur(Utilisateur $professeur): void
     {
-        $this->login = substr($login, 0, 64);
+        $this->professeur = $professeur;
     }
 
     public function getPrenom(): string

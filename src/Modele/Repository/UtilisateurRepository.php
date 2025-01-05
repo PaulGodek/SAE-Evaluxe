@@ -2,12 +2,14 @@
 
 namespace App\GenerateurAvis\Modele\Repository;
 
+use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
+use PDOException;
 
 class UtilisateurRepository extends AbstractRepository
 {
-    private static string $tableUtilisateur = "Utilisateur";
+    private static string $tableUtilisateur = "RELEASEUtilisateur";
 
     public static function recupererUtilisateurOrdonneParLogin(): array
     {
@@ -21,16 +23,15 @@ class UtilisateurRepository extends AbstractRepository
     }
 
 
-
     protected function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur
     {
         return new Utilisateur($utilisateurFormatTableau['login'],
             $utilisateurFormatTableau['type'], $utilisateurFormatTableau['password_hash']);
     }
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "Utilisateur";
+        return self::$tableUtilisateur;
     }
 
     protected function getNomClePrimaire(): string
@@ -54,12 +55,26 @@ class UtilisateurRepository extends AbstractRepository
 
     public static function rechercherUtilisateurParLogin(string $recherche): array
     {
-
         $sql = "SELECT * FROM " . self::$tableUtilisateur .
-            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
-        echo $sql;
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+            " WHERE login LIKE :rechercheTag1 
+            OR login LIKE :rechercheTag2 
+            OR login LIKE :rechercheTag3 
+            OR login = :rechercheTag4
+            order by type";
 
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+
+        // Exécuter la requête
+        $pdoStatement->execute($values);
         $tableauUtilisateur = [];
         foreach ($pdoStatement as $utilisateurFormatTableau) {
             $tableauUtilisateur[] = (new UtilisateurRepository())->construireDepuisTableauSQL($utilisateurFormatTableau);
@@ -67,4 +82,39 @@ class UtilisateurRepository extends AbstractRepository
         return $tableauUtilisateur;
 
     }
+
+    public function existeUtilisateurParLogin(string $login): bool
+    {
+        $sql = "SELECT 1 FROM " . $this->getNomTable() . " WHERE login = :loginTag LIMIT 1";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $pdoStatement->execute(['loginTag' => $login]);
+
+        return (bool)$pdoStatement->fetch();
+    }
+
+
+    public  static function creerUtilisateur( string $nom,string $prenom){
+        try{
+        $sql='INSERT  INTO ' . (new UtilisateurRepository())->getNomTable() . ' (login,type, password_hash) VALUES (:loginTag, :typeTag, :password_hashTag)';
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $login =  mb_strtolower($nom.=substr($prenom, 0, 1), "UTF-8");
+
+        $values=[
+            "loginTag"=>$login,
+            "typeTag"=>"etudiant",
+            "password_hashTag"=>MotDePasse::hacher("123")
+        ];
+
+        $pdoStatement->execute($values);
+        } catch (PDOException $e) {
+            if ($e->getCode() == '45000') {
+
+            }
+        }
+
+
+    }
 }
+
+

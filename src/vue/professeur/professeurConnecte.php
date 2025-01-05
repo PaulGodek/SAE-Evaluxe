@@ -1,3 +1,5 @@
-<p>Professeur connecté</p>
+<?php
 
-<?php require 'detailProfesseur.php'; ?>
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+
+ConnexionUtilisateur::estConnecte();

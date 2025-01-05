@@ -1,8 +1,7 @@
 <?php
 
-use App\GenerateurAvis\Controleur\ControleurConnexion;
+use App\GenerateurAvis\Controleur\ControleurAccueil;
 use App\GenerateurAvis\Controleur\ControleurGenerique;
-use App\GenerateurAvis\Controleur\ControleurUtilisateur;
 
 require_once __DIR__ . '/../src/Lib/Psr4AutoloaderClass.php';
 
@@ -18,11 +17,6 @@ if (isset($_GET["controleur"])) {
     $controleur = $_GET["controleur"];
 } else {
     $controleur = "utilisateur";
-}
-if ($controleur === 'Connexion' && isset($_GET['action']) && $_GET['action'] === 'deconnecter') {
-    $controleurConnexion = new ControleurConnexion();
-    $controleurConnexion->deconnecter();
-    exit;
 }
 
 $nomDeClasseControleur = "App\GenerateurAvis\Controleur\Controleur" . ucfirst($controleur);
@@ -41,7 +35,7 @@ if (class_exists($nomDeClasseControleur)) {
             $nomDeClasseControleur::afficherErreur(" L'action n'est pas possible" . $nomDeClasseControleur);
         }
     } else {
-        ControleurGenerique::home();
+        ControleurAccueil::afficherAccueil();
     }
 } else {
     ControleurGenerique::afficherErreur("Ce controleur n'existe pas ");

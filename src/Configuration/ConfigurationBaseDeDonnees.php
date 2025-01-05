@@ -6,8 +6,8 @@ class ConfigurationBaseDeDonnees {
         'nomHote' => 'webinfo.iutmontp.univ-montp2.fr',
         'nomBaseDeDonnees' => 'SAE3A_Q1E',
         'port' => '3316',
-        'login' => '', // A modifier par les professeurs
-        'motDePasse' => '' // A modifier par les professeurs
+        'login' => 'godekp',
+        'motDePasse' => '100793528EF'
     );
 
     static public function getLogin() : string {

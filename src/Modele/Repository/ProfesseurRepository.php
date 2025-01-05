@@ -6,11 +6,11 @@ use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 class ProfesseurRepository extends AbstractRepository
 {
-    private static string $tableProfesseur = "ProfTest";
+    private static string $tableProfesseur = "RELEASEProf";
 
-    protected function getNomTable(): string
+    public function getNomTable(): string
     {
-        return "ProfTest";
+        return self::$tableProfesseur;
     }
 
     protected function getNomClePrimaire(): string
@@ -20,7 +20,7 @@ class ProfesseurRepository extends AbstractRepository
 
     protected function construireDepuisTableauSQL(array $professeurFormatTableau): AbstractDataObject
     {
-        return new Professeur($professeurFormatTableau['login'],
+        return new Professeur((new UtilisateurRepository())->recupererParClePrimaire($professeurFormatTableau['login']),
             $professeurFormatTableau['nom'],
             $professeurFormatTableau['prenom']);
     }
@@ -33,7 +33,7 @@ class ProfesseurRepository extends AbstractRepository
     protected function formatTableauSQL(AbstractDataObject $professeur): array
     {
         return array(
-            "loginTag" => $professeur->getLogin(),
+            "loginTag" => $professeur->getUtilisateur()->getLogin(),
             "nomTag" => $professeur->getNom(),
             "prenomTag" => $professeur->getPrenom()
         );
@@ -43,11 +43,26 @@ class ProfesseurRepository extends AbstractRepository
     {
 
         $sql = "SELECT * FROM " . self::$tableProfesseur .
-            " WHERE nom LIKE '%" . $recherche . "' OR nom LIKE '%" . $recherche . "%' OR nom LIKE '" . $recherche . "%'
-            OR prenom LIKE '%" . $recherche . "' OR prenom LIKE '%" . $recherche . "%' OR prenom LIKE '" . $recherche . "%'
-            OR prenom='" . $recherche . "' OR nom='" . $recherche . "'";
-        echo $sql;
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+            " WHERE nom LIKE :rechercheTag1 
+            OR nom LIKE :rechercheTag2 
+            OR nom LIKE :rechercheTag3 
+            OR nom = :rechercheTag4
+            OR prenom LIKE :rechercheTag1 
+            OR prenom LIKE :rechercheTag2 
+            OR prenom LIKE :rechercheTag3 
+            OR prenom = :rechercheTag4 ";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+
+        $pdoStatement->execute($values);
 
         $tableauProfesseurs = [];
         foreach ($pdoStatement as $ProfesseurFormatTableau) {
@@ -61,9 +76,24 @@ class ProfesseurRepository extends AbstractRepository
     {
 
         $sql = "SELECT * FROM " . self::$tableProfesseur .
-            " WHERE login LIKE '%" . $recherche . "' OR login LIKE '%" . $recherche . "%' OR login LIKE '" . $recherche . "%' OR login='" . $recherche . "'";
-        echo $sql;
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->query($sql);
+            " WHERE login LIKE :rechercheTag1 
+            OR login LIKE :rechercheTag2 
+            OR login LIKE :rechercheTag3 
+            OR login = :rechercheTag4";
+
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "rechercheTag1" => '%' . $recherche,
+            "rechercheTag2" => '%' . $recherche . '%',
+            "rechercheTag3" => $recherche . '%',
+            "rechercheTag4" => $recherche
+        ];
+
+        // Exécuter la requête
+        $pdoStatement->execute($values);
 
         $tableauProfesseurs = [];
         foreach ($pdoStatement as $ProfesseurFormatTableau) {
@@ -113,5 +143,95 @@ class ProfesseurRepository extends AbstractRepository
             $tableauProfesseurs[] = (new ProfesseurRepository)->construireDepuisTableauSQL($ProfesseurFormatTableau);
         }
         return $tableauProfesseurs;
+    }
+
+    public static function ajouterAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
+        $sql = "INSERT INTO RELEASEAvis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag)";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur,
+            "avisTag" => $avis
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function mettreAJourAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
+        $sql = "UPDATE RELEASEAvis SET avis = :avisTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur,
+            "avisTag" => $avis
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur) :bool {
+        $sql = "DELETE FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur
+        );
+
+        return $pdoStatement->execute($values);
+    }
+
+    public static function getAvis(string $loginEtudiant, string $loginProfesseur) : ?string {
+        $sql = "SELECT avis FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+            "loginProfesseurTag" => $loginProfesseur
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetch()["avis"];
+    }
+
+    public static function getToutAvis(string $loginEtudiant) : ?array {
+        $sql = "SELECT loginProfesseur, avis FROM RELEASEAvis WHERE loginEtudiant = :loginEtudiantTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginEtudiantTag" => $loginEtudiant,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getNomPrenomParIdProfesseur(string $loginProfesseur) : ?array {
+        $sql = "SELECT nom, prenom FROM " . (new ProfesseurRepository)->getNomTable() . " WHERE login = :loginTag";
+
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = array(
+            "loginTag" => $loginProfesseur,
+        );
+
+        $pdoStatement->execute($values);
+        if ($pdoStatement->rowCount() == 0) {
+            return null;
+        }
+        return $pdoStatement->fetch();
     }
 }

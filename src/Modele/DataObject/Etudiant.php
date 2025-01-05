@@ -2,41 +2,52 @@
 
 namespace App\GenerateurAvis\Modele\DataObject;
 
+use App\GenerateurAvis\Modele\Repository\AbstractRepository;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
+use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use Random\RandomException;
 
 class Etudiant extends AbstractDataObject
 {
 
-    private string $login;
+    private Utilisateur $etudiant;
     private string $codeUnique;
-    private int $idEtudiant;
+    private int $code_nip;
     private static array $codesUniquesUtilisees = [];
+    private array $demandes = [];
 
     /**
      * @throws RandomException
      */
-    public function __construct(string $login, int $idEtudiant)
+    public function __construct(Utilisateur $etudiant, int $code_nip, ?array $demandes = null, ?string $codeUnique = null)
     {
-        $this->login = substr($login, 0, 64);
-        $this->idEtudiant = $idEtudiant;
-        $this->codeUnique = $this->genererCodeUnique();
-        self::$codesUniquesUtilisees[] = $this->codeUnique;
+        $this->etudiant = $etudiant;
+        $this->code_nip = $code_nip;
+
+        if ($codeUnique !== null) {
+            $this->codeUnique = $codeUnique;
+        } else {
+            $this->codeUnique = Etudiant::genererCodeUnique();
+        }
+
+        $this->demandes = $demandes ?? [];
     }
 
-    public function getLogin(): string
+    public function getUtilisateur(): Utilisateur
     {
-        return $this->login;
+        return $this->etudiant;
     }
 
-    public function setLogin(string $login): void
+    public function setUtilisateur(Utilisateur $etudiant): void
     {
-        $this->login = substr($login, 0, 64);
+        $this->etudiant = $etudiant;
     }
+
 
     /**
      * @throws RandomException
      */
-    public function genererCodeUnique(): string
+    public static function genererCodeUnique(): string
     {
         do {
             $code = bin2hex(random_bytes(5));
@@ -50,13 +61,48 @@ class Etudiant extends AbstractDataObject
         return $this->codeUnique;
     }
 
-    public function getIdEtudiant(): int
+    public function getCodeNip(): int
     {
-        return $this->idEtudiant;
+        return $this->code_nip;
     }
 
-    public function setIdEtudiant(int $idEtudiant): void
+    public function setCodeNip(int $code_nip): void
     {
-        $this->idEtudiant = $idEtudiant;
+        $this->code_nip = $code_nip;
     }
+
+    public function getDemandes(): array
+    {
+        return $this->demandes ?? [];
+    }
+
+    public function addDemande(string $nom): void
+    {
+        if (!in_array($nom, $this->demandes)) {
+
+            $this->demandes[] = $nom;
+        }
+    }
+
+    public function faireDemande(): bool
+    {
+        return EtudiantRepository::demander($this);
+    }
+
+
+    public function dejaDemande($nom): bool
+    {
+        return in_array($nom, $this->demandes);
+    }
+
+    public function removeDemande($nom): bool
+    {
+        $this->demandes = array_diff($this->demandes, [$nom]);
+        return (new EtudiantRepository())->mettreAJourDemandes($this);
+    }
+
+    public function getAvisProfesseur(string $loginProfesseur) : string {
+        return ProfesseurRepository::getAvis($this->getUtilisateur()->getLogin(), $loginProfesseur) ?? "";
+    }
+
 }

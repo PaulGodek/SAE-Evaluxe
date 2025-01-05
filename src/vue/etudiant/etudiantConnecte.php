@@ -1,3 +1,6 @@
-<p>Étudiant connecté</p>
+<?php
 
-<?php require 'detailEtudiant.php'; ?>
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+
+ConnexionUtilisateur::estConnecte();
+

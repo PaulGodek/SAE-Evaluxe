@@ -1,5 +1,6 @@
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="creerDepuisFormulaire"/>
+    <input type="hidden" name="controleur" value="utilisateur"/>
     <fieldset>
         <legend>Mon formulaire :</legend>
         <p class="InputAddOn">

@@ -2,11 +2,13 @@
 
 namespace App\GenerateurAvis\Controleur;
 
-class ControleurConnexion
+use App\GenerateurAvis\Lib\ConnexionUtilisateur;
+
+class ControleurConnexion extends ControleurGenerique
 {
-    public static function afficherConnexionAdministrateur(): void
+    public static function afficherErreurConnexion(string $messageErreur = ""): void
     {
-        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionAdministrateur.php', "titre" => "Connexion Administrateur"]);
+        self::afficherErreur($messageErreur, "connexion");
     }
 
     public static function afficherPreference(): void
@@ -14,9 +16,9 @@ class ControleurConnexion
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/preference.php', "titre" => "Préférences"]);
     }
 
-    public static function afficherErreur(string $message): void
+    public static function afficherConnexionAdministrateur(): void
     {
-        self::afficherVue('vueGenerale.php', ["messageErreur" => $message, "titre" => "Erreur"]);
+        self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionAdministrateur.php', "titre" => "Connexion Administrateur"]);
     }
 
     public static function afficherConnexionEtudiant(): void
@@ -33,9 +35,10 @@ class ControleurConnexion
         self::afficherVue('vueGenerale.php', ["cheminCorpsVue" => 'siteweb/connexion/connexionProfesseur.php', "titre" => "Connexion Professeur"]);
     }
 
-    private static function afficherVue(string $cheminVue, array $parametres = []): void
+    public static function deconnecter(): void
     {
-        extract($parametres); // Crée des variables à partir du tableau $parametres
-        require __DIR__ . "/../vue/$cheminVue"; // Charge la vue
+        ConnexionUtilisateur::deconnecter();
+        // $utilisateurs = (new UtilisateurRepository())->recuperer();
+        self::redirectionVersURL("success", "Déconnexion réussie", "afficherAccueil&controleur=accueil");
     }
 }
