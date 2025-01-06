@@ -106,7 +106,7 @@ class ControleurEcole extends ControleurGenerique
 
     public static function afficherDetail(): void
     {
-        if (!ConnexionUtilisateur::estAdministrateur()) {
+        if (!ConnexionUtilisateur::estAdministrateur()&& !ConnexionUtilisateur::estEcole()) {
             self::afficherErreurEcole("Vous n'avez pas de droit d'accès pour cette page");
             return;
         }
