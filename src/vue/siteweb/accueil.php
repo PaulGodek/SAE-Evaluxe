@@ -6,7 +6,7 @@
             <li>Administrateur :
             <ul>
                 <li>login : admin1</li>
-                <li>mot de passe : 123 (les mots de passes seront complexifié pour l'application finale)</li>
+                <li>mot de passe : 123 (les nouveaux mots de passe respecteront un pattern correct, il s'agit d'ancien mots de passe facile à utiliser qui seront supprimé lors de la sortie finale)</li>
             </ul>
             </li>
             <li>Etudiant :
