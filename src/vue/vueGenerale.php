@@ -130,9 +130,20 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                    class="nav-item">Notes</a>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=ecole" class="nav-item">Écoles</a>
             <?php endif; ?>
+
+
+            <?php if(ConnexionUtilisateur::estEcole()):
+                $login = ConnexionUtilisateur::getLoginUtilisateurConnecte(); ?>
+                <a href="controleurFrontal.php?action=afficherEcole&controleur=ecole&login=<?= urlencode($login) ?>"
+                     class="nav-item">Gestion</a>
+            <?php endif; ?>
+
+
             <?php if (ConnexionUtilisateur::estProfesseur() || ConnexionUtilisateur::estEcole()): ?>
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
+
+
             <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégations</a>
             <!--<a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">
                 <img src="../ressources/images/log-out.png" alt="Déconnexion" class="nav-icon">

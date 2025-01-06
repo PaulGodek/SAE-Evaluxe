@@ -309,12 +309,7 @@ class ControleurUtilisateur extends ControleurGenerique
         if ($utilisateur->getType() == "etudiant") {
             MessageFlash::ajouter("success", "Etudiant connecté");
             $etudiant = (new EtudiantRepository)->recupererParClePrimaire($login);
-            ControleurUtilisateur::afficherVue('vueGenerale.php', [
-                "utilisateur" => $utilisateur,
-                "titre" => "Etudiant connecté",
-                "etudiant" => $etudiant,
-                "cheminCorpsVue" => "etudiant/etudiantConnecte.php"
-            ]);
+            ControleurEtudiant::afficherDetail();
         } else if ($utilisateur->getType() == "universite") {
             $ecole = (new EcoleRepository())->recupererParClePrimaire($login);
             if ($ecole->isEstValide()) {
@@ -323,8 +318,8 @@ class ControleurUtilisateur extends ControleurGenerique
                 self::afficherVue('vueGenerale.php', [
                     "ecole" => $ecole,
                     "futursEtudiants" => $futursEtudiants,
-                    "titre" => "École connectée",
-                    "cheminCorpsVue" => "ecole/ecoleConnectee.php"
+                    "titre" => "Gestion de l'École : {$ecole->getNom()}",
+                    "cheminCorpsVue" => "ecole/pageEcole.php"
                 ]);
             } else {
                 ConnexionUtilisateur::deconnecter();
@@ -333,12 +328,7 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "professeur") {
             MessageFlash::ajouter("success", "Professeur connecté");
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
-            ControleurUtilisateur::afficherVue('vueGenerale.php', [
-                "utilisateur" => $utilisateur,
-                "titre" => "Professeur connecté",
-                "professeur" => $professeur,
-                "cheminCorpsVue" => "professeur/professeurConnecte.php"
-            ]);
+            ControleurProfesseur::afficherDetail();
         } else if ($utilisateur->getType() == "administrateur") {
             MessageFlash::ajouter("success", "Administrateur connecté");
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
