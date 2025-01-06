@@ -27,11 +27,13 @@
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="mdp_id">Mot de passe&#42;</label>
-            <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp" id="mdp_id" required>
+            <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp" id="mdp_id" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}"
+                   title="Le mot de passe doit contenir entre 8 et 16 caractères, avec au moins une minuscule, une majuscule, un chiffre et un caractère spécial." required>
         </p>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="mdp2_id">Vérification du mot de passe&#42;</label>
-            <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp2" id="mdp2_id" required>
+            <input class="InputAddOn-field" type="password" value="" placeholder="" name="mdp2" id="mdp2_id" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}"
+                   title="Le mot de passe doit contenir entre 8 et 16 caractères, avec au moins une minuscule, une majuscule, un chiffre et un caractère spécial." required>
         </p>
         <p class="InputAddOn">
             <!--            <input class="InputAddOn-field" type="submit" value="Envoyer"/>-->
