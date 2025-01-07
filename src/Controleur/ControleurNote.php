@@ -84,7 +84,6 @@ class ControleurNote extends ControleurGenerique
             return;
         }
         $codeNip = $_GET['code'];
-        $noteRepository = new NoteRepository();
         $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
         $noteRepository = new NoteRepository();
         if (ConnexionUtilisateur::estAdministrateur()) {
