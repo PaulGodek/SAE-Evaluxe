@@ -73,4 +73,15 @@ class NoteRepository extends AbstractRepository
         }
         return $semestres;
     }
+
+    public function getAllSemestres() : array {
+        $sql = "SELECT nomTable FROM semestres";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        $semestres = [];
+        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
+            preg_match('/\d+/', $row['nomTable'], $matches);
+            $semestres[] = (int)$matches[0];
+        }
+        return $semestres;
+    }
 }
