@@ -15,6 +15,7 @@ use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use JetBrains\PhpStorm\NoReturn;
 use PDO;
 use Random\RandomException;
 use TypeError;
@@ -446,7 +447,8 @@ class ControleurUtilisateur extends ControleurGenerique
 
 
 
-    public static function afficherCompte(){
+    public static function afficherCompte(): void
+    {
         if(ConnexionUtilisateur::estConnecte()){
             $login=ConnexionUtilisateur::getLoginUtilisateurConnecte();
 
@@ -489,7 +491,7 @@ class ControleurUtilisateur extends ControleurGenerique
 
     }
 
-    public static function setCookieBanner(): void
+    #[NoReturn] public static function setCookieBanner(): void
     {
         Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
         header('Location: controleurFrontal.php?action=home');
