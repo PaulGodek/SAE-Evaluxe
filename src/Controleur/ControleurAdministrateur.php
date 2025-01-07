@@ -8,15 +8,10 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Administrateur;
-use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AdministrateurRepository;
-use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
-use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Exception;
-use PDOException;
-use Shuchkin\SimpleXLSX;
 
 class ControleurAdministrateur extends ControleurGenerique
 {
