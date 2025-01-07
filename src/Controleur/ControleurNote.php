@@ -79,10 +79,15 @@ class ControleurNote extends ControleurGenerique
             self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherPreference&controleur=Connexion");
             return;
         }
+        if (!isset($_GET["code"])) {
+            self::redirectionVersURL("error", "Le code unique n'est pas valide", "afficherPreference&controleur=Connexion");
+            return;
+        }
         $codeNip = $_GET['code'];
         $noteRepository = new NoteRepository();
         $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
-        $semestres = [1, 2, 3, 4, 5];
+        $noteRepository = new NoteRepository();
+        $semestres = $noteRepository->getSemestresPublic();
         $dataPoints = [];
         foreach ($UEs as $UE) {
             $data = [];
