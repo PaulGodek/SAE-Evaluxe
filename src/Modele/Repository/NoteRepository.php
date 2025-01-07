@@ -60,5 +60,17 @@ class NoteRepository extends AbstractRepository
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $pdoStatement->execute(['codeNip' => $codeNip, 'semestre' => $semestre]);
         $result = $pdoStatement->fetch();
-        return $result !== false ? (float)$result['moyenne'] : 0.0; }
+        return $result !== false ? (float)$result['moyenne'] : 0.0;
+    }
+
+    public function getSemestresPublic() : array {
+        $sql = "SELECT nomTable FROM semestres WHERE estPublie = 1";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        $semestres = [];
+        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
+            preg_match('/\d+/', $row['nomTable'], $matches);
+            $semestres[] = (int)$matches[0];
+        }
+        return $semestres;
+    }
 }
