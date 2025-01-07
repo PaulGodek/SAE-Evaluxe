@@ -87,7 +87,10 @@ class ControleurNote extends ControleurGenerique
         $noteRepository = new NoteRepository();
         $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
         $noteRepository = new NoteRepository();
-        $semestres = $noteRepository->getSemestresPublic();
+        if (ConnexionUtilisateur::estAdministrateur()) {
+            $semestres = $noteRepository->getAllSemestres();
+        }
+        else $semestres = $noteRepository->getSemestresPublic();
         $dataPoints = [];
         foreach ($UEs as $UE) {
             $data = [];
