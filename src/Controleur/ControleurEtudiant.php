@@ -13,6 +13,7 @@ use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use Exception;
 use Random\RandomException;
 use TypeError;
 
@@ -368,5 +369,48 @@ class ControleurEtudiant extends ControleurGenerique
 
         $note = $stmt->fetchColumn();
         return $note !== false ? (float)$note : 0;
+    }
+    function genererAvisPdf($idEtudiant) {
+        $etudiantRepository = new EtudiantRepository();
+
+        $etudiant = $etudiantRepository->recupererParClePrimaire($idEtudiant);
+
+        if (!$etudiant) {
+            throw new Exception("Étudiant non trouvée");
+        }
+
+        // Retrieve additional student details
+        $etudiantDetails = $etudiantRepository->recupererDetailsEtudiantParCodeNip($etudiant->getCodeNip());
+
+        // Prepare the document content
+        $content = "
+        <h1>Fiche Avis Poursuite d’Études - Promotion 2023-2024</h1>
+        <h2>Département Informatique IUT Montpellier-Sète</h2>
+        <h3>FICHE D’INFORMATION ÉTUDIANT(E)</h3>
+        <p><strong>NOM:</strong> {$etudiantDetails['info']['nom']}</p>
+        <p><strong>Prénom:</strong> {$etudiantDetails['info']['prenom']}</p>
+        <p><strong>Apprentissage en BUT 3:</strong> {$etudiant->getDemandes()}</p>
+        <p><strong>Parcours BUT:</strong> {$etudiantDetails['details']['Parcours']}</p>
+        <h3>Avis de l’équipe pédagogique pour la poursuite d’études après le BUT3</h3>
+        <p><strong>En école d’ingénieur et master en informatique:</strong> {$etudiantDetails['details']['Avis_Ecole_dingénieur_et_master_en_info']}</p>
+        <p><strong>En master en management:</strong> {$etudiantDetails['details']['Avis_Master_en_management']}</p>
+        <h3>Nombre d’avis pour la promotion</h3>
+        <p><strong>Très Favorable:</strong> 37</p>
+        <p><strong>Favorable:</strong> 20</p>
+        <p><strong>Réservé:</strong> 33</p>
+        <p><strong>Master en management:</strong> 44</p>
+        <p><strong>Favorable:</strong> 40</p>
+        <p><strong>Réservé:</strong> 6</p>
+        <p><strong>Signature du Responsable des Poursuites d’études par délégation du chef de département</strong></p>
+    ";
+
+        // Initialize Dompdf
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($content);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        // Output the generated PDF
+        $dompdf->stream("Avis_PE_2024_{$etudiantDetails}.pdf", ["Attachment" => false]);
     }
 }
