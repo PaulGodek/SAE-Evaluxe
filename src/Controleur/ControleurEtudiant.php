@@ -13,6 +13,7 @@ use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use Dompdf\Dompdf;
 use Exception;
 use Random\RandomException;
 use TypeError;
@@ -379,10 +380,8 @@ class ControleurEtudiant extends ControleurGenerique
             throw new Exception("Étudiant non trouvée");
         }
 
-        // Retrieve additional student details
         $etudiantDetails = $etudiantRepository->recupererDetailsEtudiantParCodeNip($etudiant->getCodeNip());
 
-        // Prepare the document content
         $content = "
         <h1>Fiche Avis Poursuite d’Études - Promotion 2023-2024</h1>
         <h2>Département Informatique IUT Montpellier-Sète</h2>
@@ -404,13 +403,11 @@ class ControleurEtudiant extends ControleurGenerique
         <p><strong>Signature du Responsable des Poursuites d’études par délégation du chef de département</strong></p>
     ";
 
-        // Initialize Dompdf
         $dompdf = new Dompdf();
         $dompdf->loadHtml($content);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        // Output the generated PDF
         $dompdf->stream("Avis_PE_2024_{$etudiantDetails}.pdf", ["Attachment" => false]);
     }
 }
