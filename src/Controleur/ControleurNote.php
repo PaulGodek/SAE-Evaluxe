@@ -8,15 +8,6 @@ use App\GenerateurAvis\Modele\Repository\NoteRepository;
 class ControleurNote extends ControleurGenerique
 {
     public static function afficherChartParcour() {
-        if (!ConnexionUtilisateur::estConnecte()) {
-            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
-            return;
-        }
-
-        if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherPreference&controleur=Connexion");
-            return;
-        }
         $parcourA = (new NoteRepository())->getNbEtudiantParcour('A');
         $parcourB = (new NoteRepository())->getNbEtudiantParcour('B');
         $parcourD = (new NoteRepository())->getNbEtudiantParcour('D');
@@ -31,16 +22,6 @@ class ControleurNote extends ControleurGenerique
 
     public static function afficherChartMoyenneUEParSemestre()
     {
-        if (!ConnexionUtilisateur::estConnecte()) {
-            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
-            return;
-        }
-
-        if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherPreference&controleur=Connexion");
-            return;
-        }
-
         $semestres = [1, 2, 3, 4, 5];
         $noteRepository = new NoteRepository();
 
@@ -70,26 +51,10 @@ class ControleurNote extends ControleurGenerique
 
     public static function afficherChartUEPourEtudiant()
     {
-        if (!ConnexionUtilisateur::estConnecte()) {
-            self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
-            return;
-        }
-
-        if (ConnexionUtilisateur::estEcole()) {
-            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherPreference&controleur=Connexion");
-            return;
-        }
-        if (!isset($_GET["code"])) {
-            self::redirectionVersURL("error", "Le code unique n'est pas valide", "afficherPreference&controleur=Connexion");
-            return;
-        }
         $codeNip = $_GET['code'];
-        $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
         $noteRepository = new NoteRepository();
-        if (ConnexionUtilisateur::estAdministrateur()) {
-            $semestres = $noteRepository->getAllSemestres();
-        }
-        else $semestres = $noteRepository->getSemestresPublic();
+        $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
+        $semestres = [1, 2, 3, 4, 5];
         $dataPoints = [];
         foreach ($UEs as $UE) {
             $data = [];
@@ -100,5 +65,6 @@ class ControleurNote extends ControleurGenerique
             $dataPoints[$UE] = $data;
         }
         self::afficherVue('vueGenerale.php', ['dataPoints' => $dataPoints, 'titre' => 'Progression des UEs pour l\'étudiant ' . $codeNip, 'cheminCorpsVue' => 'chart/chartUEPourEtudiant.php',]);
+
     }
 }

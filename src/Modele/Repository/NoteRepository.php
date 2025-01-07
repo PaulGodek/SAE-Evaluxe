@@ -39,7 +39,7 @@ class NoteRepository extends AbstractRepository
     }
 
     public function getNbEtudiantParcour(string $parcour): int {
-        $sql = "SELECT COUNT(*) AS nb_etudiants FROM RELEASEParcoursEtudiant WHERE Parcours = :parcour";
+        $sql = "SELECT COUNT(*) AS nb_etudiants FROM ParcoursEtudiant WHERE Parcours = :parcour";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['parcour' => $parcour]);
         $result = $stmt->fetch();
@@ -48,7 +48,7 @@ class NoteRepository extends AbstractRepository
 
     public function getMoyenneUEParSemestre(string $UE, string $semestre): float
     {
-        $sql = "SELECT AVG($UE) AS moyenne FROM RELEASEEtudiantUE WHERE numero_semestre = :semestre AND $UE != 0";
+        $sql = "SELECT AVG($UE) AS moyenne FROM etudiantUE WHERE numero_semestre = :semestre AND $UE != 0";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $pdoStatement->execute(['semestre' => $semestre]);
         $result = $pdoStatement->fetch();
@@ -60,28 +60,5 @@ class NoteRepository extends AbstractRepository
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $pdoStatement->execute(['codeNip' => $codeNip, 'semestre' => $semestre]);
         $result = $pdoStatement->fetch();
-        return $result !== false ? (float)$result['moyenne'] : 0.0;
-    }
-
-    public function getSemestresPublic() : array {
-        $sql = "SELECT nomTable FROM semestres WHERE estPublie = 1";
-        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
-        $semestres = [];
-        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
-            preg_match('/\d+/', $row['nomTable'], $matches);
-            $semestres[] = (int)$matches[0];
-        }
-        return $semestres;
-    }
-
-    public function getAllSemestres() : array {
-        $sql = "SELECT nomTable FROM semestres";
-        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
-        $semestres = [];
-        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
-            preg_match('/\d+/', $row['nomTable'], $matches);
-            $semestres[] = (int)$matches[0];
-        }
-        return $semestres;
-    }
+        return $result !== false ? (float)$result['moyenne'] : 0.0; }
 }
