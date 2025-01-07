@@ -55,8 +55,33 @@ class NoteRepository extends AbstractRepository
         return $result['moyenne'] !== null ? (float)$result['moyenne'] : 0.0;
     }
 
-    public function getUEParSemestre(string $UE, string $semestre, $code_nip): float
-    {
+    public function getMoyenneUEParEtudiantParSemestre(string $codeNip, string $UE, string $semestre): float {
+        $sql = "SELECT $UE AS moyenne FROM etudiantUE WHERE code_nip = :codeNip AND numero_semestre = :semestre AND $UE IS NOT NULL";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+        $pdoStatement->execute(['codeNip' => $codeNip, 'semestre' => $semestre]);
+        $result = $pdoStatement->fetch();
+        return $result !== false ? (float)$result['moyenne'] : 0.0;
+    }
 
+    public function getSemestresPublic() : array {
+        $sql = "SELECT nomTable FROM semestres WHERE estPublie = 1";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        $semestres = [];
+        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
+            preg_match('/\d+/', $row['nomTable'], $matches);
+            $semestres[] = (int)$matches[0];
+        }
+        return $semestres;
+    }
+
+    public function getAllSemestres() : array {
+        $sql = "SELECT nomTable FROM semestres";
+        $stmt = ConnexionBaseDeDonnees::getPdo()->query($sql);
+        $semestres = [];
+        while ($row = $stmt->fetch(ConnexionBaseDeDonnees::getPdo()::FETCH_ASSOC)) {
+            preg_match('/\d+/', $row['nomTable'], $matches);
+            $semestres[] = (int)$matches[0];
+        }
+        return $semestres;
     }
 }
