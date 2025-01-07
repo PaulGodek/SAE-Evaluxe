@@ -111,6 +111,7 @@ if ($informationsPersonelles) {
 } else {
     echo '<p>Aucun détail n\'a été trouvé pour l\'étudiant avec code NIP ' . htmlspecialchars($code_nip) . '.</p>';
 }
+echo '<p><a class="button" href="controleurFrontal.php?action=afficherChartUEPourEtudiant&controleur=note&code=' . rawurlencode($codenipHTML) . '">Voir progress chart</a></p>';
 ?>
 
 

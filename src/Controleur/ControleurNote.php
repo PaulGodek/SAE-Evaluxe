@@ -17,7 +17,6 @@ class ControleurNote extends ControleurGenerique
             'Parcours B' => $parcourB,
             'Parcours D' => $parcourD,
         ];
-
         self::afficherVue('vueGenerale.php', ['dataPoints' => $dataPoints, 'titre' => 'Chart par parcours', "cheminCorpsVue" => "chart/chartParcour.php"]);
     }
 
@@ -50,5 +49,22 @@ class ControleurNote extends ControleurGenerique
         ]);
     }
 
+    public static function afficherChartUEPourEtudiant()
+    {
+        $codeNip = $_GET['code'];
+        $noteRepository = new NoteRepository();
+        $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
+        $semestres = [1, 2, 3, 4, 5];
+        $dataPoints = [];
+        foreach ($UEs as $UE) {
+            $data = [];
+            foreach ($semestres as $semestre) {
+                $moyenne = $noteRepository->getMoyenneUEParEtudiantParSemestre($codeNip, $UE, $semestre);
+                $data[] = ['label' => "Semestre $semestre", 'y' => $moyenne];
+            }
+            $dataPoints[$UE] = $data;
+        }
+        self::afficherVue('vueGenerale.php', ['dataPoints' => $dataPoints, 'titre' => 'Progression des UEs pour l\'étudiant ' . $codeNip, 'cheminCorpsVue' => 'chart/chartUEPourEtudiant.php',]);
 
+    }
 }
