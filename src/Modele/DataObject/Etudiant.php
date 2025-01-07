@@ -101,8 +101,10 @@ class Etudiant extends AbstractDataObject
         return (new EtudiantRepository())->mettreAJourDemandes($this);
     }
 
-    public function getAvisProfesseur(string $loginProfesseur) : string {
-        return ProfesseurRepository::getAvis($this->getUtilisateur()->getLogin(), $loginProfesseur) ?? "";
+    public function getAvisProfesseur(string $loginProfesseur): string
+    {
+        $avisArray = ProfesseurRepository::getAvis($this->getUtilisateur()->getLogin(), $loginProfesseur);
+        return $avisArray['avis'] ?? "";
     }
 
 }
