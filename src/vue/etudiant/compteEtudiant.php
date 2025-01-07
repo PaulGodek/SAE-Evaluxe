@@ -19,5 +19,6 @@ echo "<br>";
 echo "Votre code Nip : " . htmlspecialchars($user->getCodeNip());
 echo "<br>";
 echo ' <a class="button" href="controleurFrontal.php?controleur=Utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '" >Modifier mon compte</a>';
+echo ' <a class="button" href="controleurFrontal.php?controleur=Etudiant&action=genererAvisPdf" >Télécharger l\'avis pour l\'enseignement supérieur</a>';
 
 
