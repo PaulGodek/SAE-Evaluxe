@@ -394,14 +394,29 @@ class ControleurEtudiant extends ControleurGenerique
             throw new Exception("Étudiant non trouvée");
         }
 
-        $ecoleIngenieurTF = $etudiantDetails['EcoleIngenieurTF'];
-        $ecoleIngenieurF = $etudiantDetails['EcoleIngenieurF'];
-        $ecoleIngenieurR = $etudiantDetails['EcoleIngenieurR'];
-        $masterManagementTF = $etudiantDetails['MasterManagementTF'];
-        $masterManagementF = $etudiantDetails['MasterManagementF'];
-        $masterManagementR = $etudiantDetails['MasterManagementR'];
+        $result = EtudiantRepository::recupererAvisTotaux();
+        if (is_null($result)) {
+            throw new Exception("Les avis n'existent pas");
+        }
+        if ($result["avisGenere"] == 0 || !$result["avisGenere"]) {
+            $ecoleIngenieurTF = "-";
+            $ecoleIngenieurF = "-";
+            $ecoleIngenieurR = "-";
+            $masterManagementTF = "-";
+            $masterManagementF = "-";
+            $masterManagementR = "-";
+        } else {
+            $ecoleIngenieurTF = $result['ecoleIngenieurTF'];
+            $ecoleIngenieurF = $result['ecoleIngenieurF'];
+            $ecoleIngenieurR = $result['ecoleIngenieurR'];
+            $masterManagementTF = $result['masterManagementTF'];
+            $masterManagementF = $result['masterManagementF'];
+            $masterManagementR = $result['masterManagementR'];
+        }
 
-        if ($ecoleIngenieurTF >= $ecoleIngenieurF && $ecoleIngenieurTF >= $ecoleIngenieurR) {
+        if (strcmp($ecoleIngenieurTF, "-") === 0) {
+            $avisEcoleIngenieur = "-";
+        } elseif ($ecoleIngenieurTF >= $ecoleIngenieurF && $ecoleIngenieurTF >= $ecoleIngenieurR) {
             $avisEcoleIngenieur = "Très favorable";
         } elseif ($ecoleIngenieurF >= $ecoleIngenieurTF && $ecoleIngenieurF >= $ecoleIngenieurR) {
             $avisEcoleIngenieur = "Favorable";
@@ -409,7 +424,9 @@ class ControleurEtudiant extends ControleurGenerique
             $avisEcoleIngenieur = "Réservé";
         }
 
-        if ($masterManagementTF >= $masterManagementF && $masterManagementTF >= $masterManagementR) {
+        if (strcmp($masterManagementTF, "-") === 0) {
+            $avisMasterManagement = "-";
+        } elseif ($masterManagementTF >= $masterManagementF && $masterManagementTF >= $masterManagementR) {
             $avisMasterManagement = "Très favorable";
         } elseif ($masterManagementF >= $masterManagementTF && $masterManagementF >= $masterManagementR) {
             $avisMasterManagement = "Favorable";
