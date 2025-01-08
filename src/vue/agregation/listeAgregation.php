@@ -4,6 +4,12 @@
     <?php if (empty($agre)): ?>
         <p>Aucune agrégation n'a été trouvée.</p>
     <?php else: ?>
+        <?php /** @var bool $admin */
+        if ($admin) {
+            echo "<p>Les agrégations en gras sont celles sur lesquelles sont basé le calcul des avis</p>";
+        }
+        ?>
+
         <table>
             <thead>
             <tr>
@@ -14,7 +20,12 @@
             <tbody>
             <?php foreach ($agre as $agregation): ?>
                 <tr>
-                    <td><?= htmlspecialchars($agregation->getNom()) ?></td>
+                    <td><?php
+                        if ($agregation->getId() == 1 || $agregation->getId() == 2) {
+                            echo "<b>" . htmlspecialchars($agregation->getNom()) . "</b>";
+                        } else {
+                            echo htmlspecialchars($agregation->getNom());
+                        }?></td>
                     <td>
                         <a href="controleurFrontal.php?controleur=agregation&action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a> |
                         <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Détails</a>
