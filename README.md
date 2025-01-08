@@ -30,7 +30,7 @@ Administrateur ;
 
 Etudiant :
 
-    login : nom 70p
+    login : nom 100p
     mdp : 123
 
 Ecole :
@@ -41,7 +41,7 @@ Ecole :
 
 Professeur :
 
-    login : prof 2
+    login : prof1
     mdp : 123
 
 
