@@ -4,6 +4,9 @@
         "shuchkin/simplexlsx": "^1.1",
       "ext-pdo": "*",
       "ext-mbstring": "*",
-        "dompdf/dompdf": "^3.0"
+        "setasign/fpdf": "^1.8",
+        "setasign/tfpdf": "1.33",
+      "ext-iconv": "*",
+        "tecnickcom/tcpdf": "^6.8"
     }
 }
