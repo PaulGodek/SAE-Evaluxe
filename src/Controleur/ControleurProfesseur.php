@@ -10,6 +10,7 @@ use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use Random\RandomException;
 use TypeError;
 
 class ControleurProfesseur extends ControleurGenerique
@@ -22,7 +23,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $professeurs = (new ProfesseurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -32,7 +33,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParNom(); //appel au modèle pour gérer la BD
@@ -42,7 +43,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherListeProfesseurOrdonneParPrenom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $professeurs = ProfesseurRepository::recupererProfesseursOrdonneParPrenom(); //appel au modèle pour gérer la BD
@@ -52,15 +53,13 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherDetail(): void
     {
         if (!ConnexionUtilisateur::estConnecte()) {
-            //self::afficherErreur("Veuillez vous connecter d'abord.");
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
         if (!ConnexionUtilisateur::estAdministrateur()) {
             if (!ConnexionUtilisateur::estProfesseur()) {
-//                self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page.");
-                self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficherAccueil&controleur=Accueil");
+                self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
                 return;
             }
         }
@@ -81,7 +80,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherFormulaireCreation(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte professeur", "cheminCorpsVue" => "professeur/formulaireCreationProfesseur.php"]);
@@ -91,17 +90,20 @@ class ControleurProfesseur extends ControleurGenerique
     public static function creerDepuisFormulaire(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Le login n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         } elseif (!isset($_GET["nom"])) {
-            self::afficherErreurProfesseur("Le nom n'est pas renseigné");
+            MessageFlash::ajouter("error","Le nom n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         } elseif (!isset($_GET["prenom"])) {
-            self::afficherErreurProfesseur("Le prénom n'est pas renseigné");
+            MessageFlash::ajouter("error","Le prénom n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         $professeur = new professeur($_GET["login"], $_GET["nom"], $_GET["prenom"]);
@@ -114,11 +116,11 @@ class ControleurProfesseur extends ControleurGenerique
     public static function supprimer(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $login = $_GET["login"];
@@ -131,11 +133,12 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherFormulaireMiseAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Le login n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         $professeur = (new ProfesseurRepository)->recupererParClePrimaire($_GET['login']);
@@ -147,7 +150,7 @@ class ControleurProfesseur extends ControleurGenerique
     {
 
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
 
@@ -192,7 +195,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function creerProfesseurDepuisFormulaire(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
 
@@ -218,7 +221,7 @@ class ControleurProfesseur extends ControleurGenerique
     public static function afficherResultatRechercheProfesseur(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $professeurs = ProfesseurRepository::rechercherProfesseur($_GET['reponse']);
@@ -227,15 +230,17 @@ class ControleurProfesseur extends ControleurGenerique
 
     public static function afficherFormulaireAvisEtudiant(): void {
         if (!ConnexionUtilisateur::estProfesseur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["loginEtudiant"])) {
-            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         if (!isset($_GET["code_nip"])) {
-            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         $nomPrenomArray = EtudiantRepository::getNomPrenomParCodeNip(rawurldecode($_GET["code_nip"]));
@@ -249,33 +254,56 @@ class ControleurProfesseur extends ControleurGenerique
         self::afficherVue("vueGenerale.php", ["avis" => $avis, "nomPrenomArray" => $nomPrenomArray, "loginEtudiant" => $_GET["loginEtudiant"], "titre" => "Formulaire d'avis d'étudiant", "cheminCorpsVue" => "professeur/formulaireAvisPersonnaliseEtudiant.php"]);
     }
 
-    public static function publierAvisEtudiant() : void {
+    /**
+     * @throws RandomException
+     */
+    public static function publierAvisEtudiant(): void {
         if (!ConnexionUtilisateur::estProfesseur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["loginEtudiant"])) {
-            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         if (!isset($_GET["avis"])) {
-            self::afficherErreurProfesseur("L'avis de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","L'avis de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         if (!isset($_GET["avisDejaSet"])) {
-            self::afficherErreurProfesseur("L'avis de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","L'avis de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
+        if (!isset($_GET["ecoleIngenieur"])) {
+            MessageFlash::ajouter("error","L'avis pour l'école d'ingénieur n'est pas renseigné");
+            self::afficherErreurProfesseur("");
+            return;
+        }
+        if (!isset($_GET["masterManagement"])) {
+            MessageFlash::ajouter("error","L'avis pour le master en management n'est pas renseigné");
+            self::afficherErreurProfesseur("");
+            return;
+        }
+
         $loginConnecte = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        $loginEtudiant = rawurldecode($_GET["loginEtudiant"]);
+        $avis = rawurldecode($_GET["avis"]);
+        $ecoleIngenieur = rawurldecode($_GET["ecoleIngenieur"]);
+        $masterManagement = rawurldecode($_GET["masterManagement"]);
+
         if ($_GET["avisDejaSet"] === "1") {
-            if (strcmp($_GET["avis"], "") === 0) {
-                ProfesseurRepository::supprimerAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte);
+            if (strcmp($avis, "") === 0) {
+                ProfesseurRepository::supprimerAvis($loginEtudiant, $loginConnecte);
             } else {
-                ProfesseurRepository::mettreAJourAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+                ProfesseurRepository::mettreAJourAvis($loginEtudiant, $loginConnecte, $avis, $ecoleIngenieur, $masterManagement);
             }
         } else {
-            ProfesseurRepository::ajouterAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+            ProfesseurRepository::ajouterAvis($loginEtudiant, $loginConnecte, $avis, $ecoleIngenieur, $masterManagement);
         }
+
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
@@ -283,16 +311,17 @@ class ControleurProfesseur extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
         MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
-        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherAvisProfesseurs() : void {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         if (!isset($_GET["login"])) {
-            self::afficherErreurProfesseur("Le login de l'étudiant n'est pas renseigné");
+            MessageFlash::ajouter("error","Le login de l'étudiant n'est pas renseigné");
+            self::afficherErreurProfesseur("");
             return;
         }
         $avis = ProfesseurRepository::getToutAvis($_GET["login"]);

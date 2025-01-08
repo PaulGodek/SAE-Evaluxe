@@ -1,7 +1,7 @@
 <?php
 /** @var array $nomPrenomArray
  *  @var string $loginEtudiant
- * @var string $avis
+ * @var array $avis
  */
 ?>
 <form method="get" action="controleurFrontal.php">
@@ -14,15 +14,30 @@
 
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="avis_id"></label>
-            <input class="InputAddOn-field" type="text"  name="avis" placeholder="Entrez votre avis ici..." value="<?php
-                if (!is_null($avis)) {
-                    echo $avis;
-                }
+            <input class="InputAddOn-field" type="text" name="avis" placeholder="Entrez votre avis ici..." value="<?php
+            if (!is_null($avis)) {
+                echo $avis['avis'];
+            }
             ?>" id="avis_id">
         </p>
         <p class="InputAddOn">
-            <!--            <input class="InputAddOn-field" type="submit" value="Envoyer" />-->
-            <button class = "button-submit" type="submit">Envoyer</button>
+            <label class="InputAddOn-item" for="ecoleIngenieur_id">École d'ingénieur ou master en informatique:</label>
+            <select name="ecoleIngenieur" id="ecoleIngenieur_id">
+                <option value="Tres favorable" <?php if (!is_null($avis) && $avis['ecoleIngenieur'] == 'Tres favorable') echo 'selected'; ?>>Très favorable</option>
+                <option value="Favorable" <?php if (!is_null($avis) && $avis['ecoleIngenieur'] == 'Favorable') echo 'selected'; ?>>Favorable</option>
+                <option value="Reserve" <?php if (is_null($avis) || $avis['ecoleIngenieur'] == 'Reserve') echo 'selected'; ?>>Réservé</option>
+            </select>
+        </p>
+        <p class="InputAddOn">
+            <label class="InputAddOn-item" for="masterManagement_id">Master en management:</label>
+            <select name="masterManagement" id="masterManagement_id">
+                <option value="Tres favorable" <?php if (!is_null($avis) && $avis['masterManagement'] == 'Tres favorable') echo 'selected'; ?>>Très favorable</option>
+                <option value="Favorable" <?php if (!is_null($avis) && $avis['masterManagement'] == 'Favorable') echo 'selected'; ?>>Favorable</option>
+                <option value="Reserve" <?php if (is_null($avis) || $avis['masterManagement'] == 'Reserve') echo 'selected'; ?>>Réservé</option>
+            </select>
+        </p>
+        <p class="InputAddOn">
+            <button class="button-submit" type="submit">Envoyer</button>
         </p>
     </fieldset>
 </form>

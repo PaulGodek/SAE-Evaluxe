@@ -4,6 +4,7 @@ namespace App\GenerateurAvis\Modele\Repository;
 
 use App\GenerateurAvis\Modele\DataObject\AbstractDataObject;
 use App\GenerateurAvis\Modele\DataObject\Professeur;
+
 class ProfesseurRepository extends AbstractRepository
 {
     private static string $tableProfesseur = "ProfTest";
@@ -147,35 +148,42 @@ class ProfesseurRepository extends AbstractRepository
         return self::triProfesseur("prenom");
     }
 
-    public static function ajouterAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
-        $sql = "INSERT INTO Avis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag)";
+    public static function ajouterAvis(string $loginEtudiant, string $loginProfesseur, string $avis, string $ecoleIngenieur, string $masterManagement): bool
+    {
+        $sql = "INSERT INTO Avis VALUES (:loginEtudiantTag, :loginProfesseurTag, :avisTag, :ecoleIngenieurTag, :masterManagementTag)";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "loginEtudiantTag" => $loginEtudiant,
             "loginProfesseurTag" => $loginProfesseur,
-            "avisTag" => $avis
+            "avisTag" => $avis,
+            "ecoleIngenieurTag" => $ecoleIngenieur,
+            "masterManagementTag" => $masterManagement
         );
 
         return $pdoStatement->execute($values);
     }
 
-    public static function mettreAJourAvis(string $loginEtudiant, string $loginProfesseur, string $avis): bool {
-        $sql = "UPDATE Avis SET avis = :avisTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+    public static function mettreAJourAvis(string $loginEtudiant, string $loginProfesseur, string $avis, string $ecoleIngenieur, string $masterManagement): bool
+    {
+        $sql = "UPDATE Avis SET avis = :avisTag, ecoleIngenieur = :ecoleIngenieurTag, masterManagement = :masterManagementTag WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = array(
             "loginEtudiantTag" => $loginEtudiant,
             "loginProfesseurTag" => $loginProfesseur,
-            "avisTag" => $avis
+            "avisTag" => $avis,
+            "ecoleIngenieurTag" => $ecoleIngenieur,
+            "masterManagementTag" => $masterManagement
         );
 
         return $pdoStatement->execute($values);
     }
 
-    public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur) :bool {
+    public static function supprimerAvis(string $loginEtudiant, string $loginProfesseur): bool
+    {
         $sql = "DELETE FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -188,8 +196,8 @@ class ProfesseurRepository extends AbstractRepository
         return $pdoStatement->execute($values);
     }
 
-    public static function getAvis(string $loginEtudiant, string $loginProfesseur) : ?string {
-        $sql = "SELECT avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
+    public static function getAvis(string $loginEtudiant, string $loginProfesseur): ?array {
+        $sql = "SELECT avis, ecoleIngenieur, masterManagement FROM Avis WHERE loginEtudiant = :loginEtudiantTag AND loginProfesseur = :loginProfesseurTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -202,10 +210,11 @@ class ProfesseurRepository extends AbstractRepository
         if ($pdoStatement->rowCount() == 0) {
             return null;
         }
-        return $pdoStatement->fetch()["avis"];
+        return $pdoStatement->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public static function getToutAvis(string $loginEtudiant) : ?array {
+    public static function getToutAvis(string $loginEtudiant): ?array
+    {
         $sql = "SELECT loginProfesseur, avis FROM Avis WHERE loginEtudiant = :loginEtudiantTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -221,7 +230,8 @@ class ProfesseurRepository extends AbstractRepository
         return $pdoStatement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public static function getNomPrenomParIdProfesseur(string $loginProfesseur) : ?array {
+    public static function getNomPrenomParIdProfesseur(string $loginProfesseur): ?array
+    {
         $sql = "SELECT nom, prenom FROM " . (new ProfesseurRepository)->getNomTable() . " WHERE login = :loginTag";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
