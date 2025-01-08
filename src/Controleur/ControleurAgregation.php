@@ -116,7 +116,17 @@ class ControleurAgregation extends ControleurGenerique
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
+        if (!isset($_GET['id'])) {
+            self::redirectionVersURL("warning", "L'id de l'agrégations n'a pas été choisi", "afficherListe&controleur=agregation");
+            return;
+        }
+
         $id = $_GET["id"];
+
+        if (strcmp($id, "1") === 0 || strcmp($id, "2") === 0) {
+            self::redirectionVersURL("warning", "Vous ne pouvez supprimer les agrégations par défaut", "afficherListe&controleur=agregation");
+            return;
+        }
         (new AgregationRepository())->supprimer($id);
         self::redirectionVersURL("success","L'agrégation a bien été supprimée.", "afficherListe&controleur=agregation");
     }
