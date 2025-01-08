@@ -1,0 +1,34 @@
+.infosCompte {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    word-wrap: break-word;
+    width: 66%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.infosCompte h2 {
+    text-align: center;
+    color: #1d1d1f;
+}
+
+.infosCompte p {
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 100%;
+}
+
+span.sousTitre{
+    font-size: 18qpx;
+    margin-block-start: 1em;
+    margin-inline-start: 0px;
+    margin-block-end: 1em;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+
+}
