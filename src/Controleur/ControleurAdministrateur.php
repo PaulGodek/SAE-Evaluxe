@@ -191,24 +191,39 @@ class ControleurAdministrateur extends ControleurGenerique
         }
 
         $listeEtudiants = (new EtudiantRepository())->recuperer();
+        ConfigurationSite::resetAvis();
 
         foreach ($listeEtudiants as $etudiant) {
             $agregations1 = AgregationRepository::calculateOneAgregationNote(1, $etudiant->getCodeNip());
             $agregations2 = AgregationRepository::calculateOneAgregationNote(2, $etudiant->getCodeNip());
 
             $avis1 = match (ConfigurationSite::determinerPassageNotes($agregations1)) {
-                "R" => "Reserve",
+                "R" => "Réservé",
                 "F" => "Favorable",
-                default => "Tres Favorable",
+                default => "Très Favorable",
             };
 
             $avis2 = match (ConfigurationSite::determinerPassageNotes($agregations2)) {
-                "R" => "Reserve",
+                "R" => "Réservé",
                 "F" => "Favorable",
-                default => "Tres Favorable",
+                default => "Très Favorable",
             };
 
             AvisGenereRepository::creerAvisGenereEtudiant($etudiant->getCodeNip(), $avis1, $avis2);
+
+            $avis1Config = match ($avis1) {
+                "Réservé" => "ingenieurR",
+                "Favorable" => "ingenieurF",
+                default => "ingenieurTF",
+            };
+            $avis2Config = match ($avis2) {
+                "Réservé" => "managementR",
+                "Favorable" => "managementF",
+                default => "managementTF",
+            };
+
+            ConfigurationSite::addAvis($avis1Config);
+            ConfigurationSite::addAvis($avis2Config);
         }
 
         MessageFlash::ajouter("success", "Les avis automatiques ont été générés avec succès.");
