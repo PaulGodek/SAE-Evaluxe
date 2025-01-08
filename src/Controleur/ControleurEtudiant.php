@@ -378,7 +378,6 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function genererAvisPdf(): void
     {
-        // Ensure no output before PDF generation
         ob_clean();
 
         $etudiantRepository = new EtudiantRepository();
@@ -389,14 +388,7 @@ class ControleurEtudiant extends ControleurGenerique
             throw new Exception("Étudiant non trouvée");
         }
 
-        $etudiantDetails = $etudiantRepository->recupererDetailsEtudiantParCodeNip($etudiant->getCodeNip());
-
-        $conn = ConnexionBaseDeDonnees::getPdo();
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $stmt = $conn->prepare("SELECT * FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nip");
-        $stmt->execute(['code_nip' => $etudiant->getCodeNip()]);
-        $etudiantDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+        $etudiantDetails = $etudiantRepository->recupererDetailsEtudiantParCodeNipPourPDF($etudiant->getCodeNip());
 
         if (!$etudiantDetails) {
             throw new Exception("Étudiant non trouvée");
