@@ -12,7 +12,7 @@ use Shuchkin\SimpleXLSX;
 
 class AvisGenereRepository extends AbstractRepository
 {
-    private static string $tableAvisGeneres = "avisGeneres";
+    private static string $tableAvisGeneres = "AvisGeneres";
 
     public function getNomTable(): string
     {
@@ -47,7 +47,7 @@ class AvisGenereRepository extends AbstractRepository
         try {
             $pdo = ConnexionBaseDeDonnees::getPdo();
 
-            $sql = "INSERT INTO AvisGeneres (code_nip, avisGenereIngenieur, avisGenereManagement) VALUES (:code_nipTag, :avisIngenieurTag, :avisManagementTag)";
+            $sql = "INSERT INTO " . self::$tableAvisGeneres . " (code_nip, avisGenereIngenieur, avisGenereManagement) VALUES (:code_nipTag, :avisIngenieurTag, :avisManagementTag)";
             $stmt = $pdo->prepare($sql);
 
             return $stmt->execute(["code_nipTag" => $code_nip, "avisIngenieurTag" => $avisIngenieur, "avisManagementTag" => $avisManagement]);
@@ -56,5 +56,23 @@ class AvisGenereRepository extends AbstractRepository
             }
         }
         return false;
+    }
+
+    public static function getAvisGenereEtudiant(string $code_nip) {
+        $sql = "SELECT * FROM " . self::$tableAvisGeneres .
+            " WHERE code_nip = :code_nipTag";
+
+        // Préparer la requête
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Ajouter les jokers à la valeur de recherche
+        $values = [
+            "code_nipTag" => $code_nip
+        ];
+
+        // Exécuter la requête
+        $pdoStatement->execute($values);
+
+        return $pdoStatement->fetch();
     }
 }
