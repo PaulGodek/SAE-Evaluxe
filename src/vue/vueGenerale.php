@@ -63,6 +63,10 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="item">Étudiants</a>
             <?php endif; ?>
             <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="item">Agrégations</a>
+            <?php if (ConnexionUtilisateur::estAdministrateur()): ?>
+                <a href="controleurFrontal.php?action=genererAvisAutomatique&controleur=administrateur" class="nav-item">Generer les Avis</a>
+                <a href="controleurFrontal.php?action=parametrerAvisAutomatique&controleur=administrateur" class="nav-item">Parametrer Avis</a>
+            <?php endif; ?>
             <input type="checkbox" id="logOutToggle" hidden>
             <label for="logOutToggle" id="LogOutButton">
                 <img src="../ressources/images/log-out.png" id="LogOutIcon" alt="Log Out Icon">
@@ -143,8 +147,19 @@ use App\GenerateurAvis\Modele\HTTP\Cookie;
                 <a href="controleurFrontal.php?action=afficherListe&controleur=etudiant" class="nav-item">Étudiants</a>
             <?php endif; ?>
 
-
-            <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégations</a>
+            <?php if (!ConnexionUtilisateur::estAdministrateur()): ?>
+                <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégations</a>
+            <?php else: ?>
+                <div class="dropdown">
+                    <a href="controleurFrontal.php?action=afficherListe&controleur=agregation" class="nav-item">Agrégations</a>
+                    <div class="dropdown-content">
+                        <a href="controleurFrontal.php?action=genererAvisAutomatique&controleur=administrateur"
+                           class="nav-item">Generer les Avis</a>
+                        <a href="controleurFrontal.php?action=parametrerAvisAutomatique&controleur=administrateur"
+                           class="nav-item">Parametrer Avis</a>
+                    </div>
+                </div>
+            <?php endif; ?>
             <!--<a href="controleurFrontal.php?controleur=connexion&action=deconnecter" class="nav-item">
                 <img src="../ressources/images/log-out.png" alt="Déconnexion" class="nav-icon">
             </a>-->
