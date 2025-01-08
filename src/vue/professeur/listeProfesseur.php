@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="../ressources/css/connect.css">
+
+<div class="container">
+
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheProfesseur"/>
     <input type="hidden" name="controleur" value="professeur"/>
@@ -14,6 +18,7 @@
         </p>
     </fieldset>
 </form>
+</div>
 
 
 <?php
@@ -21,7 +26,7 @@
 
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 
-echo "<h2>Liste des professeurs</h2> 
+echo "<div class='container'> <h2>Liste des professeurs</h2> 
         
     <p><a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParNom'>  Trier par nom  </a>&emsp; <a href='controleurFrontal.php?controleur=professeur&action=afficherListeProfesseurOrdonneParPrenom'>  Trier par prenom  </a></p> 
     
@@ -35,4 +40,4 @@ foreach ($professeurs as $professeur) {
 
 }
 
-echo "</ul>";
+echo "</ul></div>";
