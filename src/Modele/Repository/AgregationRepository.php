@@ -10,7 +10,7 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
-    private static string $tableAgregation = "Agregations";
+    private static string $tableAgregation = "agregations";
 
     public function getNomTable(): string
     {
