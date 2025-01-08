@@ -1,11 +1,11 @@
 <?php
 
 namespace App\GenerateurAvis\Controleur;
+require __DIR__ . '/../../bootstrap.php';
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
-use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AgregationRepository;
@@ -13,6 +13,9 @@ use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use Exception;
+use App\GenerateurAvis\Controleur\PDF;
+use PDO;
 use Random\RandomException;
 use TypeError;
 
@@ -56,7 +59,7 @@ class ControleurEtudiant extends ControleurGenerique
             $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParPrenom(): void
@@ -72,7 +75,7 @@ class ControleurEtudiant extends ControleurGenerique
             $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherListeEtudiantOrdonneParParcours(): void
@@ -88,7 +91,7 @@ class ControleurEtudiant extends ControleurGenerique
             $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             $listeNomPrenom[] = $nomPrenom;
         }
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste des etudiants", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail(): void
@@ -127,7 +130,7 @@ class ControleurEtudiant extends ControleurGenerique
                         "informationsParSemestre" => $etudiantDetailsPerSemester,
                         "code_nip" => $code_nip,
                         "codeUnique" => $etudiant->getCodeUnique(),
-                       "agregations" => $agregationsResults,
+                        "agregations" => $agregationsResults,
                         "cheminCorpsVue" => "etudiant/detailEtudiant.php"]);
 
                 }
@@ -242,14 +245,14 @@ class ControleurEtudiant extends ControleurGenerique
         $mdp2 = $_GET['nvmdp2'] ?? '';
 
         if ($mdp !== $mdp2) {
-            MessageFlash::ajouter("warning","Les mots de passe ne correspondent pas");
+            MessageFlash::ajouter("warning", "Les mots de passe ne correspondent pas");
             self::afficherVue('vueGenerale.php', ["etudiant" => $etudiantExistant, "titre" => "Formulaire de mise à jour d'un etudiant", "cheminCorpsVue" => "etudiant/formulaireMiseAJourEtudiant.php"]);
             return;
         }
         $userexistant = (new UtilisateurRepository())->recupererParClePrimaire($_GET['login']);
-        if($_GET["nvmdp"]==''){
+        if ($_GET["nvmdp"] == '') {
             $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), $userexistant->getPasswordHash());
-        }else {
+        } else {
             $user = new Utilisateur($userexistant->getLogin(), $userexistant->getType(), MotDePasse::hacher($_GET["nvmdp"]));
         }
         (new UtilisateurRepository)->mettreAJour($user);
@@ -264,14 +267,14 @@ class ControleurEtudiant extends ControleurGenerique
                 $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
                 $listeNomPrenom[] = $nomPrenom;
             }
-            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"listeNomPrenom"=>$listeNomPrenom, "titre" => "Liste étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
-        }else{
+            self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Liste étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        } else {
             MessageFlash::ajouter("success", "Votre compte a été mis à jour avec succès.");
-            $etudiant=(new EtudiantRepository())->recupererParClePrimaire($_GET['login']);
-            $nomPrenom=EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
+            $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET['login']);
+            $nomPrenom = EtudiantRepository::getNomPrenomParCodeNip($etudiant->getCodeNip());
             self::afficherVue('vueGenerale.php', [
                 "user" => $etudiant,
-                "nomPrenom"=>$nomPrenom,
+                "nomPrenom" => $nomPrenom,
                 "titre" => "Compte Etudiant",
                 "cheminCorpsVue" => "etudiant/compteEtudiant.php"
             ]);
@@ -292,7 +295,7 @@ class ControleurEtudiant extends ControleurGenerique
         }
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
 
-        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom,"ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue("vueGenerale.php", ["listeNomPrenom" => $listeNomPrenom, "ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Résultat recherche étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
 
@@ -328,7 +331,7 @@ class ControleurEtudiant extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
 
-        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom,"ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["listeNomPrenom" => $listeNomPrenom, "ecole" => $ecole, "etudiants" => $etudiants, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function supprimerDemande(): void
@@ -357,7 +360,7 @@ class ControleurEtudiant extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
 
-        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants,"ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue('vueGenerale.php', ["etudiants" => $etudiants, "ecole" => $ecole, "listeNomPrenom" => $listeNomPrenom, "titre" => "Demande d'accès aux infos d'un étudiant", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function getNoteForMatiere(int $idRessource, int $idEtudiant): float
@@ -368,5 +371,60 @@ class ControleurEtudiant extends ControleurGenerique
 
         $note = $stmt->fetchColumn();
         return $note !== false ? (float)$note : 0;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function genererAvisPdf(): void
+    {
+        ob_clean();
+
+        $etudiantRepository = new EtudiantRepository();
+
+        $etudiant = $etudiantRepository->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        if (!$etudiant) {
+            throw new Exception("Étudiant non trouvée");
+        }
+
+        $etudiantDetails = $etudiantRepository->recupererDetailsEtudiantParCodeNipPourPDF($etudiant->getCodeNip());
+
+        if (!$etudiantDetails) {
+            throw new Exception("Étudiant non trouvée");
+        }
+
+        $ecoleIngenieurTF = $etudiantDetails['EcoleIngenieurTF'];
+        $ecoleIngenieurF = $etudiantDetails['EcoleIngenieurF'];
+        $ecoleIngenieurR = $etudiantDetails['EcoleIngenieurR'];
+        $masterManagementTF = $etudiantDetails['MasterManagementTF'];
+        $masterManagementF = $etudiantDetails['MasterManagementF'];
+        $masterManagementR = $etudiantDetails['MasterManagementR'];
+
+        if ($ecoleIngenieurTF >= $ecoleIngenieurF && $ecoleIngenieurTF >= $ecoleIngenieurR) {
+            $avisEcoleIngenieur = "Très favorable";
+        } elseif ($ecoleIngenieurF >= $ecoleIngenieurTF && $ecoleIngenieurF >= $ecoleIngenieurR) {
+            $avisEcoleIngenieur = "Favorable";
+        } else {
+            $avisEcoleIngenieur = "Réservé";
+        }
+
+        if ($masterManagementTF >= $masterManagementF && $masterManagementTF >= $masterManagementR) {
+            $avisMasterManagement = "Très favorable";
+        } elseif ($masterManagementF >= $masterManagementTF && $masterManagementF >= $masterManagementR) {
+            $avisMasterManagement = "Favorable";
+        } else {
+            $avisMasterManagement = "Réservé";
+        }
+
+        $parcours = $etudiantDetails['parcours'] ?? '-';
+
+        $pdf = new PDF();
+        $pdf->AddPage();
+        $pdf->AddStudentInfo($etudiantDetails['Nom'], $etudiantDetails['Prénom'], $parcours);
+        $pdf->AddAvis($avisEcoleIngenieur, $avisMasterManagement);
+        $pdf->AddAvisPromotion($ecoleIngenieurTF, $ecoleIngenieurF, $ecoleIngenieurR, $masterManagementTF, $masterManagementF, $masterManagementR);
+
+        $pdf->Output("Avis_PE_2024_{$etudiantDetails['Nom']}.pdf", 'I');
     }
 }

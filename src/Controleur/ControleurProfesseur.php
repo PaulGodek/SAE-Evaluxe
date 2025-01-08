@@ -10,6 +10,7 @@ use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\ProfesseurRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
+use Random\RandomException;
 use TypeError;
 
 class ControleurProfesseur extends ControleurGenerique
@@ -249,7 +250,10 @@ class ControleurProfesseur extends ControleurGenerique
         self::afficherVue("vueGenerale.php", ["avis" => $avis, "nomPrenomArray" => $nomPrenomArray, "loginEtudiant" => $_GET["loginEtudiant"], "titre" => "Formulaire d'avis d'étudiant", "cheminCorpsVue" => "professeur/formulaireAvisPersonnaliseEtudiant.php"]);
     }
 
-    public static function publierAvisEtudiant() : void {
+    /**
+     * @throws RandomException
+     */
+    public static function publierAvisEtudiant(): void {
         if (!ConnexionUtilisateur::estProfesseur()) {
             self::afficherErreurProfesseur("Vous n'avez pas de droit d'accès pour cette page");
             return;
@@ -266,16 +270,31 @@ class ControleurProfesseur extends ControleurGenerique
             self::afficherErreurProfesseur("L'avis de l'étudiant n'est pas renseigné");
             return;
         }
+        if (!isset($_GET["ecoleIngenieur"])) {
+            self::afficherErreurProfesseur("L'avis pour l'école d'ingénieur n'est pas renseigné");
+            return;
+        }
+        if (!isset($_GET["masterManagement"])) {
+            self::afficherErreurProfesseur("L'avis pour le master en management n'est pas renseigné");
+            return;
+        }
+
         $loginConnecte = ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        $loginEtudiant = rawurldecode($_GET["loginEtudiant"]);
+        $avis = rawurldecode($_GET["avis"]);
+        $ecoleIngenieur = rawurldecode($_GET["ecoleIngenieur"]);
+        $masterManagement = rawurldecode($_GET["masterManagement"]);
+
         if ($_GET["avisDejaSet"] === "1") {
-            if (strcmp($_GET["avis"], "") === 0) {
-                ProfesseurRepository::supprimerAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte);
+            if (strcmp($avis, "") === 0) {
+                ProfesseurRepository::supprimerAvis($loginEtudiant, $loginConnecte);
             } else {
-                ProfesseurRepository::mettreAJourAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+                ProfesseurRepository::mettreAJourAvis($loginEtudiant, $loginConnecte, $avis, $ecoleIngenieur, $masterManagement);
             }
         } else {
-            ProfesseurRepository::ajouterAvis(rawurldecode($_GET["loginEtudiant"]), $loginConnecte, rawurldecode($_GET["avis"]));
+            ProfesseurRepository::ajouterAvis($loginEtudiant, $loginConnecte, $avis, $ecoleIngenieur, $masterManagement);
         }
+
         $etudiants = EtudiantRepository::recupererEtudiantsOrdonneParNom();
         $listeNomPrenom = array();
         foreach ($etudiants as $etudiant) {
@@ -283,7 +302,7 @@ class ControleurProfesseur extends ControleurGenerique
             $listeNomPrenom[] = $nomPrenom;
         }
         MessageFlash::ajouter("success", "L'avis a bien été enregistré.");
-        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom,"titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
+        self::afficherVue("vueGenerale.php", ["etudiants" => $etudiants, "listeNomPrenom" => $listeNomPrenom, "titre" => "Avis publié", "cheminCorpsVue" => "etudiant/listeEtudiant.php"]);
     }
 
     public static function afficherAvisProfesseurs() : void {
