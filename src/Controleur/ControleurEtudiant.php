@@ -29,7 +29,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherListe(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $etudiants = (new EtudiantRepository)->recuperer(); //appel au modèle pour gérer la BD
@@ -49,7 +49,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherListeEtudiantOrdonneParNom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
@@ -65,7 +65,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherListeEtudiantOrdonneParPrenom(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
@@ -81,7 +81,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherListeEtudiantOrdonneParParcours(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $ecole = (new EcoleRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
@@ -196,7 +196,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherFormulaireCreation(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         self::afficherVue('vueGenerale.php', ["titre" => "Formulaire de création de compte étudiant", "cheminCorpsVue" => "etudiant/formulaireCreationEtudiant.php"]);
@@ -205,7 +205,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function supprimer(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $login = $_GET["login"];
@@ -223,7 +223,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherFormulaireMiseAJour(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $etudiant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
@@ -236,7 +236,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function mettreAJour(): void //definetely not the best but works for now
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estEtudiant()) { // Peut être amélioré à l'avenir pour permettre aux écoles aussi de se modifier
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $etudiantExistant = (new EtudiantRepository)->recupererParClePrimaire($_GET['login']);
@@ -284,7 +284,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function afficherResultatRechercheEtudiant(): void
     {
         if (!ConnexionUtilisateur::estAdministrateur() && !ConnexionUtilisateur::estProfesseur() && !ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $etudiants = EtudiantRepository::rechercherEtudiant($_GET['reponse']);
@@ -302,7 +302,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function demander(): void
     {
         if (!ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
 
@@ -337,7 +337,7 @@ class ControleurEtudiant extends ControleurGenerique
     public static function supprimerDemande(): void
     {
         if (!ConnexionUtilisateur::estEcole()) {
-            self::afficherErreurEtudiant("Vous n'avez pas de droit d'accès pour cette page");
+            self::redirectionVersURL("error", "Vous n'avez pas de droit d'accès pour cette page", "afficher&controleur=Accueil");
             return;
         }
         $etudiant = (new EtudiantRepository())->recupererParClePrimaire($_GET["login"]);
