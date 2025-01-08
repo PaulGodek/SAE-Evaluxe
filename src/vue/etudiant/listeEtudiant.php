@@ -69,7 +69,7 @@ foreach ($etudiants as $etudiant) {
 
     } else {
         echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a>';
-        echo ' (<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>'/*., <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?*/.'</a>)</p></li>';
+        echo ' (<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier le mot de passe </a>, <a href="controleurFrontal.php?controleur=administrateuraction=AmodifierAvis&login=' . $loginURL . '">Modifier l\'avis de poursuite</a>)</p></li>';
 
     }
     $i++;
