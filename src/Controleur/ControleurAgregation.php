@@ -122,35 +122,50 @@ class ControleurAgregation extends ControleurGenerique
     }
 
 
-    public static function modifierAgregationDepuisFormulaire(): void {
+    public static function modifierAgregationDepuisFormulaire(): void
+    {
         if (!ConnexionUtilisateur::estConnecte()) {
             self::redirectionVersURL("warning", "Veuillez vous connecter d'abord", "afficherPreference&controleur=Connexion");
             return;
         }
 
-        $id = $_GET['id'];
-        $coefficientsExistants = $_GET['coefficientsExistants'] ?? [];
-        $matieresASupprimer = $_GET['matieresASupprimer'] ?? [];
-        $matieresNouvelles = $_GET['matieresNouvelles'] ?? [];
-        $coefficientsNouveaux = $_GET['coefficientsNouveaux'] ?? [];
+        if (!isset($_GET["nom"]) || !isset($_GET["matieres"]) || !isset($_GET["coefficients"])) {
+            self::redirectionVersURL("error", "Un paramètre est manquant", "afficherModifierAgregation&controleur=agregation");
+            return;
+        }
+
+        $nomAgregation = $_GET["nom"];
+        $matieres = $_GET["matieres"];
+        $coefficients = $_GET["coefficients"];
+
+        $agregation = new Agregation($nomAgregation, "", ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        $agregationRepository = new AgregationRepository();
+
+        $idAgregation = $_GET['id_agregation'];
+        $agregationRepository->supprimer($idAgregation);
+
+        $agregationId = $agregationRepository->ajouterAgregation($agregation);
+
+        if (!$agregationId) {
+            self::redirectionVersURL("error", "L'agrégation n'a pas pu être créée", "afficherModifierAgregation&controleur=agregation");
+            return;
+        }
+
         $matiereRepository = new AgregationMatiereRepository();
+        foreach ($matieres as $index => $matiereId) {
+            $coefficient = $coefficients[$index];
 
-        foreach ($matieresASupprimer as $matiereId) {
-            $matiereRepository->supprimerMatierePourAgregation($id, $matiereId);
-        }
+            $matiere = new Matiere($matiereId, $coefficient);
+            $res = $matiereRepository->ajouterMatierePourAgregation($agregationId, $matiere);
 
-        foreach ($coefficientsExistants as $matiereId => $coefficient) {
-            $matiereRepository->mettreAJourCoefficientPourAgregation($id, $matiereId, $coefficient);
-        }
-
-        foreach ($matieresNouvelles as $index => $matiereId) {
-            if (!empty($matiereId)) {
-                $coefficient = $coefficientsNouveaux[$index] ?? 1;
-                $matiereRepository->ajouterMatierePourAgregation($id, new Matiere($matiereId, $coefficient));
+            if (!$res) {
+                self::redirectionVersURL("error", "Erreur lors de l'ajout des matières à l'agrégation", "afficherModifierAgregation&controleur=agregation");
+                return;
             }
         }
 
-        self::redirectionVersURL("success", "L'agrégation a bien été modifiée", "afficherListe&controleur=agregation");
+        self::redirectionVersURL("success", "L'agrégation a bien été modifié", "afficherListe&controleur=agregation");
     }
 
     public static function afficherFormulaireMiseAJour(): void
@@ -161,20 +176,25 @@ class ControleurAgregation extends ControleurGenerique
         }
 
         $idAgregation = $_GET['id'];
+
         $agregationRepository = new AgregationRepository();
         $agregation = $agregationRepository->recupererParClePrimaire($idAgregation);
 
         $matiereRepository = new AgregationMatiereRepository();
-        $matiereAgregations = $matiereRepository->recupererParAgregation($idAgregation);
+        $matiereCoefficients = $matiereRepository->recupererParAgregation($idAgregation);
+
+        $ressourceRepository = new RessourceRepository();
+        $ressources = $ressourceRepository->recuperer();
 
         self::afficherVue('vueGenerale.php', [
+            "idAgregation" => $idAgregation,
             "agregation" => $agregation,
-            "matiereAgregations" => $matiereAgregations,
+            "matiereCoefficients" => $matiereCoefficients,
+            "ressources" => $ressources,
             "titre" => "Formulaire de mise à jour d'une agrégation",
             "cheminCorpsVue" => "agregation/modifierAgregation.php"
         ]);
     }
-
 
 
 }
