@@ -133,22 +133,19 @@ class ControleurAgregation extends ControleurGenerique
         $matieresASupprimer = $_GET['matieresASupprimer'] ?? [];
         $matieresNouvelles = $_GET['matieresNouvelles'] ?? [];
         $coefficientsNouveaux = $_GET['coefficientsNouveaux'] ?? [];
-
-        $agregationRepository = new AgregationRepository();
         $matiereRepository = new AgregationMatiereRepository();
 
         foreach ($matieresASupprimer as $matiereId) {
             $matiereRepository->supprimerMatierePourAgregation($id, $matiereId);
         }
 
-        // Cập nhật coefficients
         foreach ($coefficientsExistants as $matiereId => $coefficient) {
             $matiereRepository->mettreAJourCoefficientPourAgregation($id, $matiereId, $coefficient);
         }
 
         foreach ($matieresNouvelles as $index => $matiereId) {
             if (!empty($matiereId)) {
-                $coefficient = $coefficientsNouveaux[$index] ?? 1; // Mặc định coefficient = 1
+                $coefficient = $coefficientsNouveaux[$index] ?? 1;
                 $matiereRepository->ajouterMatierePourAgregation($id, new Matiere($matiereId, $coefficient));
             }
         }
