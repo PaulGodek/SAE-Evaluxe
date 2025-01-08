@@ -3,12 +3,14 @@
 namespace App\GenerateurAvis\Controleur;
 require __DIR__ . '/../../bootstrap.php';
 
+use App\GenerateurAvis\Configuration\ConfigurationSite;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AgregationRepository;
+use App\GenerateurAvis\Modele\Repository\AvisGenereRepository;
 use App\GenerateurAvis\Modele\Repository\ConnexionBaseDeDonnees;
 use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
@@ -394,28 +396,17 @@ class ControleurEtudiant extends ControleurGenerique
             throw new Exception("Étudiant non trouvée");
         }
 
-        $ecoleIngenieurTF = $etudiantDetails['EcoleIngenieurTF'];
-        $ecoleIngenieurF = $etudiantDetails['EcoleIngenieurF'];
-        $ecoleIngenieurR = $etudiantDetails['EcoleIngenieurR'];
-        $masterManagementTF = $etudiantDetails['MasterManagementTF'];
-        $masterManagementF = $etudiantDetails['MasterManagementF'];
-        $masterManagementR = $etudiantDetails['MasterManagementR'];
+        $ecoleIngenieurTF = ConfigurationSite::getIngenieurTF();
+        $ecoleIngenieurF = ConfigurationSite::getIngenieurF();
+        $ecoleIngenieurR = ConfigurationSite::getIngenieurR();
+        $masterManagementTF = ConfigurationSite::getManagementTF();
+        $masterManagementF = ConfigurationSite::getManagementF();
+        $masterManagementR = ConfigurationSite::getManagementR();
 
-        if ($ecoleIngenieurTF >= $ecoleIngenieurF && $ecoleIngenieurTF >= $ecoleIngenieurR) {
-            $avisEcoleIngenieur = "Très favorable";
-        } elseif ($ecoleIngenieurF >= $ecoleIngenieurTF && $ecoleIngenieurF >= $ecoleIngenieurR) {
-            $avisEcoleIngenieur = "Favorable";
-        } else {
-            $avisEcoleIngenieur = "Réservé";
-        }
+        $result = AvisGenereRepository::getAvisGenereEtudiant($etudiant->getCodeNip());
 
-        if ($masterManagementTF >= $masterManagementF && $masterManagementTF >= $masterManagementR) {
-            $avisMasterManagement = "Très favorable";
-        } elseif ($masterManagementF >= $masterManagementTF && $masterManagementF >= $masterManagementR) {
-            $avisMasterManagement = "Favorable";
-        } else {
-            $avisMasterManagement = "Réservé";
-        }
+        $avisEcoleIngenieur = $result["avisGenereIngenieur"];
+        $avisMasterManagement = $result["avisGenereManagement"];
 
         $parcours = $etudiantDetails['parcours'] ?? '-';
 

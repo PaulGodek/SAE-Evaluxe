@@ -503,4 +503,24 @@ class EtudiantRepository extends AbstractRepository
             }
         }
     }
+
+    public static function recupererAvisTotaux() {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+
+        $query = "SELECT ecoleIngenieurTF, ecoleIngenieurF, ecoleIngenieurR, masterManagementTF, masterManagementF, masterManagementR, avisGenere FROM AvisTotaux WHERE id = 1";
+        $stmt = $pdo->query($query);
+
+        if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return [
+                'ecoleIngenieurTF' => $result['ecoleIngenieurTF'],
+                'ecoleIngenieurF' => $result['ecoleIngenieurF'],
+                'ecoleIngenieurR' => $result['ecoleIngenieurR'],
+                'masterManagementTF' => $result['masterManagementTF'],
+                'masterManagementF' => $result['masterManagementF'],
+                'masterManagementR' => $result['masterManagementR'],
+                'avisGenere' => $result['avisGenere']
+            ];
+        }
+        return null;
+    }
 }

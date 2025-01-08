@@ -4,12 +4,16 @@ namespace App\GenerateurAvis\Controleur;
 
 require __DIR__ . '/../../bootstrap.php';
 
+use App\GenerateurAvis\Configuration\ConfigurationSite;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
 use App\GenerateurAvis\Modele\DataObject\Administrateur;
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 use App\GenerateurAvis\Modele\Repository\AdministrateurRepository;
+use App\GenerateurAvis\Modele\Repository\AgregationRepository;
+use App\GenerateurAvis\Modele\Repository\AvisGenereRepository;
+use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Exception;
 
@@ -180,4 +184,103 @@ class ControleurAdministrateur extends ControleurGenerique
 
     }
 
+    public static function genererAvisAutomatique() : void {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        $listeEtudiants = (new EtudiantRepository())->recuperer();
+        ConfigurationSite::resetAvis();
+
+        foreach ($listeEtudiants as $etudiant) {
+            $agregations1 = AgregationRepository::calculateOneAgregationNote(1, $etudiant->getCodeNip());
+            $agregations2 = AgregationRepository::calculateOneAgregationNote(2, $etudiant->getCodeNip());
+
+            $avis1 = match (ConfigurationSite::determinerPassageNotes($agregations1)) {
+                "R" => "Réservé",
+                "F" => "Favorable",
+                default => "Très Favorable",
+            };
+
+            $avis2 = match (ConfigurationSite::determinerPassageNotes($agregations2)) {
+                "R" => "Réservé",
+                "F" => "Favorable",
+                default => "Très Favorable",
+            };
+
+            AvisGenereRepository::creerAvisGenereEtudiant($etudiant->getCodeNip(), $avis1, $avis2);
+
+            $avis1Config = match ($avis1) {
+                "Réservé" => "ingenieurR",
+                "Favorable" => "ingenieurF",
+                default => "ingenieurTF",
+            };
+            $avis2Config = match ($avis2) {
+                "Réservé" => "managementR",
+                "Favorable" => "managementF",
+                default => "managementTF",
+            };
+
+            ConfigurationSite::addAvis($avis1Config);
+            ConfigurationSite::addAvis($avis2Config);
+        }
+
+        MessageFlash::ajouter("success", "Les avis automatiques ont été générés avec succès.");
+
+        $user=(new AdministrateurRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        self::afficherVue('vueGenerale.php', [
+            "user" => $user,
+            "titre" => "Compte Administrateur",
+            "cheminCorpsVue" => "administrateur/compteAdministrateur.php"
+        ]);
+    }
+
+    public static function parametrerAvisAutomatique() : void {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        self::afficherVue('vueGenerale.php', [
+            "titre" => "Formulaire de paramétrage d'avis",
+            "cheminCorpsVue" => "administrateur/parametrerAvis.php"
+        ]);
+    }
+
+    public static function avisParametre() : void {
+        if (!ConnexionUtilisateur::estAdministrateur()) {
+            self::afficherErreur("Vous n'avez pas de droit d'accès pour cette page");
+            return;
+        }
+
+        if (!isset($_GET["note1"]) || !isset($_GET["note2"])) {
+            self::afficherErreur("Il n'y a aucune nouvelle note de créée");
+            return;
+        }
+        $note1 = $_GET["note1"];
+        $note2 = $_GET["note2"];
+
+        if ($note2 < $note1) {
+            MessageFlash::ajouter("warning", "La note de la deuxième case doit être supérieur à la première case");
+            self::afficherVue('vueGenerale.php', [
+                "titre" => "Formulaire de paramétrage d'avis",
+                "cheminCorpsVue" => "administrateur/parametrerAvis.php"
+            ]);
+            return;
+        }
+
+        ConfigurationSite::setBarrier1($note1);
+        ConfigurationSite::setBarrier2($note2);
+        MessageFlash::ajouter("success", "Les paramètres ont été modifié avec succès");
+
+        $user=(new AdministrateurRepository())->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
+
+        self::afficherVue('vueGenerale.php', [
+            "user" => $user,
+            "titre" => "Compte Administrateur",
+            "cheminCorpsVue" => "administrateur/compteAdministrateur.php"
+        ]);
+    }
 }
