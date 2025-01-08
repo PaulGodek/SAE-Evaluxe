@@ -329,7 +329,10 @@ class ControleurUtilisateur extends ControleurGenerique
         } else if ($utilisateur->getType() == "professeur") {
             MessageFlash::ajouter("success", "Professeur connecté");
             $professeur = (new ProfesseurRepository)->recupererParClePrimaire($login);
-            ControleurProfesseur::afficherDetail();
+            ControleurUtilisateur::afficherVue('vueGenerale.php', [
+                "titre" => "Professeur connecté",
+                "cheminCorpsVue" => "professeur/professeurConnecte.php"
+            ]);
         } else if ($utilisateur->getType() == "administrateur") {
             MessageFlash::ajouter("success", "Administrateur connecté");
             $administrateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
