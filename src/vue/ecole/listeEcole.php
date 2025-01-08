@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="../ressources/css/connect.css">
+
 <?php
 
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
@@ -5,7 +7,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 if(ConnexionUtilisateur::estAdministrateur()||ConnexionUtilisateur::estProfesseur()){
     echo '
-
+<div class="container">
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheEcole"/>
     <input type="hidden" name="controleur" value="ecole"/>
@@ -21,13 +23,14 @@ if(ConnexionUtilisateur::estAdministrateur()||ConnexionUtilisateur::estProfesseu
             <button class="button-submit" type="submit">Rechercher</button>
         </p>
     </fieldset>
-</form>';}
+</form>
+</div>';}
 
 
 
 
 
-echo "<h2>Liste des écoles</h2> 
+echo "<div class='container'><h2>Liste des écoles</h2> 
     <p><a href='controleurFrontal.php?controleur=ecole&action=afficherListe'>  Trier par validation  </a>&emsp; 
        <a href='controleurFrontal.php?controleur=ecole&action=afficherListeEcoleOrdonneParNom'>  Trier par nom  </a>&emsp; 
        <a href='controleurFrontal.php?controleur=ecole&action=afficherListeEcoleOrdonneParVille'>  Trier par ville  </a></p> 
@@ -61,4 +64,4 @@ foreach ($ecoles as $ecole) {
     }
 }
 
-echo "</ul>";
+echo "</ul></div>";
