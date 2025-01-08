@@ -387,7 +387,7 @@ class ControleurEcole extends ControleurGenerique
             MessageFlash::ajouter("error", "Erreur lors de l'acceptation de partage");
             self::afficherErreurEcole(" ");
         }
-
+        $etudiant->removeDemande($ecole->getNom());
         $ecoles = (new EcoleRepository())->recuperer();
         self::afficherVue('vueGenerale.php', ["ecoles" => $ecoles, "etudiant" => $etudiant, "titre" => "Liste des demandes", "cheminCorpsVue" => "ecole/listeEcole.php"]);
 

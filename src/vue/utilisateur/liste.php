@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="../ressources/css/connect.css">
+
+<div class="container">
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheUtilisateur"/>
     <input type="hidden" name="type" value="administrateur"/>
@@ -15,6 +18,7 @@
         </p>
     </fieldset>
 </form>
+</div>
 
 
 <?php
@@ -23,7 +27,7 @@
 use App\GenerateurAvis\Modele\DataObject\Utilisateur;
 // https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l
 // pour faire de joli tableaux de données
-echo "<h2>Liste des utilisateurs</h2>
+echo "<div class='container'> <h2>Liste des utilisateurs</h2>
  
     
 <ul>";
@@ -51,3 +55,4 @@ foreach ($utilisateurs as $utilisateur) {
     $type=$utilisateur->getType();
 
 }
+echo "</ul></div>";

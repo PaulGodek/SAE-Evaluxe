@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" type="text/css" href="../ressources/css/account.css">
+
 <?php
 
 /** @var Etudiant $user */
@@ -8,17 +11,15 @@ use App\GenerateurAvis\Modele\DataObject\Etudiant;
 $login = $user->getUtilisateur()->getLogin();
 
 $loginURL = urlencode($login);
-echo "Votre login : " . htmlspecialchars($login);
-echo "<br>";
-echo "Votre nom : " . htmlspecialchars($nomPrenom["Nom"]);
-echo "<br>";
-echo "Votre prénom : " . htmlspecialchars($nomPrenom["Prenom"]);
-echo "<br>";
-echo "Votre code unique : " . htmlspecialchars($user->getCodeUnique());
-echo "<br>";
-echo "Votre code Nip : " . htmlspecialchars($user->getCodeNip());
-echo "<br>";
-echo ' <a class="button" href="controleurFrontal.php?controleur=Utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '" >Modifier mon compte</a>';
-echo ' <a class="button" href="controleurFrontal.php?controleur=Etudiant&action=genererAvisPdf" >Télécharger l\'avis pour l\'enseignement supérieur</a>';
+echo '<div class="infosCompte">';
+echo "<h2> Vos informations </h2>";
+echo "<p><span class='sousTitre'> Votre login : </span>" . htmlspecialchars($login)."</p>";
+echo "<p><span class='sousTitre'> Votre nom : </span>" . htmlspecialchars($nomPrenom["Nom"])."</p>";
+echo "<p><span class='sousTitre'>Votre prénom : </span>" . htmlspecialchars($nomPrenom["Prenom"])."</p>";
+echo "<p><span class='sousTitre'>Votre code unique : </span>" . htmlspecialchars($user->getCodeUnique())."</p>";
+echo "<p><span class='sousTitre'>Votre code Nip : </span>" . htmlspecialchars($user->getCodeNip())."</p>";
 
+
+echo ' <a class="button" href="controleurFrontal.php?controleur=Utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '" >Modifier mon mot de passe</a>';
+echo "</div>";
 

@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="../ressources/css/connect.css">
+<div class="container">
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="afficherResultatRechercheEtudiant"/>
     <input type="hidden" name="controleur" value="etudiant"/>
@@ -14,6 +16,7 @@
         </p>
     </fieldset>
 </form>
+</div>
 <?php
 
 /** @var Etudiant[] $etudiants */
@@ -28,7 +31,7 @@ use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Modele\DataObject\Etudiant;
 use App\GenerateurAvis\Modele\DataObject\Ecole;
 
-echo "<h2>Liste des étudiants</h2> 
+echo "<div class='container'><h2>Liste des étudiants</h2> 
         
     <p><a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParNom'>Trier par nom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParPrenom'>Trier par prenom</a>&emsp; <a href='controleurFrontal.php?controleur=etudiant&action=afficherListeEtudiantOrdonneParParcours'>Trier par parcours</a></p> 
     
@@ -68,11 +71,11 @@ foreach ($etudiants as $etudiant) {
         }
 
     } else {
-        echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a>';
-        echo ' (<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier ?</a>'/*., <a href="controleurFrontal.php?action=supprimer&login=' . $loginURL . '">Supprimer ?*/.'</a>)</p></li>';
+        echo '<li><p>L\'étudiant <a href="controleurFrontal.php?action=afficherDetail&login=' . $loginURL . '">   ' . $nomHTML . '&nbsp;' . $prenomHTML . '</a></p>';
+        echo ' <p>(<a href="controleurFrontal.php?controleur=utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '">Modifier le mot de passe </a>, <a href="controleurFrontal.php?controleur=administrateur&action=AmodifierAvis&login=' . $loginURL . '">Modifier l\'avis de poursuite</a>)</p></li>';
 
     }
     $i++;
 }
 
-echo "</ul>";
+echo "</ul></div>";
