@@ -1,8 +1,10 @@
+
+<div class="container">
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="creerEcoleDepuisFormulaire"/>
     <input type="hidden" name="controleur" value="ecole"/>
     <fieldset>
-        <legend>Formulaire de création de compte école:</legend>
+        <h2>Formulaire de création de compte école:</h2>
 
 
         <p class="InputAddOn">
@@ -41,3 +43,4 @@
         </p>
     </fieldset>
 </form>
+</div>

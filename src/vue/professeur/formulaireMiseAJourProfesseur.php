@@ -2,11 +2,13 @@
 use App\GenerateurAvis\Modele\DataObject\Professeur;
 /** @var Professeur $professeur */
 ?>
+<link rel="stylesheet" href="../ressources/css/connect.css">
+<div class="container">
 <form method="get" action="controleurFrontal.php">
     <input type="hidden" name="action" value="mettreAJour"/>
     <input type="hidden" name="controleur" value="professeur">
     <fieldset>
-        <legend>Formulaire de mise à jour </legend>
+        <h2>Formulaire de mise à jour </h2>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="login_id">Login&#42;</label>
             <input class="InputAddOn-field" type="text" name="login" id="login_id"
@@ -38,3 +40,4 @@ use App\GenerateurAvis\Modele\DataObject\Professeur;
         </p>
     </fieldset>
 </form>
+</div>
