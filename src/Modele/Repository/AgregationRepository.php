@@ -139,6 +139,24 @@ class AgregationRepository extends AbstractRepository
         return $result;
     }
 
+    public static function calculateOneAgregationNote(int $id, string $codeNip) : float {
+        $totalNotes = 0;
+        $totalCoefficients = 0;
+
+        $matieres = (new AgregationRepository)->getMatieresForAgregation($id);
+
+        foreach ($matieres as $matiere) {
+            $note = self::getNoteForMatiere($matiere['id_ressource'], $codeNip);
+            $matiereCoefficient = (float)$matiere['coefficient'];
+            $totalNotes += $note * $matiereCoefficient;
+            $totalCoefficients += $matiereCoefficient;
+        }
+
+        $noteFinale = $totalCoefficients > 0 ? $totalNotes / $totalCoefficients : 0;
+
+        return round($noteFinale, 2);
+    }
+
     public function getMatieresForAgregation(int $idAgregation): array
     {
 //        $sql = "SELECT am.id_ressource, m.nom AS matiere, am.coefficient
