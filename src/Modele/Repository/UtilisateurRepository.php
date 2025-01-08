@@ -9,7 +9,7 @@ use PDOException;
 
 class UtilisateurRepository extends AbstractRepository
 {
-    private static string $tableUtilisateur = "RELEASEUtilisateur";
+    private static string $tableUtilisateur = "Utilisateur";
 
     public static function recupererUtilisateurOrdonneParLogin(): array
     {

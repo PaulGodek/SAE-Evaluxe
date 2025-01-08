@@ -7,7 +7,7 @@ use App\GenerateurAvis\Modele\DataObject\Ecole;
 
 class EcoleRepository extends AbstractRepository
 {
-    private static string $tableEcole = "RELEASEEcole";
+    private static string $tableEcole = "Ecole";
 
     public static function recupererEcolesOrdonneParNom(): array
     {

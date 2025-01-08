@@ -422,7 +422,7 @@ class ControleurUtilisateur extends ControleurGenerique
             $query = "
             SELECT LOWER(CONCAT(Nom, LEFT(Prénom, 1))) AS login, code_nip AS code_nip
             FROM {$table} AS s
-            LEFT JOIN RELEASEEtudiant AS e ON LOWER(CONCAT(s.Nom, LEFT(s.Prénom, 1))) = e.login
+            LEFT JOIN Etudiant AS e ON LOWER(CONCAT(s.Nom, LEFT(s.Prénom, 1))) = e.login
             WHERE e.login IS NULL
         ";
 
@@ -430,7 +430,7 @@ class ControleurUtilisateur extends ControleurGenerique
             $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $insertStmt = $pdo->prepare("
-            INSERT INTO RELEASEEtudiant (login, codeUnique, code_nip)
+            INSERT INTO Etudiant (login, codeUnique, code_nip)
             VALUES (:loginTag, :codeUniqueTag, :code_nipTag)
         ");
 

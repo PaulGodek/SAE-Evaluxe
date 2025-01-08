@@ -367,7 +367,7 @@ class ControleurEtudiant extends ControleurGenerique
 
     public static function getNoteForMatiere(int $idRessource, int $idEtudiant): float
     {
-        $sql = "SELECT note FROM RELEASENote WHERE id_ressource = :id_ressource AND idEtudiant = :idEtudiant";
+        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND idEtudiant = :idEtudiant";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['id_ressource' => $idRessource, 'idEtudiant' => $idEtudiant]);
 

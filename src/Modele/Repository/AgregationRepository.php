@@ -10,7 +10,7 @@ use App\GenerateurAvis\Modele\Repository\AbstractRepository;
 
 class AgregationRepository extends AbstractRepository
 {
-    private static string $tableAgregation = "RELEASEAgregations";
+    private static string $tableAgregation = "Agregations";
 
     public function getNomTable(): string
     {
@@ -179,7 +179,7 @@ class AgregationRepository extends AbstractRepository
 
     public static function getNoteForMatiere(string $idRessource, string $codeNip): float
     {
-        $sql = "SELECT note FROM RELEASENote WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
+        $sql = "SELECT note FROM Note WHERE id_ressource = :id_ressource AND code_nip = :code_nip";
         $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
         $stmt->execute(['id_ressource' => $idRessource, 'code_nip' => $codeNip]);
 
