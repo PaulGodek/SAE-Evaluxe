@@ -17,9 +17,8 @@
                     <td><?= htmlspecialchars($agregation->getNom()) ?></td>
                     <td>
                         <a href="controleurFrontal.php?controleur=agregation&action=supprimerAgregation&id=<?= urlencode($agregation->getId()) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette agrégation ?');">Supprimer</a> |
-                        <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Détails</a>
+                        <a href="controleurFrontal.php?controleur=agregation&action=afficherDetailAgregation&id=<?= urlencode($agregation->getId()) ?>">Détails</a> |
                         <a href="controleurFrontal.php?controleur=agregation&action=afficherFormulaireMiseAJour&id=<?= urlencode($agregation->getId()) ?>">Modifier</a>
-
                     </td>
                 </tr>
             <?php endforeach; ?>
