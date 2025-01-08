@@ -78,7 +78,6 @@ class AgregationMatiereRepository extends AbstractRepository
     {
         $sql = "SELECT am.id_ressource, am.coefficient 
             FROM " . $this->getNomTable() . " am
-            FROM " . $this->getNomTable() . " am
             WHERE am.id_agregation = :idAgregation";
 
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -87,7 +86,6 @@ class AgregationMatiereRepository extends AbstractRepository
 
         $matiereAgregations = [];
         while ($row = $pdoStatement->fetch()) {
-            // Tạo đối tượng Matiere từ kết quả truy vấn
             $matiereAgregation = new Matiere(
                 $row['id_ressource'],
                 (float)$row['coefficient']
