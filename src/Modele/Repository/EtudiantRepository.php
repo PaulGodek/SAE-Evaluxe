@@ -293,6 +293,21 @@ class EtudiantRepository extends AbstractRepository
         ];
     }
 
+    public static function recupererDetailsEtudiantParCodeNipPourPDF($code_nip): array
+    {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $query = "SELECT * FROM InformationsPersonnellesEtudiants WHERE code_nip = :code_nip";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['code_nip' => $code_nip]);
+
+        $details = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$details) {
+            throw new Exception("Étudiant non trouvée");
+        }
+
+        return $details;
+    }
     public static function recupererTousLesDetailsEtudiantParCodeNip($code_nip): array
     {
         $pdo = ConnexionBaseDeDonnees::getPdo();
