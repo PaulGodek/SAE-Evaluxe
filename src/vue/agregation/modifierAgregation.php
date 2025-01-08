@@ -1,85 +1,139 @@
 <section>
     <h1>Modifier une agrégation</h1>
+    <br> <br>
     <form method="get" action="controleurFrontal.php">
         <input type="hidden" name="action" value="modifierAgregationDepuisFormulaire"/>
         <input type="hidden" name="controleur" value="agregation"/>
-        <input type="hidden" name="id" value="<?= htmlspecialchars($agregation->getId()) ?>"/>
+
+        <input type="hidden" name="id_agregation" value="<?= htmlspecialchars($idAgregation) ?>">
 
         <label for="nom">Nom de l'agrégation:</label>
-        <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($agregation->getId_ressource()) ?>" readonly>
+        <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($agregation->getNom()) ?>" required>
 
-        <label for="parcours">Parcours:</label>
-        <input type="text" id="parcours" name="parcours" value="<?= htmlspecialchars($agregation->getParcours()) ?>" readonly>
-
-        <h2>Matières existantes:</h2>
-        <div id="matieresExistantes">
-            <?php foreach ($matiereAgregations as $matiereAgregation): ?>
+        <h3>Sélectionnez les matières et leurs coefficients:</h3>
+        <div id="matieres">
+            <?php foreach ($matiereCoefficients as $matiere): ?>
                 <div class="matiere">
-                    <span><strong>Matière:</strong> <?= htmlspecialchars($matiereAgregation->getNom()) ?></span>
+                    <label>Matière:</label>
+                    <select name="matieres[]" required>
+                        <option value="">-- Sélectionnez une matière --</option>
+                        <?php foreach ($ressources as $ressource): ?>
+                            <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>"
+                                <?= $matiere->getId_ressource() == $ressource->getId_ressource() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($ressource->getId_ressource()) ?>: <?= htmlspecialchars($ressource->getNom()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
                     <label>Coefficient:</label>
-                    <input type="number" name="coefficientsExistants[<?= htmlspecialchars($matiereAgregation->getId()) ?>]"
-                           value="<?= htmlspecialchars($matiereAgregation->getCoefficient()) ?>" required>
-                    <button type="button" class="supprimerMatiere" data-id="<?= htmlspecialchars($matiereAgregation->getId()) ?>">Supprimer</button>
+                    <input type="number" name="coefficients[]" value="<?= htmlspecialchars($matiere->getCoefficient()) ?>" required>
+
+                    <button type="button" class="supprimerMatiere">Supprimer</button>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <h2>Ajouter de nouvelles matières:</h2>
-        <div id="matieresAjoutees">
-            <div class="matiere">
-                <label>Matière:</label>
-                <select name="matieresNouvelles[]">
-                    <option value="">-- Sélectionnez une matière --</option>
-                    <?php foreach ($ressources as $ressource): ?>
-                        <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
-                            <?= htmlspecialchars($ressource->getNom()) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <label>Coefficient:</label>
-                <input type="number" name="coefficientsNouveaux[]" placeholder="Coefficient">
-            </div>
-        </div>
-        <button type="button" id="ajouterMatiere">Ajouter une nouvelle matière</button>
+        <button type="button" id="ajouterMatiere">Ajouter une matière</button>
         <br><br>
-
-        <button type="submit">Modifier l'agrégation</button>
+        <button type="submit" class="button">Modifier l'agrégation</button>
     </form>
-
-    <script>
-        // Script để thêm mới matière
-        document.getElementById('ajouterMatiere').addEventListener('click', function() {
-            const matiereDiv = document.createElement('div');
-            matiereDiv.className = 'matiere';
-            matiereDiv.innerHTML = `
-                <label>Matière:</label>
-                <select name="matieresNouvelles[]">
-                    <option value="">-- Sélectionnez une matière --</option>
-                    <?php foreach ($ressources as $ressource): ?>
-                        <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
-                            <?= htmlspecialchars($ressource->getNom()) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <label>Coefficient:</label>
-                <input type="number" name="coefficientsNouveaux[]" placeholder="Coefficient">
-            `;
-            document.getElementById('matieresAjoutees').appendChild(matiereDiv);
-        });
-
-        document.querySelectorAll('.supprimerMatiere').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette matière ?');
-                if (confirmation) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'matieresASupprimer[]';
-                    input.value = id;
-                    this.closest('.matiere').appendChild(input);
-                    this.closest('.matiere').style.display = 'none';
-                }
-            });
-        });
-    </script>
 </section>
+
+<script>
+    document.getElementById('ajouterMatiere').addEventListener('click', function () {
+        const matiereDiv = document.createElement('div');
+        matiereDiv.className = 'matiere';
+        matiereDiv.innerHTML = `
+            <label>Matière:</label>
+            <select name="matieres[]" required>
+                <option value="">-- Sélectionnez une matière --</option>
+                <?php foreach ($ressources as $ressource): ?>
+                    <option value="<?= htmlspecialchars($ressource->getId_ressource()) ?>">
+                        <?= htmlspecialchars($ressource->getId_ressource()) ?>: <?= htmlspecialchars($ressource->getNom()) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <label>Coefficient:</label>
+            <input type="number" name="coefficients[]" placeholder="Coefficient" required>
+            <button type="button" class="supprimerMatiere">Supprimer</button>
+        `;
+        document.getElementById('matieres').appendChild(matiereDiv);
+
+        matiereDiv.querySelector('.supprimerMatiere').addEventListener('click', function () {
+            matiereDiv.remove();
+        });
+    });
+
+    document.querySelectorAll('.supprimerMatiere').forEach(button => {
+        button.addEventListener('click', function () {
+            this.closest('.matiere').remove();
+        });
+    });
+</script>
+
+<style>
+    section {
+        padding: 5em;
+    }
+
+    select, input[type="text"], input[type="number"] {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    select:focus, input[type="text"]:focus, input[type="number"]:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    button {
+        padding: 8px 16px;
+        background-color: var(--rougeUM);
+        color: #fff;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    button.supprimerMatiere {
+        background-color: var(--rougeUM);
+        margin-top: 10px;
+    }
+
+    #ajouterMatiere {
+        display: inline-block;
+        padding: 8px 16px;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    div {
+        margin-bottom: 20px;
+    }
+
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+</style>

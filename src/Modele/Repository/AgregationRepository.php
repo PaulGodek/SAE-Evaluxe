@@ -187,5 +187,16 @@ class AgregationRepository extends AbstractRepository
         return $note !== false ? (float)$note : 0.0;
     }
 
+    public function supprimerMatiereParAgrégation($idAgregation) {
+        // Prepare the SQL query
+        $sql = "DELETE FROM agregation_matiere WHERE id_agregation = :id";
+
+        // Use the PDO instance from ConnexionBaseDeDonnees to prepare the query
+        $stmt = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        // Execute the query with the ID parameter
+        return $stmt->execute(['id' => $idAgregation]);
+    }
+
 
 }
