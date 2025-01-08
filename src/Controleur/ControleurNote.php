@@ -86,7 +86,7 @@ class ControleurNote extends ControleurGenerique
         $codeNip = $_GET['code'];
         $UEs = ['UE1', 'UE2', 'UE3', 'UE4', 'UE5', 'UE6'];
         $noteRepository = new NoteRepository();
-        if (ConnexionUtilisateur::estAdministrateur()) {
+        if (ConnexionUtilisateur::estAdministrateur() || ConnexionUtilisateur::estProfesseur()) {
             $semestres = $noteRepository->getAllSemestres();
         }
         else $semestres = $noteRepository->getSemestresPublic();
