@@ -3,7 +3,6 @@
 namespace App\GenerateurAvis\Controleur;
 require __DIR__ . '/../../bootstrap.php';
 
-use Dompdf\Dompdf;
 use App\GenerateurAvis\Lib\ConnexionUtilisateur;
 use App\GenerateurAvis\Lib\MessageFlash;
 use App\GenerateurAvis\Lib\MotDePasse;
@@ -15,6 +14,7 @@ use App\GenerateurAvis\Modele\Repository\EcoleRepository;
 use App\GenerateurAvis\Modele\Repository\EtudiantRepository;
 use App\GenerateurAvis\Modele\Repository\UtilisateurRepository;
 use Exception;
+use App\GenerateurAvis\Controleur\PDF;
 use PDO;
 use Random\RandomException;
 use TypeError;
@@ -378,6 +378,9 @@ class ControleurEtudiant extends ControleurGenerique
      */
     public static function genererAvisPdf(): void
     {
+        // Ensure no output before PDF generation
+        ob_clean();
+
         $etudiantRepository = new EtudiantRepository();
 
         $etudiant = $etudiantRepository->recupererParClePrimaire(ConnexionUtilisateur::getLoginUtilisateurConnecte());
@@ -424,34 +427,12 @@ class ControleurEtudiant extends ControleurGenerique
 
         $parcours = $etudiantDetails['parcours'] ?? '-';
 
-        $content = "
-    <h1>Fiche Avis Poursuite d’Études - Promotion 2023-2024</h1>
-    <h2>Département Informatique IUT Montpellier-Sète</h2>
-    <h3>FICHE D’INFORMATION ÉTUDIANT(E)</h3>
-    <p><strong>NOM:</strong> {$etudiantDetails['Nom']}</p>
-    <p><strong>Prénom:</strong> {$etudiantDetails['Prénom']}</p>
-    <p><strong>Apprentissage en BUT 3:</strong> non</p>
-    <p><strong>Parcours BUT:</strong> {$parcours}</p>
-    <h3>Avis de l’équipe pédagogique pour la poursuite d’études après le BUT3</h3>
-    <p><strong>En école d’ingénieur et master en informatique:</strong> {$avisEcoleIngenieur}</p>
-    <p><strong>En master en management:</strong> {$avisMasterManagement}</p>
-    <h3>Nombre d’avis pour la promotion</h3>
-    <p><strong>En école d’ingénieur et master en informatique:</strong></p>
-    <p><strong>Très Favorable:</strong> {$ecoleIngenieurTF}</p>
-    <p><strong>Favorable:</strong> {$ecoleIngenieurF}</p>
-    <p><strong>Réservé:</strong> {$ecoleIngenieurR}</p>
-    <p><strong>Master en management:</strong></p>
-    <p><strong>Très Favorable:</strong> {$masterManagementTF}</p>
-    <p><strong>Favorable:</strong> {$masterManagementF}</p>
-    <p><strong>Réservé:</strong> {$masterManagementR}</p>
-    <p><strong>Signature du Responsable des Poursuites d’études par délégation du chef de département</strong></p>
-    ";
+        $pdf = new PDF();
+        $pdf->AddPage();
+        $pdf->AddStudentInfo($etudiantDetails['Nom'], $etudiantDetails['Prénom'], $parcours);
+        $pdf->AddAvis($avisEcoleIngenieur, $avisMasterManagement);
+        $pdf->AddAvisPromotion($ecoleIngenieurTF, $ecoleIngenieurF, $ecoleIngenieurR, $masterManagementTF, $masterManagementF, $masterManagementR);
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($content);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        $dompdf->stream("Avis_PE_2024_{$etudiantDetails['Nom']}.pdf", ["Attachment" => false]);
+        $pdf->Output("Avis_PE_2024_{$etudiantDetails['Nom']}.pdf", 'I');
     }
 }
