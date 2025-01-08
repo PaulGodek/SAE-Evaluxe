@@ -30,20 +30,18 @@ Administrateur ;
 
 Etudiant :
 
-    login : nom 105p
+    login : nom 70p
     mdp : 123
 
 Ecole :
 
     login : eco3
     mdp : 123
-    nouveaux codes unique à enregistrer :
-        aaa9f7a86a
-        ea31a021e5
+    
 
 Professeur :
 
-    login : prof 1
+    login : prof 2
     mdp : 123
 
 
@@ -53,32 +51,32 @@ Professeur :
 
 - Etudiant :
 
-      Voir les infos qui le concerne(nom, prenom, detail des notes, absences...)
+     
+      Accepter et refuser les demandes des écoles
 
 - Ecole :
 
       Créer un compte qui sera en attente de validation par l'administrateur
+      Envoyer et supprimer une demande d'accès aux infos d'un étudiant
       Enregistrer un étudiant via le code unique qui lui est partagé
-      voir les infos d'un étudiant qu'elle a enregistré
-
+      
 - Professeur :
 
-      Voir les infos qui le concerne (nom, prenom)
+      Créer, modifier et supprimer des agrégations
+      Créer, modifier et supprimer un avis sur un étudiant
 
 - Administrateur :
 
         Voir la liste des utilisateurs
         Rechercher des utilisateur via leur login 
-        Modifier et supprimer un utilisateur
-        Voir la liste des étudiants 
-        Les trier par nom, prenom ou parcours
-        Chercher des étudiants via leur login
-        Voir les infos concernant les etudiants 
-        Voir la liste des ecoles 
-        Les trier par validation,nom ou ville 
-        Voir toutes les infos d'un école 
-        Rechercher des écoles via leur nom
+        Modifier le compte d'un utilisateur
+        Voir la liste des étudiants, écoles et professeurs, et la trier selon plusieurs critères
+        Rechercher un étudiant, une école ou un professeur 
+        Importer des données depuis un fichier csv
+        Publier et dépublier les resultats d'un semestre
+        Créer, modifier et supprimer des agrégations
+        Voir différents graphiques 
 
+- Voir et modifier ses informations
 - Modifier les paramètres d'accessibilités( contraste, taille de police, mode sombre)
-
 - Se déconnecter
