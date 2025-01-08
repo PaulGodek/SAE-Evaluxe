@@ -24,11 +24,13 @@ class ControleurAgregation extends ControleurGenerique
             (new AgregationRepository())->recuperer(),
             fn($agregation) => $agregation->getLogin() === $loginActuel
         );
+        $bool = ConnexionUtilisateur::estAdministrateur();
 
         self::afficherVue('vueGenerale.php', [
             "titre" => "Liste des agregations",
             "cheminCorpsVue" => "agregation/listeAgregation.php",
-            "agre" => $agre
+            "agre" => $agre,
+            "admin" => $bool
         ]);
     }
     public static function afficherCreerAgregation(): void {
