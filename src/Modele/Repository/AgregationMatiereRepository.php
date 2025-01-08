@@ -95,6 +95,4 @@ class AgregationMatiereRepository extends AbstractRepository
 
         return $matiereAgregations;
     }
-
-
 }
