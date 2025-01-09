@@ -3,7 +3,7 @@
 Dépôt de base de votre SAE3A.
 
 
-***DEPLOIEMENT DU SITE :***
+## DEPLOIEMENT DU SITE :
 
 Pour déployer le site, il faut d'abord cloner notre dépôt avec cette commande : 
 
@@ -24,12 +24,20 @@ Container path : /var/www/html
 Une fois l'image lancée, plus qu'à aller à l'adresse http://localhost/sae3a-base/web/controleurFrontal, et à partir de là on aura accès au site web... A une chose près : il va falloir versionner le fichier ConfigurationBaseDeDonnee.php avec votre identifiant et mot de passe dans 'login' et 'motDePasse' respectivement. Et **LA**, le site web sera prêt à l'utilisation.
 
 
-***URL du site :***
+## URL DU SITE :
 
 https://webinfo.iutmontp.univ-montp2.fr/~godekp/sae3a-base/web/controleurFrontal.php
 
 
-***LOGINS ET MOTS DE PASSES :***
+## PARTICIPATION DE CHACUN
+
+- **Daniele Dainiute (30%) :** le ldap (que nous n'avons pas connecté car les exemples de données donnés n'existent pas dans la base de données de l'université, mais en général notre connexion ldap fonctionne), l'envoi automatique d'emails aux administrateurs/écoles externes, la création de pdf à partir des données dans la base de données, l'algorithme pour l'importation de fichiers excel, les connexions pour tous les types d'utilisateurs et quelques autres tâches plus petites liées à php comme les futurs étudiants (obtenir le code unique, le créer).
+- **Paul Godek (20%) :** la génération des avis généraux (à partir des agrégations par défaut qu'il a également réalisées), avis générés automatiquement, la sécurité et la gestion des droits, beaucoup de refactoring.
+- **Hong Hoa Nguyen (30%) :** agrégations, graphiques, , les messages flash et les cookies, accessibilité.
+- **Kilyan Sombé (20%) :** les algorithmes de tri, les demandes d'informations sur les étudiants, et d'autres tâches concernant les listes, gérer les comptes ( créer et modifier) 
+
+
+## LOGINS ET MOTS DE PASSES
 
 Administrateur ;
 
@@ -53,7 +61,7 @@ Professeur :
     mdp : 123
 
 
-***FONCTIONNALITES PRESENTES***
+## FONCTIONNALITES PRESENTES
 
 - Se connecter en tant que Administrateur, Etudiant, Ecole, Professeur
 
