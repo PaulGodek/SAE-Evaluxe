@@ -497,7 +497,7 @@ class ControleurUtilisateur extends ControleurGenerique
     #[NoReturn] public static function setCookieBanner(): void
     {
         Cookie::enregistrer('bannerClosed', true, 10 * 365 * 24 * 60 * 60);
-        header('Location: controleurFrontal.php?action=home');
+        header('Location: controleurFrontal.php?action=afficherAccueil&controleur=Accueil');
         exit();
     }
 }
