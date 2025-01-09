@@ -3,22 +3,30 @@
 Dépôt de base de votre SAE3A.
 
 
+***DEPLOIEMENT DU SITE :***
+
+Pour déployer le site, il faut d'abord cloner notre dépôt avec cette commande : 
+
+```bash 
+git clone https://gitlabinfo.iutmontp.univ-montp2.fr/sae3a/projets/dainiuted-godekp-nguyenh-sombek/sae3a-base.git 
+```
+
+Il faudra ensuite entrer ses identifiants et son mot de passe : n'importe qui ne peut pas cloner le projet, il faut être un de ses membres.
+A partir de là, il faut lancer Docker avec les bons paramètre vers le bon endroit quand on lancera notre image : 
+
+![Image d'exemple de l'interface de Docker](ressources/images/image.png)
+Nom du conteneur / Container name : serveurWebIUT1
+Port de la machine hôte / Host port : 80
+Dans la partie Volumes,
+Host path : chemin de fichier jusqu'au répertoire public_html
+Container path : /var/www/html
+
+Une fois l'image lancée, plus qu'à aller à l'adresse http://localhost/sae3a-base/web/controleurFrontal, et à partir de là on aura accès au site web... A une chose près : il va falloir versionner le fichier ConfigurationBaseDeDonnee.php avec votre identifiant et mot de passe dans 'login' et 'motDePasse' respectivement. Et **LA**, le site web sera prêt à l'utilisation.
 
 
 ***URL du site :***
 
 https://webinfo.iutmontp.univ-montp2.fr/~godekp/sae3a-base/web/controleurFrontal.php
-
-
-
-
-
-
-
-
-
-
-
 
 
 ***LOGINS ET MOTS DE PASSES :***
