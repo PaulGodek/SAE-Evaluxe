@@ -31,7 +31,7 @@ https://webinfo.iutmontp.univ-montp2.fr/~godekp/sae3a-base/web/controleurFrontal
 
 ## PARTICIPATION DE CHACUN
 
-- **Daniele Dainiute (30%) :** le ldap (que nous n'avons pas connecté car les exemples de données donnés n'existent pas dans la base de données de l'université, mais en général notre connexion ldap fonctionne), l'envoi automatique d'emails aux administrateurs/écoles externes, la création de pdf à partir des données dans la base de données, l'algorithme pour l'importation de fichiers excel, les connexions pour tous les types d'utilisateurs et quelques autres tâches plus petites liées à php comme les futurs étudiants (obtenir le code unique, le créer).
+- **Daniele Dainiute (30%) :** le ldap (que nous n'avons pas connecté car les exemples de donnés n'existent pas dans la base de données de l'université, mais en général notre connexion ldap fonctionne), l'envoi automatique d'emails aux administrateurs/écoles externes, la création de pdf à partir des données dans la base de données, l'algorithme pour l'importation de fichiers excel, les connexions pour tous les types d'utilisateurs et quelques autres tâches plus petites liées à php comme les futurs étudiants (obtenir le code unique, le créer).
 - **Paul Godek (20%) :** la génération des avis généraux (à partir des agrégations par défaut qu'il a également réalisées), avis générés automatiquement, la sécurité et la gestion des droits, beaucoup de refactoring.
 - **Hong Hoa Nguyen (30%) :** agrégations, graphiques, , les messages flash et les cookies, accessibilité.
 - **Kilyan Sombé (20%) :** les algorithmes de tri, les demandes d'informations sur les étudiants, et d'autres tâches concernant les listes, gérer les comptes ( créer et modifier) 
