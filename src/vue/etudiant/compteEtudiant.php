@@ -21,5 +21,7 @@ echo "<p><span class='sousTitre'>Votre code Nip : </span>" . htmlspecialchars($u
 
 
 echo ' <a class="button" href="controleurFrontal.php?controleur=Utilisateur&action=afficherFormulaireMiseAJour&login=' . $loginURL . '" >Modifier mon mot de passe</a>';
+echo ' <a class="button" href="controleurFrontal.php?controleur=etudiant&action=genererAvisPdf" >Générer mon pdf</a>';
+
 echo "</div>";
 
