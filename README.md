@@ -8,7 +8,7 @@ Dépôt de base de votre SAE3A.
 Pour déployer le site, il faut d'abord cloner notre dépôt avec cette commande : 
 
 ```bash 
-git clone https://gitlabinfo.iutmontp.univ-montp2.fr/sae3a/projets/dainiuted-godekp-nguyenh-sombek/sae3a-base.git 
+git clone https://PaulGodek@github.com/PaulGodek/SAE-Evaluxe.git 
 ```
 
 Il faudra ensuite entrer ses identifiants et son mot de passe : n'importe qui ne peut pas cloner le projet, il faut être un de ses membres.
